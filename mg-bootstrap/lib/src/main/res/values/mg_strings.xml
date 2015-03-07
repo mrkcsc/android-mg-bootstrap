@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="shared_empty_string"> </string>
+
+    <string name="shared_percent_0">0%</string>
+    <string name="shared_percent_100">100%</string>
+
+    <string name="shared_rest_serialize_error">A serialization error has occurred</string>
+    <string name="shared_rest_network_error">A network error has occurred.</string>
+    <string name="shared_rest_unknown_error">An unknown network error has occurred.</string>
+    <string name="shared_rest_exception_error">An unknown error has occurred.</string>
+
+    <string name="shared_number_9">9</string>
+    <string name="shared_number_99">99</string>
+    <string name="shared_number_999">999</string>
+    <string name="shared_number_9999">9999</string>
+
+    <string name="shared_time">00:30</string>
+    <string name="shared_time_pm">12:00 PM</string>
+    <string name="shared_time_formatted">0H 00M</string>
+
+    <string name="shared_lorum_ipsum_tiny">Lorum ipsum</string>
+    <string name="shared_lorum_ipsum_long">Hey do you have some time to draft at 7pm today?  We’ll be doing blind auction soon.  Patriots used deception to mount comeback vs Ravens.  Harbaugh is not amused.</string>
+</resources>

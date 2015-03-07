@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="font_roboto_black">fonts/Roboto-Black.ttf</string>
+    <string name="font_roboto_bold">fonts/Roboto-Bold.ttf</string>
+    <string name="font_roboto_light">fonts/Roboto-Light.ttf</string>
+    <string name="font_roboto_medium">fonts/Roboto-Medium.ttf</string>
+    <string name="font_roboto_regular">fonts/Roboto-Regular.ttf</string>
+    <string name="font_roboto_thin">fonts/Roboto-Thin.ttf</string>
+
+    <string name="font_roboto_condensed_bold">fonts/RobotoCondensed-Bold.ttf</string>
+    <string name="font_roboto_condensed_regular">fonts/RobotoCondensed-Regular.ttf</string>
+    <string name="font_roboto_condensed_light">fonts/RobotoCondensed-Light.ttf</string>
+</resources>

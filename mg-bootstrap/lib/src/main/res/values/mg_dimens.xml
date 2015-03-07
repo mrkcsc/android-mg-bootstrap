@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Standard animation time. -->
+    <integer name="animation_time_standard">350</integer>
+
+</resources>
