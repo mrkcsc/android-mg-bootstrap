@@ -55,3 +55,6 @@ dependencies {
     // Rx Java (reactive programming)
     compile 'io.reactivex:rxjava:1.0.4'
 }
+
+// Deployment script: https://github.com/blundell/release-android-library
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
