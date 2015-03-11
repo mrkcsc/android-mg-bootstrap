@@ -12,19 +12,23 @@ import javax.net.ssl.X509TrustManager;
 /**
  * Created by mrkcsc on 7/18/14. Copyright 2014 Blitz Studios
  */
-class MGRestClientSSL {
+@SuppressWarnings("UnusedDeclaration")
+public class MGRestClientSSL {
 
-    // region Public Methods
-    // ============================================================================================================
+    /**
+     * Creates a SSL socket factory that does
+     * not validate certificates.
+     */
+    public static SSLSocketFactory createInsecureSSLSocketFactory() {
+
+        return createInsecureSSLContext().getSocketFactory();
+    }
 
     /**
      * Creates a socket factory that does not
-     * validate and certificates.
-     *
-     * @return Socket factory, null on error.
+     * validate certificates.
      */
-    @SuppressWarnings("unused")
-    public static SSLSocketFactory createInsecureSSLSocketFactory() {
+    public static SSLContext createInsecureSSLContext() {
 
         // Create trust manager that does not validate certs chains.
         final TrustManager[] trustAllCerts = new TrustManager[] {
@@ -57,16 +61,6 @@ class MGRestClientSSL {
             }
         } catch (KeyManagementException ignored) { }
 
-
-        if (sslContext != null) {
-
-            // Create factory with all-trusting manager.
-            return sslContext.getSocketFactory();
-        }
-
-        // Error.
-        return null;
+        return sslContext;
     }
-
-    // endregion
 }
