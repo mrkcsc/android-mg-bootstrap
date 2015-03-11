@@ -7,7 +7,7 @@ import android.util.Log;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 
 
-public class MainActivity extends ActionBarActivity {
+public class TestActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
