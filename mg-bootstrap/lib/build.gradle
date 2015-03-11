@@ -47,6 +47,10 @@ android {
     }
 }
 
+//
+// Fairly exhaustive list of all available libraries: http://bit.ly/1twylbS
+//
+
 dependencies {
 
     // Support libraries.
