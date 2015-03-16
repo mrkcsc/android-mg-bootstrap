@@ -1,3 +1,7 @@
+## 1.2.0 - 2015-03-15
+
+- Added logger library.
+
 ## 1.1.0 - 2015-03-15
 
 - Bumped library support to target Lollipop SDK.  Includes partial implementation of websocket library.
