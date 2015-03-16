@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 
 public class TestActivity extends ActionBarActivity {
@@ -15,5 +16,17 @@ public class TestActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         MGDelay.delay(1000, () -> Log.e("", "lol"));
+
+        MGLog.getConfig().init(this);
+
+        MGLog.getConfig().setError((t, message, args) -> {
+
+        });
+        MGLog.getConfig().setInfo((t, message, args) -> {
+
+        });
+
+
+        MGLog.e("LOl test");
     }
 }
