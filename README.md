@@ -5,7 +5,8 @@ An opinionated bootstrap library for android projects that includes commonly use
 A simple logging wrapper over Timber (https://github.com/JakeWharton/timber)
 
 #### Configuration
-Initialize the logger in your application class.
+
+* Initialize the logger in your application class.
 
 ```java
 class App extends MGLifecycleApplication {
@@ -16,7 +17,7 @@ class App extends MGLifecycleApplication {
     }
 }
 ```
-Optionally set production error and info actions (in Debug enviornment, messages are logged to console).
+* Optionally set production error and info actions (in Debug enviornment, messages are logged to console).
 
 ```java
 MGLog.getConfig().setError((throwable, s, objects) -> { });
