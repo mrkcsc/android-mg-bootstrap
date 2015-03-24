@@ -1,3 +1,11 @@
+## 1.2.2 - 2015-03-24
+
+- Added support for all activity transitions to be played in reverse, eg:
+
+```java
+getTransitions.setReversed(true);
+```
+
 ## 1.2.1 - 2015-03-23
 
 - Updated horizontal/vertical transitions for pop.
