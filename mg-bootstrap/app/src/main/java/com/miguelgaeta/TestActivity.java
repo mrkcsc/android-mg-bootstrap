@@ -1,19 +1,20 @@
 package com.miguelgaeta;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
+import butterknife.OnClick;
 
-public class TestActivity extends ActionBarActivity {
+
+public class TestActivity extends MGLifecycleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         MGDelay.delay(1000, () -> Log.e("", "lol"));
 
@@ -26,7 +27,11 @@ public class TestActivity extends ActionBarActivity {
 
         });
 
-
         MGLog.e("LOl test");
+    }
+
+    @OnClick(R.id.test_button)
+    public void testButtonClick() {
+        startActivity(TestActivityNext.class);
     }
 }
