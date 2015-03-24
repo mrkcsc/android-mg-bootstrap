@@ -2,7 +2,8 @@
 An opinionated bootstrap library for android projects that includes commonly used dependancies and some custom wrapper libraries.
 
 ## MG Log
-A simple logging wrapper over Timber (https://github.com/JakeWharton/timber)
+
+A simple logging wrapper over Timber (https://github.com/JakeWharton/timber).  Use this to more easily log messages with a standard tag across projects.  By default it also filters out any log statement in production, or you can configure custom behavior in this enviornment.
 
 #### Configuration
 
