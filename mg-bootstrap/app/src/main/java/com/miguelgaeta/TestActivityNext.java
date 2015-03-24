@@ -1,9 +1,18 @@
 package com.miguelgaeta;
 
+import android.os.Bundle;
+
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 
 /**
  * Created by Miguel Gaeta on 3/23/15.
  */
 public class TestActivityNext extends MGLifecycleActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getTransitions().setType(Type.SLIDE_POP_HORIZONTAL);
+    }
 }

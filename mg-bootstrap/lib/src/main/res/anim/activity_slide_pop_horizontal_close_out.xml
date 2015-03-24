@@ -2,14 +2,14 @@
 
     <translate
         android:fromXDelta="0%"
-        android:toXDelta="75%"
+        android:toXDelta="100%"
         android:duration="@integer/animation_time_standard" />
 
     <scale
         android:fromXScale="100%p"
-        android:toXScale="75%p"
+        android:toXScale="90%p"
         android:fromYScale="100%p"
-        android:toYScale="75%p"
+        android:toYScale="90%p"
         android:pivotX="50%p"
         android:pivotY="50%p"
         android:duration="@integer/animation_time_standard" />
