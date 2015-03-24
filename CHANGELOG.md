@@ -1,3 +1,7 @@
+## 1.2.1 - 2015-03-23
+
+- Updated horizontal/vertical transitions for pop.
+
 ## 1.2.0 - 2015-03-15
 
 - Added logger library.
