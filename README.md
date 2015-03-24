@@ -23,3 +23,15 @@ class App extends MGLifecycleApplication {
 MGLog.getConfig().setError((throwable, s, objects) -> { });
 MGLog.getConfig().setInfo ((throwable, s, objects) -> { });
 ```
+
+#### Usage
+
+* Log anything and everything to your liking!
+* 
+```java
+MGLog.e("Here is a message");
+MGLog.e("Here is a message with parameters: %d, %d", param1, param2);
+MGLog.e("Here is a message" + " with more string.");
+
+MGLog.e("Here is a message that logs at info level.");
+```
