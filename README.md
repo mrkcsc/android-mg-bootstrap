@@ -6,7 +6,7 @@ A simple logging wrapper over Timber (https://github.com/JakeWharton/timber)
 
 #### Configuration
 
-* Initialize the logger in your application class.
+- Initialize the logger in your application class.
 
 ```java
 class App extends MGLifecycleApplication {
@@ -17,7 +17,7 @@ class App extends MGLifecycleApplication {
     }
 }
 ```
-* Optionally set production error and info actions (in Debug enviornment, messages are logged to console).
+- Optionally set production error and info actions (in Debug enviornment, messages are logged to console).
 
 ```java
 MGLog.getConfig().setError((throwable, s, objects) -> { });
@@ -26,7 +26,7 @@ MGLog.getConfig().setInfo ((throwable, s, objects) -> { });
 
 #### Usage
 
-###### Log anything and everything to your liking!
+- Log anything and everything to your liking!
 
 ```java
 MGLog.e("Here is a message");
