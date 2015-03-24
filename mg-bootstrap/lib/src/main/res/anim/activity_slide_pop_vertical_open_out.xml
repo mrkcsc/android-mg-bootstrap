@@ -1,10 +1,5 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <translate
-        android:fromYDelta="0%"
-        android:toYDelta="-100%"
-        android:duration="@integer/animation_time_standard" />
-
     <scale
         android:fromXScale="100%p"
         android:toXScale="95%p"
@@ -14,8 +9,8 @@
         android:pivotY="50%p"
         android:duration="@integer/animation_time_standard" />
 
-    <alpha android:fromAlpha="1"
-        android:toAlpha="0.25"
+    <alpha
+        android:fromAlpha="1"
+        android:toAlpha="0.0"
         android:duration="@integer/animation_time_standard"/>
-
 </set>
