@@ -10,12 +10,19 @@ import lombok.Setter;
 /**
  * Created by Miguel on 1/23/2015. Copyright 2014 Blitz Studios
  */
+@SuppressWarnings("ConstantConditions")
 public class MGLifecycleActivityTransitions {
 
     private Activity activity;
 
     @Setter
     private MGLifecycleActivity.Type type = MGLifecycleActivity.Type.SLIDE_POP_HORIZONTAL;
+
+    /**
+     * Should the transitions be played in reverse.
+     */
+    @Setter
+    private boolean reversed = false;
 
     /**
      * Hold reference to current activity.
@@ -34,6 +41,11 @@ public class MGLifecycleActivityTransitions {
         if ((!goingBack && entering) || (goingBack && !entering)) {
 
             String animationResourcePrefix = "activity_" + type.name().toLowerCase();
+
+            if (reversed) {
+
+                entering = !entering;
+            }
 
             int enterAnimation = entering ?
                     MGReflection.getResourceId(animationResourcePrefix + "_open_in", R.anim.class) :
