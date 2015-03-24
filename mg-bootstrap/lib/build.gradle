@@ -33,7 +33,7 @@ android {
         versionCode 4
         versionName "1.2.1"
     }
-Versio
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
