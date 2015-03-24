@@ -26,8 +26,8 @@ MGLog.getConfig().setInfo ((throwable, s, objects) -> { });
 
 #### Usage
 
-* Log anything and everything to your liking!
-* 
+##### Log anything and everything to your liking!
+
 ```java
 MGLog.e("Here is a message");
 MGLog.e("Here is a message with parameters: %d, %d", param1, param2);
