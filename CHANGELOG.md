@@ -1,3 +1,7 @@
+## 1.2.3 - 2015-03-24
+
+- Added a Anim Fade utility for setting view visibility with animation (see docs).
+
 ## 1.2.2 - 2015-03-24
 
 - Added support for all activity transitions to be played in reverse, eg:
