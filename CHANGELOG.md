@@ -1,3 +1,7 @@
+## 1.2.4 - 2015-03-24
+
+- Added some additional error serialization to MGRestClientError.
+
 ## 1.2.3 - 2015-03-24
 
 - Added a Anim Fade utility for setting view visibility with animation (see docs).
