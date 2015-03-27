@@ -1,3 +1,23 @@
+## 1.2.4 - 2015-03-24
+
+- Added some additional error serialization to MGRestClientError.
+
+## 1.2.3 - 2015-03-24
+
+- Added a Anim Fade utility for setting view visibility with animation (see docs).
+
+## 1.2.2 - 2015-03-24
+
+- Added support for all activity transitions to be played in reverse, eg:
+
+```java
+getTransitions.setReversed(true);
+```
+
+## 1.2.1 - 2015-03-23
+
+- Updated horizontal/vertical transitions for pop.
+
 ## 1.2.0 - 2015-03-15
 
 - Added logger library.

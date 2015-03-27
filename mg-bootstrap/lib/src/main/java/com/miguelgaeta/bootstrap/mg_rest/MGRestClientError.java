@@ -3,7 +3,13 @@ package com.miguelgaeta.bootstrap.mg_rest;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import retrofit.RetrofitError;
 import rx.functions.Action1;
@@ -82,33 +88,26 @@ public class MGRestClientError implements Action1<Throwable> {
      */
     private void tryHandleRetrofitError(RetrofitError retrofitError) {
 
-        String errorMessage = context.getResources().getString(R.string.shared_rest_unknown_error);
+        List<String> errorMessages = new ArrayList<>();
 
         switch (retrofitError.getKind()) {
 
             case NETWORK:
 
                 // Generic network error message.
-                errorMessage = context.getResources().getString(R.string.shared_rest_network_error);
+                errorMessages.add(context.getResources().getString(R.string.shared_rest_network_error));
                 break;
 
             case CONVERSION:
 
                 // Present a friendly serialization error message.
-                errorMessage = context.getResources().getString(R.string.shared_rest_serialize_error);
+                errorMessages.add(context.getResources().getString(R.string.shared_rest_serialize_error));
                 break;
 
             case HTTP:
 
-                // Attempt to serialize error response from the server.
-                MGRestClientErrorModel error = (MGRestClientErrorModel)retrofitError
-                        .getBodyAs(MGRestClientErrorModel.class);
-
-                if (error != null) {
-
-                    // Use the server provided error message.
-                    errorMessage = error.getError().getMessage();
-                }
+                // Try to extract error message from HTTP result.
+                errorMessages.addAll(tryHandleErrorResult(retrofitError));
                 break;
 
             case UNEXPECTED:
@@ -117,6 +116,74 @@ public class MGRestClientError implements Action1<Throwable> {
                 throw new RuntimeException();
         }
 
-        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        for (String errorMessage : errorMessages) {
+
+            // Print out any attached string messages.
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Try to handle HTTP error result from server.
+     */
+    private List<String> tryHandleErrorResult(RetrofitError retrofitError) {
+
+        List<String> errorMessages = new ArrayList<>();
+
+        // Attempt to serialize error response from the server.
+        MGRestClientErrorModel error = (MGRestClientErrorModel)retrofitError
+                .getBodyAs(MGRestClientErrorModel.class);
+
+        if (error != null && error.getError() != null) {
+
+            // Use the server provided error message.
+            errorMessages.add(error.getError().getMessage());
+
+        } else {
+
+            List<String> genericErrorMessages = tryHandleErrorResultGeneric(retrofitError);
+
+            if (genericErrorMessages != null) {
+
+                errorMessages.addAll(genericErrorMessages);
+            } else {
+
+                // If all approached failed, emit a generic error message.
+                errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+            }
+        }
+
+        return errorMessages;
+    }
+
+    /**
+     * Use a generic approach to try to extract error
+     * messages from an error result.  Assumes a JSON
+     * object with error keys mapped to arrays
+     * of string messages.
+     */
+    private List<String> tryHandleErrorResultGeneric(RetrofitError error) {
+
+        try {
+
+            List<String> errorMessages = new ArrayList<>();
+
+            // Serialize into a generic json object.
+            JsonObject jsonObject = (JsonObject)error.getBodyAs(JsonObject.class);
+
+            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+
+                for (JsonElement element : entry.getValue().getAsJsonArray()) {
+
+                    errorMessages.add(element.getAsString());
+                }
+            }
+
+            return errorMessages;
+
+        } catch (Exception ignored) {
+
+            return new ArrayList<>();
+        }
     }
 }
