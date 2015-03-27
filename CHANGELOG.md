@@ -1,3 +1,7 @@
+## 1.2.5 - 2015-03-26
+
+- Added a convenience class for Application lifecycle callbacks: MGLifecycleApplicationCallbacks.
+
 ## 1.2.4 - 2015-03-24
 
 - Added some additional error serialization to MGRestClientError.
