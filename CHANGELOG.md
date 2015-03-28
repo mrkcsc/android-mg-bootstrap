@@ -1,3 +1,7 @@
+## 1.2.6 - 2015-03-28
+
+- Improved MGPreference utility to support persisting any and all objects.
+
 ## 1.2.5 - 2015-03-26
 
 - Added a convenience class for Application lifecycle callbacks: MGLifecycleApplicationCallbacks.
