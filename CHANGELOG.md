@@ -1,3 +1,7 @@
+## 1.2.7 - 2015-03-28
+
+- Libary users are now required to initialize utilities themselves (see documentation).  Renamed MGLifecycleApplicationCallbacks to MGLifecycleCallbacks.
+
 ## 1.2.6 - 2015-03-28
 
 - Improved MGPreference utility to support persisting any and all objects.
