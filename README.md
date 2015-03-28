@@ -10,7 +10,7 @@ A simple logging wrapper over Timber (https://github.com/JakeWharton/timber).  U
 - Initialize the logger in your application class.
 
 ```java
-class App extends MGLifecycleApplication {
+class App extends Application {
     public void onCreate() {
         super.onCreate();
         
