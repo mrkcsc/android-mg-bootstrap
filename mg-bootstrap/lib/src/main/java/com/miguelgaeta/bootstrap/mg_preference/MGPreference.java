@@ -1,7 +1,5 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import java.util.Map;
-
 import lombok.Getter;
 
 /**
@@ -13,47 +11,26 @@ public class MGPreference<T> {
     @Getter(lazy = true)
     private static final MGPreferenceConfig config = new MGPreferenceConfig();
 
+    // Meta data object to do the persisting.
     private MGPreferenceMetaData<T> metaData;
 
     /**
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    private MGPreference(String key, MGPreferenceMetaData.CommitType commitType) {
+    private MGPreference(String key) {
 
-        metaData = new MGPreferenceMetaData<>(key, commitType, getConfig());
+        // Meta data does all the heavy lifting.
+        metaData = new MGPreferenceMetaData<>(key, getConfig());
     }
 
     /**
-     * Create a boolean preference.
+     * Create a new preference object backed by
+     * a concrete class object.
      */
-    public static MGPreference<Boolean> createBoolean(String key) {
+    public static <T> MGPreference<T> create(String key) {
 
-        return new MGPreference<>(key, MGPreferenceMetaData.CommitType.BOOLEAN);
-    }
-
-    /**
-     * Create an integer preference.
-     */
-    public static MGPreference<Integer> createInteger(String key) {
-
-        return new MGPreference<>(key, MGPreferenceMetaData.CommitType.INTEGER);
-    }
-
-    /**
-     * Create a string preference.
-     */
-    public static MGPreference<String> createString(String key) {
-
-        return new MGPreference<>(key, MGPreferenceMetaData.CommitType.STRING);
-    }
-
-    /**
-     * Create a string map preference.
-     */
-    public static MGPreference<Map<String, String>> createStringMap(String key) {
-
-        return new MGPreference<>(key, MGPreferenceMetaData.CommitType.STRING_MAP);
+        return new MGPreference<>(key);
     }
 
     /**

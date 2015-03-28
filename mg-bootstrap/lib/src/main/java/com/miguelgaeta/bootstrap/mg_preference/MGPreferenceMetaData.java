@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import lombok.NonNull;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -14,32 +14,16 @@ import java.util.HashMap;
 @SuppressWarnings("unchecked")
 class MGPreferenceMetaData<T> {
 
-    /**
-     * Commit type supported by the preference
-     * class utility.
-     */
-    enum CommitType {
-        BOOLEAN, INTEGER, STRING, STRING_MAP
-    }
-
-    /**
-     * Native commit type that is used
-     * by the android system.
-     */
-    private enum NativeCommitType {
-        BOOLEAN, INTEGER, STRING
-    }
-
     // Standard configuration object.
     private final MGPreferenceConfig config;
 
     // A memory cache of the preference value
     // so we do not have to go into the native
     // android preferences every fetch.
-    private Object locallyCachedValue;
+    private T locallyCachedValue;
 
-    // The commit type of this preference object.
-    private final CommitType commitType;
+    // Type token for deserialization.
+    private TypeToken typeToken;
 
     // The key used by the android preferences
     // underlying system (should be unique).
@@ -49,16 +33,13 @@ class MGPreferenceMetaData<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    MGPreferenceMetaData(String key, CommitType commitType, MGPreferenceConfig config) {
+    MGPreferenceMetaData(String key, MGPreferenceConfig config) {
 
         // Set config.
         this.config = config;
 
         // Set key.
         this.key = key;
-
-        // Set commit type.
-        this.commitType = commitType;
     }
 
     /**
@@ -79,6 +60,9 @@ class MGPreferenceMetaData<T> {
         return getSharedPreferences().edit();
     }
 
+    /**
+     * Clear out any value stored.
+     */
     void clear() {
 
         SharedPreferences.Editor editor = getSharedPreferencesEditor();
@@ -94,23 +78,16 @@ class MGPreferenceMetaData<T> {
      */
     T get() {
 
-        switch (commitType) {
-            case BOOLEAN:
-                return (T)get(NativeCommitType.BOOLEAN);
-            case INTEGER:
-                return (T)get(NativeCommitType.INTEGER);
-            case STRING:
-                return (T)get(NativeCommitType.STRING);
-            case STRING_MAP:
+        // Return cached value if present.
+        if (locallyCachedValue != null) {
 
-                String jsonDictionary = (String)get(NativeCommitType.STRING);
+            return locallyCachedValue;
+        }
 
-                // Convert to dictionary.
-                HashMap<String, String> dictionary =
-                        new Gson().fromJson(jsonDictionary, new TypeToken<HashMap<String, String>>() {}.getType());
+        if (typeToken != null) {
 
-                // Convert to dictionary and return.
-                return (T)(dictionary != null ? dictionary : new HashMap<>());
+            // Fetch persisted value from shared preferences and serialize with type token.
+            return new Gson().fromJson(getSharedPreferences().getString(key, null), typeToken.getType());
         }
 
         return null;
@@ -119,72 +96,17 @@ class MGPreferenceMetaData<T> {
     /**
      * Set the preference value.
      */
-    void set(T value) {
+    void set(@NonNull T value) {
 
-        switch (commitType) {
-            case BOOLEAN:
-                set(value, NativeCommitType.BOOLEAN);
-                break;
-            case INTEGER:
-                set(value, NativeCommitType.INTEGER);
-                break;
-            case STRING:
-                set(value, NativeCommitType.STRING);
-                break;
-            case STRING_MAP:
-
-                String jsonValue = new Gson().toJsonTree(value).toString();
-
-                set(jsonValue, NativeCommitType.STRING);
-                break;
-        }
-    }
-
-    /**
-     * Get an object from the native android preferences
-     * manager, keyed by a native commit class type.
-     */
-    private Object get(NativeCommitType commitType) {
-
-        if (locallyCachedValue != null) {
-
-            return locallyCachedValue;
-        }
-
-        switch (commitType) {
-            case BOOLEAN:
-                return getSharedPreferences().getBoolean(key, false);
-            case INTEGER:
-                return getSharedPreferences().getInt(key, 0);
-            case STRING:
-                return getSharedPreferences().getString(key, null);
-        }
-
-        return null;
-    }
-
-    /**
-     * Persists an object into the android shared
-     * preferences, also clears locally cached value.
-     */
-    private void set(Object value, NativeCommitType commitType) {
+        // Save a type token for deserialization.
+        typeToken = TypeToken.get(value.getClass());
 
         SharedPreferences.Editor editor = getSharedPreferencesEditor();
 
-        switch (commitType) {
-            case BOOLEAN:
-                editor.putBoolean(key, (Boolean)value);
-                break;
-            case INTEGER:
-                editor.putInt(key, (Integer)value);
-                break;
-            case STRING:
-                editor.putString(key, (String)value);
-                break;
-        }
-
+        editor.putString(key, new Gson().toJson(value));
         editor.apply();
 
+        // Cache value in memory.
         locallyCachedValue = value;
     }
 }
