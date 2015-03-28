@@ -36,3 +36,15 @@ MGLog.e("Here is a message" + " with more string.");
 
 MGLog.e("Here is a message that logs at info level.");
 ```
+
+## MG Preference
+
+A powerful wrapper on top of androids native preferences http://developer.android.com/guide/topics/ui/settings.html which by default can only store primative types.  Allows for persisting of arbitrary complex objects and adds a level of memory caching to them.
+
+#### Configuration
+
+- TODO
+
+#### Usage
+
+- TODO
