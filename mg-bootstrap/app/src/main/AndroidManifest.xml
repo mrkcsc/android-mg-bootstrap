@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.miguelgaeta">
 
     <application
-        android:name=".bootstrap.mg_lifecycle.MGLifecycleApplication"
+        android:name=".TestApplication"
         android:allowBackup="true"
         android:icon="@null"
         android:theme="@style/Theme.AppCompat">

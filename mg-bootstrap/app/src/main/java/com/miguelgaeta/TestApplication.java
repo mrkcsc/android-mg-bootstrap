@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_lifecycle;
+package com.miguelgaeta;
 
 import android.app.Application;
 
@@ -6,10 +6,9 @@ import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 /**
- * Created by Miguel on 1/23/2015. Copyright 2014 Blitz Studios
+ * Created by mrkcsc on 3/28/15.
  */
-@SuppressWarnings("UnusedDeclaration")
-public class MGLifecycleApplication extends Application {
+public class TestApplication extends Application {
 
     /**
      * Initialize libraries that require
