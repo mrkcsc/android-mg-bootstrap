@@ -19,7 +19,7 @@ import lombok.Setter;
 public class MGKeyboardMetrics {
 
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private static final MGPreference<Map<String, String>> keyboardHeights = MGPreference.createStringMap("KEYBOARD_HEIGHTS");
+    private static final MGPreference<Map<String, String>> keyboardHeights = MGPreference.create("KEYBOARD_HEIGHTS");
 
     @Getter(AccessLevel.PACKAGE)
     private int windowHeight;

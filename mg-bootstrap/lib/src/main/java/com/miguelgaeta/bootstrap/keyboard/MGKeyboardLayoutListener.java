@@ -44,8 +44,6 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
     @Override
     public void onGlobalLayout() {
 
-        MGLog.e("Test: " + keyboardRootView.getHeight());
-
         // Fetch metrics instance.
         MGKeyboardMetrics metrics = MGKeyboard.getMetrics();
 
@@ -54,6 +52,8 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
         // Calculate the current keyboard height.
         keyboardHeightCurrent = metrics.getCurrentKeyboardHeight(keyboardRootView);
+
+        MGLog.e("P: " + keyboardHeightPrevious + " c: " + keyboardHeightCurrent);
 
         // If the height has changed in some way.
         if (keyboardHeightPrevious != keyboardHeightCurrent) {
@@ -64,8 +64,6 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
             // Fetch stored keyboard height.
             Integer keyboardHeight = metrics.getKeyboardHeight(keyboardRootView.getContext());
-
-            MGLog.e("K: " + keyboardHeight + " kc: " + keyboardHeightCurrent);
 
             if (metrics.isKeyboardOpen() && keyboardHeightCurrent == 0) {
 
