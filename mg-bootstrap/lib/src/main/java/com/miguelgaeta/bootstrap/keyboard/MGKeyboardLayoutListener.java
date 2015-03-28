@@ -1,13 +1,14 @@
 package com.miguelgaeta.bootstrap.keyboard;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 
+import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import lombok.NonNull;
 import rx.Observable;
@@ -19,12 +20,8 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
-    // Minimum height of the keyboard.
-    private static final int MINIMUM_KEYBOARD_HEIGHT = 300;
-
     // Root view associated.
     private View keyboardRootView;
-    private ViewGroup.LayoutParams keyboardRootViewLP;
 
     // Current keyboard height.
     private int keyboardHeightCurrent;
@@ -39,7 +36,6 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
         // Set the root view.
         this.keyboardRootView = rootView;
-        this.keyboardRootViewLP = rootView.getLayoutParams();
 
         // Save paused.
         this.paused = paused;
@@ -47,6 +43,8 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
     @Override
     public void onGlobalLayout() {
+
+        MGLog.e("Test: " + keyboardRootView.getHeight());
 
         // Fetch metrics instance.
         MGKeyboardMetrics metrics = MGKeyboard.getMetrics();
@@ -64,24 +62,20 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
                 subscription.unsubscribe();
             }
 
+            // Fetch stored keyboard height.
+            Integer keyboardHeight = metrics.getKeyboardHeight(keyboardRootView.getContext());
+
+            MGLog.e("K: " + keyboardHeight + " kc: " + keyboardHeightCurrent);
+
             if (metrics.isKeyboardOpen() && keyboardHeightCurrent == 0) {
 
                 resizeRootView(false);
 
-                MGLog.e("Keyboard closed.");
-
-            } else if (keyboardHeightCurrent > MINIMUM_KEYBOARD_HEIGHT) {
-
-                if (keyboardHeightCurrent > metrics.getKeyboardHeight()) {
-
-                    // Update the keyboard height.
-                    metrics.setKeyboardHeight(keyboardHeightCurrent);
-                }
-
-                MGLog.e("Woop: " + keyboardHeightCurrent);
+            } else if (keyboardHeight == null) {
 
                 // Keyboard is open after a delay.
-                subscription = MGDelay.delay(300)
+                subscription = MGDelay
+                        .delay(300)
                         .takeUntil(paused)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
@@ -90,25 +84,36 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
                                 MGLog.e("Keyboard open.");
 
+                                // Update the keyboard height.
+                                metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
+
                                 resizeRootView(true);
                             }
                         });
+
+            } else if (!metrics.isKeyboardOpen() && keyboardHeight == keyboardHeightCurrent) {
+
+                MGLog.e("Keyboard open instant.");
+
+                resizeRootView(true);
             }
         }
     }
 
+    /**
+     * Resize root window view of activity based
+     * on the keyboard offset and animate it.
+     */
     private void resizeRootView(boolean keyboardOpen) {
 
         MGKeyboard.getMetrics().setKeyboardOpen(keyboardOpen);
 
-        Animation a = new MGKeyboard.ShowAnim(keyboardRootView, keyboardRootViewLP.height, MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
-        a.setDuration(350);
-        a.setInterpolator(new AccelerateDecelerateInterpolator());
-        keyboardRootView.startAnimation(a);
+        Animation animation = new MGKeyboardAnimation(keyboardRootView, keyboardRootView.getHeight(),
+                MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
 
+        animation.setDuration(MGReflection.getInteger(R.integer.animation_time_standard));
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
-        // Update and resize the view if in fullscreen mode.
-        //keyboardRootViewLP.height = MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent;
-        //keyboardRootView.requestLayout();
+        keyboardRootView.startAnimation(animation);
     }
 }
