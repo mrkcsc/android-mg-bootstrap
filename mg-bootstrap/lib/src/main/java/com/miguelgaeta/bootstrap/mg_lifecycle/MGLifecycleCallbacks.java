@@ -7,7 +7,7 @@ import android.os.Bundle;
 /**
  * Created by mrkcsc on 3/27/15.
  */
-public class MGLifecycleApplicationCallbacks implements Application.ActivityLifecycleCallbacks {
+public class MGLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) { }

@@ -5,7 +5,7 @@ import android.app.Application;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplicationCallbacks;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 
 import lombok.NonNull;
 import rx.Observable;
@@ -51,7 +51,7 @@ public class MGKeyboardConfig {
     private void registerLifecycleCallbacks(Application application) {
 
         // Register the callbacks.
-        application.registerActivityLifecycleCallbacks(new MGLifecycleApplicationCallbacks() {
+        application.registerActivityLifecycleCallbacks(new MGLifecycleCallbacks() {
 
             protected PublishSubject<Void> paused = PublishSubject.create();
 
