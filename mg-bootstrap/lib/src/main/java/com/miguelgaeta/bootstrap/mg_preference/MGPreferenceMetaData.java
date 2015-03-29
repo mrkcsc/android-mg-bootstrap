@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import lombok.NonNull;
 
@@ -22,12 +21,10 @@ class MGPreferenceMetaData<T> {
     // android preferences every fetch.
     private T locallyCachedValue;
 
-    // Type token for deserialization.
-    private TypeToken typeToken;
-
     // The key used by the android preferences
     // underlying system (should be unique).
     private final String key;
+    private final String keyTypeToken;
 
     /**
      * Creates a new preference object that is backed
@@ -40,6 +37,7 @@ class MGPreferenceMetaData<T> {
 
         // Set key.
         this.key = key;
+        this.keyTypeToken = key + "TYPE_TOKEN";
     }
 
     /**
@@ -84,10 +82,19 @@ class MGPreferenceMetaData<T> {
             return locallyCachedValue;
         }
 
+        String typeToken = getSharedPreferences().getString(keyTypeToken, null);
+
         if (typeToken != null) {
 
-            // Fetch persisted value from shared preferences and serialize with type token.
-            return new Gson().fromJson(getSharedPreferences().getString(key, null), typeToken.getType());
+            try {
+
+                // Fetch persisted value and serialize with type token.
+                locallyCachedValue = new Gson().fromJson(getSharedPreferences()
+                        .getString(key, null), (Class<T>)Class.forName(typeToken));
+
+                return locallyCachedValue;
+
+            } catch (ClassNotFoundException ignored) { }
         }
 
         return null;
@@ -98,15 +105,13 @@ class MGPreferenceMetaData<T> {
      */
     void set(@NonNull T value) {
 
-        // Save a type token for deserialization.
-        typeToken = TypeToken.get(value.getClass());
+        // Locally cache value.
+        locallyCachedValue = value;
 
         SharedPreferences.Editor editor = getSharedPreferencesEditor();
 
         editor.putString(key, new Gson().toJson(value));
+        editor.putString(keyTypeToken, value.getClass().getName());
         editor.apply();
-
-        // Cache value in memory.
-        locallyCachedValue = value;
     }
 }
