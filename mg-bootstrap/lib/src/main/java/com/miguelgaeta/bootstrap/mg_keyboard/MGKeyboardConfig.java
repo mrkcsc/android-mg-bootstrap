@@ -7,7 +7,10 @@ import android.widget.FrameLayout;
 
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -17,6 +20,9 @@ import rx.subjects.PublishSubject;
 @SuppressWarnings("UnusedDeclaration")
 public class MGKeyboardConfig {
 
+    @Setter @Getter(value = AccessLevel.PACKAGE)
+    private Integer rootViewResourceId;
+
     public void init(Application application) {
 
         // Register the callbacks.
@@ -25,11 +31,8 @@ public class MGKeyboardConfig {
 
     private void setGlobalLayoutListener(@NonNull final Activity activity, @NonNull Observable<Void> paused) {
 
-        // Fetch the root view of the activity.
-        View rootView = ((FrameLayout)activity.findViewById(android.R.id.content)).getChildAt(0);
-
-        // Fetch the root view layout params.
-        FrameLayout.LayoutParams rootViewLayoutParams = (FrameLayout.LayoutParams) rootView.getLayoutParams();
+        // Fetch root view.
+        View rootView = getRootView(activity);
 
         // Create instance of keyboard layout listener.
         MGKeyboardLayoutListener listener = new MGKeyboardLayoutListener(rootView, paused);
@@ -71,5 +74,27 @@ public class MGKeyboardConfig {
                 paused.onNext(null);
             }
         });
+    }
+
+    /**
+     * Fetch root view from activity or using
+     * configured resource Id if present.
+     */
+    private View getRootView(Activity activity) {
+
+        View rootView = null;
+
+        if (rootViewResourceId != null) {
+
+            rootView = activity.findViewById(rootViewResourceId);
+        }
+
+        if (rootView == null) {
+
+            // Fetch the root view of the activity.
+            rootView = ((FrameLayout)activity.findViewById(android.R.id.content)).getChildAt(0);
+        }
+
+        return rootView;
     }
 }
