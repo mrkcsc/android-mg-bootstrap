@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.keyboard;
+package com.miguelgaeta.bootstrap.mg_keyboard;
 
 import android.app.Activity;
 import android.app.Application;
