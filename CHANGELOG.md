@@ -1,3 +1,7 @@
+## 1.2.8 - 2015-03-28
+
+- Fixed a bug in MGPreference.
+
 ## 1.2.7 - 2015-03-28
 
 - Libary users are now required to initialize utilities themselves (see documentation).  Renamed MGLifecycleApplicationCallbacks to MGLifecycleCallbacks.
