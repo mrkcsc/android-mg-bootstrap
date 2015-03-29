@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.provider.Settings;
 import android.view.View;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 
 import java.util.ArrayList;
@@ -39,8 +38,6 @@ public class MGKeyboardMetrics {
 
         // Fetch complete list of keyboard heights mapped to identifiers.
         KeyboardHeights keyboardHeights = getKeyboardHeights().get();
-
-        MGLog.e("H: " + keyboardHeights);
 
         if (keyboardHeights != null) {
 

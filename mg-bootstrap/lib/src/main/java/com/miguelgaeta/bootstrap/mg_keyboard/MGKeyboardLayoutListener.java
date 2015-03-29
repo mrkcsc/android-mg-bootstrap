@@ -58,7 +58,13 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
         // Calculate the current keyboard height.
         keyboardHeightCurrent = metrics.getCurrentKeyboardHeight(keyboardRootView);
 
-        // TODO: Reconcile state mismatch (eg: keyboard closed but window wrong size).
+        // The keyboard is closed but the root view is resized, restore it - this can happen
+        // if user pauses an activity while a keyboard is open.
+        if (!metrics.isKeyboardOpen() && keyboardRootView.getHeight() != metrics.getWindowHeight()) {
+
+            keyboardRootView.getLayoutParams().height = metrics.getWindowHeight();
+            keyboardRootView.requestLayout();
+        }
 
         // If the height has changed in some way.
         if (keyboardHeightPrevious != keyboardHeightCurrent) {
@@ -90,9 +96,9 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
                             if (!metrics.isKeyboardOpen()) {
 
-                                // Otherwise assume keyboard is open if no additional
-                                // layouts happen within a 300 millisecond window. If triggered,
-                                // add this height to list of recognized keyboard heights.
+                                // Otherwise assume keyboard is open if no additional layouts
+                                // happen within a 300 millisecond window. If triggered, add
+                                // this height to list of recognized keyboard heights.
                                 metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
 
                                 resizeRootView(true);
