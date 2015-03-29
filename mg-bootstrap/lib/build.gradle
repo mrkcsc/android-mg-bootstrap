@@ -99,4 +99,4 @@ dependencies {
 }
 
 // Deployment script: https://github.com/blundell/release-android-library
-apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
+apply from: 'build.release-aar.gradle'
