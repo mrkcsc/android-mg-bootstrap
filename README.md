@@ -79,4 +79,7 @@ class App extends Application {
     
     // Set with set.
     preference0.set(100);
+    
+    // Clear value.
+    preference0.clear();
 ```
