@@ -23,6 +23,9 @@ public class MGKeyboardConfig {
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private Integer rootViewResourceId;
 
+    @Setter @Getter(value = AccessLevel.PACKAGE)
+    private boolean rootViewResize;
+
     public void init(Application application) {
 
         // Register the callbacks.

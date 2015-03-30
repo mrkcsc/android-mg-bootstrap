@@ -126,7 +126,7 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
         // Push our keyboard opened event to flag also.
         MGKeyboard.getMetrics().setKeyboardOpen(keyboardOpen);
 
-        if (fullscreen) {
+        if (fullscreen && MGKeyboard.getConfig().isRootViewResize()) {
 
             Animation animation = new MGKeyboardAnimation(keyboardRootView, keyboardRootView.getHeight(),
                     MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
