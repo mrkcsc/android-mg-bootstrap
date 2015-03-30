@@ -8,27 +8,29 @@ import android.view.View;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import rx.subjects.PublishSubject;
 
 /**
  * Created by mrkcsc on 3/27/15.
  */
-public class MGKeyboardMetrics {
+class MGKeyboardMetrics {
 
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private static final MGPreference<KeyboardHeights> keyboardHeights = MGPreference.create("KEYBOARD_HEIGHTS");
+    private static final MGPreference<MGKeyboardHeights> keyboardHeights = MGPreference.create("KEYBOARD_HEIGHTS");
 
     @Getter(AccessLevel.PACKAGE)
     private int windowHeight;
 
-    @Getter @Setter(AccessLevel.PACKAGE)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private boolean keyboardOpen;
+
+    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    private final PublishSubject<Boolean> opened = PublishSubject.create();
 
     /**
      * Gets a list of recognized keyboard heights for
@@ -37,7 +39,7 @@ public class MGKeyboardMetrics {
     List<Integer> getKeyboardHeights(Context context) {
 
         // Fetch complete list of keyboard heights mapped to identifiers.
-        KeyboardHeights keyboardHeights = getKeyboardHeights().get();
+        MGKeyboardHeights keyboardHeights = getKeyboardHeights().get();
 
         if (keyboardHeights != null) {
 
@@ -53,10 +55,10 @@ public class MGKeyboardMetrics {
      */
     void setKeyboardHeight(Context context, int keyboardHeight) {
 
-        KeyboardHeights keyboardHeights = getKeyboardHeights().get();
+        MGKeyboardHeights keyboardHeights = getKeyboardHeights().get();
 
         if (keyboardHeights == null) {
-            keyboardHeights = new KeyboardHeights();
+            keyboardHeights = new MGKeyboardHeights();
         }
 
         if (!keyboardHeights.contains(getSoftKeyboardIdentifier(context), keyboardHeight)) {
@@ -98,54 +100,5 @@ public class MGKeyboardMetrics {
 
         // Fetch soft keyboard identifier using a cool trick: http://bit.ly/18w0yTJ
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
-    }
-
-    /**
-     * Helper class for storing and persisting
-     * detected android keyboard heights.
-     */
-    private static class KeyboardHeights {
-
-        // The actual data structure holding the keyboard heights.
-        private final Map<String, List<Integer>> keyboardHeights = new HashMap<>();
-
-        /**
-         * Given a soft keyboard identifier, fetch
-         * recognized associated keyboard heights.
-         */
-        private List<Integer> get(String softKeyboardIdentifier) {
-
-            return keyboardHeights.get(softKeyboardIdentifier) != null ?
-                   keyboardHeights.get(softKeyboardIdentifier) : new ArrayList<>();
-        }
-
-        /**
-         * Given a soft keyboard identifier, is a given
-         * height present in the associated keyboard heights.
-         */
-        private boolean contains(String softKeyboardIdentifier, int keyboardHeight) {
-
-            return keyboardHeights.get(softKeyboardIdentifier) != null &&
-                   keyboardHeights.get(softKeyboardIdentifier).contains(keyboardHeight);
-        }
-
-        /**
-         * Add a new keyboard height to an associated
-         * soft keyboard identifier.
-         */
-        private void add(String softKeyboardIdentifier, int keyboardHeight) {
-
-            List<Integer> heights = keyboardHeights.get(softKeyboardIdentifier);
-
-            if (heights == null) {
-                heights = new ArrayList<>();
-            }
-
-            if (!heights.contains(keyboardHeight)) {
-                 heights.add(keyboardHeight);
-            }
-
-            keyboardHeights.put(softKeyboardIdentifier, heights);
-        }
     }
 }
