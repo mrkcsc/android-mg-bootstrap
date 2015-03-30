@@ -1,3 +1,7 @@
+## 1.3.0 - 2015-03-29
+
+- Added MGKeyboard utility (see documentation).
+
 ## 1.2.8 - 2015-03-28
 
 - Fixed a bug in MGPreference.
