@@ -1,9 +1,11 @@
 package com.miguelgaeta.bootstrap.mg_keyboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.provider.Settings;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 
@@ -90,6 +92,14 @@ class MGKeyboardMetrics {
 
         // Fetch current height of the keyboard.
         return windowHeight - rootViewHeight;
+    }
+
+    /**
+     * Is the activity in full screen mode.
+     */
+    boolean isFullscreen(Activity activity) {
+
+        return (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
     }
 
     /**

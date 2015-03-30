@@ -38,13 +38,10 @@ public class MGKeyboardConfig {
         View rootView = null;
 
         if (rootViewResourceId != null) {
-
             rootView = activity.findViewById(rootViewResourceId);
         }
 
         if (rootView == null) {
-
-            // Fetch the root view of the activity.
             rootView = ((FrameLayout)activity.findViewById(android.R.id.content)).getChildAt(0);
         }
 
@@ -57,7 +54,8 @@ public class MGKeyboardConfig {
         View rootView = getRootView(activity);
 
         // Create instance of keyboard layout listener.
-        MGKeyboardLayoutListener listener = new MGKeyboardLayoutListener(rootView, paused);
+        MGKeyboardLayoutListener listener = new MGKeyboardLayoutListener
+                (rootView, MGKeyboard.getMetrics().isFullscreen(activity), paused);
 
         // Set the listener.
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);

@@ -33,13 +33,19 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
     // Paused observable.
     private Observable<Void> paused;
 
-    MGKeyboardLayoutListener(@NonNull View rootView, @NonNull Observable<Void> paused) {
+    // Is full screen.
+    private boolean fullscreen;
+
+    MGKeyboardLayoutListener(@NonNull View rootView, @NonNull Boolean fullscreen, @NonNull Observable<Void> paused) {
 
         // Set the root view.
         this.keyboardRootView = rootView;
 
         // Save paused.
         this.paused = paused;
+
+        // Save fullscreen state.
+        this.fullscreen = fullscreen;
     }
 
     /**
@@ -120,12 +126,15 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
         // Push our keyboard opened event to flag also.
         MGKeyboard.getMetrics().setKeyboardOpen(keyboardOpen);
 
-        Animation animation = new MGKeyboardAnimation(keyboardRootView, keyboardRootView.getHeight(),
-                MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
+        if (fullscreen) {
 
-        animation.setDuration(MGReflection.getInteger(R.integer.animation_time_standard));
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            Animation animation = new MGKeyboardAnimation(keyboardRootView, keyboardRootView.getHeight(),
+                    MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
 
-        keyboardRootView.startAnimation(animation);
+            animation.setDuration(MGReflection.getInteger(R.integer.animation_time_standard));
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+            keyboardRootView.startAnimation(animation);
+        }
     }
 }
