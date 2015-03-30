@@ -5,8 +5,6 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
-import lombok.NonNull;
-
 /**
  * Created by mrkcsc on 3/9/15.
  */
@@ -103,15 +101,22 @@ class MGPreferenceMetaData<T> {
     /**
      * Set the preference value.
      */
-    void set(@NonNull T value) {
+    void set(T value) {
 
-        // Locally cache value.
-        locallyCachedValue = value;
+        if (value == null) {
 
-        SharedPreferences.Editor editor = getSharedPreferencesEditor();
+            clear();
 
-        editor.putString(key, new Gson().toJson(value));
-        editor.putString(keyTypeToken, value.getClass().getName());
-        editor.apply();
+        } else {
+
+            // Locally cache value.
+            locallyCachedValue = value;
+
+            SharedPreferences.Editor editor = getSharedPreferencesEditor();
+
+            editor.putString(key, new Gson().toJson(value));
+            editor.putString(keyTypeToken, value.getClass().getName());
+            editor.apply();
+        }
     }
 }
