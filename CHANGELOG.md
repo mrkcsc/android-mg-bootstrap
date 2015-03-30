@@ -1,3 +1,7 @@
+## 1.3.2 - 2015-03-30
+
+- Allow setting null values in MGPreference.
+
 ## 1.3.0 - 2015-03-29
 
 - Added MGKeyboard utility (see documentation).
