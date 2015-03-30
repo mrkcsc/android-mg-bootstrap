@@ -29,6 +29,28 @@ public class MGKeyboardConfig {
         registerLifecycleCallbacks(application);
     }
 
+    /**
+     * Fetch root view from activity or using
+     * configured resource Id if present.
+     */
+    View getRootView(Activity activity) {
+
+        View rootView = null;
+
+        if (rootViewResourceId != null) {
+
+            rootView = activity.findViewById(rootViewResourceId);
+        }
+
+        if (rootView == null) {
+
+            // Fetch the root view of the activity.
+            rootView = ((FrameLayout)activity.findViewById(android.R.id.content)).getChildAt(0);
+        }
+
+        return rootView;
+    }
+
     private void setGlobalLayoutListener(@NonNull final Activity activity, @NonNull Observable<Void> paused) {
 
         // Fetch root view.
@@ -74,27 +96,5 @@ public class MGKeyboardConfig {
                 paused.onNext(null);
             }
         });
-    }
-
-    /**
-     * Fetch root view from activity or using
-     * configured resource Id if present.
-     */
-    private View getRootView(Activity activity) {
-
-        View rootView = null;
-
-        if (rootViewResourceId != null) {
-
-            rootView = activity.findViewById(rootViewResourceId);
-        }
-
-        if (rootView == null) {
-
-            // Fetch the root view of the activity.
-            rootView = ((FrameLayout)activity.findViewById(android.R.id.content)).getChildAt(0);
-        }
-
-        return rootView;
     }
 }
