@@ -1,3 +1,7 @@
+## 1.3.3 - 2015-03-30
+
+- Paused observable now retrieved with getPaused().  Transition delay observable retrieved with getTransitions.getDelay()
+
 ## 1.3.2 - 2015-03-30
 
 - Allow setting null values in MGPreference.
