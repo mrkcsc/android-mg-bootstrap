@@ -2,6 +2,8 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import android.support.annotation.NonNull;
 
+import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -15,17 +17,26 @@ import rx.subjects.PublishSubject;
  */
 class MGWebsocketUtil {
 
-    // TODO: Flesh out.
-    static MGWebsocket create() {
-
-        MGWebsocket websocket = new MGWebsocket();
+    /**
+     * Configure dis-connect and re-connect
+     * behavior for the web socket.
+     */
+    static void configureReconnect(@NonNull MGWebsocket websocket) {
 
         websocket.getOnO().subscribe(data -> {
 
-            // TODO: Add delay.
-            if (websocket.getConfig().isReconnect() &&
-                websocket.getClientDesiredState() == MGWebsocket.STATE.CLOSED) {
-                websocket.close();
+            if (shouldDisconnect(websocket)) {
+
+                // If we connect, but client wants to be
+                // disconnected, close the web socket.
+                MGDelay.delay(websocket.getConfig().getReconnectDelay()).subscribe(r -> {
+
+                    if (shouldDisconnect(websocket)) {
+
+                        websocket.close();
+                    }
+                });
+
             } else {
 
                 // Flush the message buffer.
@@ -36,27 +47,20 @@ class MGWebsocketUtil {
             }
         });
 
-        // TODO: Add received message buffering.
-
+        // If we disconnect, reconnect if needed.
         websocket.getOnC().subscribe(data -> {
 
-            // TODO: Add delay.
-            if (websocket.getConfig().isReconnect() &&
-                websocket.getClientDesiredState() == MGWebsocket.STATE.OPEN) {
-                websocket.connect();
+            if (shouldReconnect(websocket)) {
+
+                MGDelay.delay(websocket.getConfig().getReconnectDelay()).subscribe(r -> {
+
+                    if (shouldReconnect(websocket)) {
+
+                        websocket.connect();
+                    }
+                });
             }
         });
-
-        websocket.getOnE().subscribe(data -> {
-
-            // TODO: Add delay.
-            if (websocket.getConfig().isReconnect() &&
-                websocket.getClientDesiredState() == MGWebsocket.STATE.OPEN) {
-                websocket.connect();
-            }
-        });
-
-        return websocket;
     }
 
     /**
@@ -140,5 +144,17 @@ class MGWebsocketUtil {
 
             throw new RuntimeException("Unable to create URI from provided URL: " + URL);
         }
+    }
+
+    private static boolean shouldReconnect(@NonNull MGWebsocket websocket) {
+
+        return websocket.getConfig().isReconnect() &&
+               websocket.getClientDesiredState() == MGWebsocket.STATE.OPEN;
+    }
+
+    private static boolean shouldDisconnect(@NonNull MGWebsocket websocket) {
+
+        return websocket.getConfig().isReconnect() &&
+               websocket.getClientDesiredState() == MGWebsocket.STATE.CLOSED;
     }
 }

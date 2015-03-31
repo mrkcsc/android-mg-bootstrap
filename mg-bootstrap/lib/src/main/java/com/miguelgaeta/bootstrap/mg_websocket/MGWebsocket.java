@@ -55,14 +55,18 @@ public class MGWebsocket {
     /**
      * Public constructor disallowed.
      */
-    MGWebsocket() { }
+    MGWebsocket() {
+
+        // Configure re-connection behavior.
+        MGWebsocketUtil.configureReconnect(this);
+    }
 
     /**
      * Create new websocket.
      */
     public static MGWebsocket create() {
 
-        return MGWebsocketUtil.create();
+        return new MGWebsocket();
     }
 
     /**
@@ -70,10 +74,7 @@ public class MGWebsocket {
      */
     public void connect() {
 
-        if (client == null) {
-            client = MGWebsocketUtil.createWebsocketClient(getConfig().getUrl(), onO, onC, onM, onE);
-        }
-
+        client = MGWebsocketUtil.createWebsocketClient(getConfig().getUrl(), onO, onC, onM, onE);
         client.connect();
         clientDesiredState = STATE.OPEN;
     }
