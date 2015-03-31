@@ -26,15 +26,15 @@ public class MGWebsocket {
     @Getter(lazy = true)
     private final MGWebsocketConfig config = new MGWebsocketConfig();
 
-    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData> onO = PublishSubject.create();
-    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData> onC = PublishSubject.create();
-    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData> onM = PublishSubject.create();
-    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData> onE = PublishSubject.create();
+    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData.Open>    onO = PublishSubject.create();
+    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData.Closed>  onC = PublishSubject.create();
+    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData.Message> onM = PublishSubject.create();
+    @Getter(AccessLevel.PACKAGE) private final PublishSubject<MGWebsocketData.Error>   onE = PublishSubject.create();
 
-    @Getter private final Observable<MGWebsocketData> onOpen    = onO.asObservable();
-    @Getter private final Observable<MGWebsocketData> onClose   = onC.asObservable();
-    @Getter private final Observable<MGWebsocketData> onMessage = onM.asObservable();
-    @Getter private final Observable<MGWebsocketData> onError   = onE.asObservable();
+    @Getter private final Observable<MGWebsocketData.Open>    onOpen    = onO.asObservable();
+    @Getter private final Observable<MGWebsocketData.Closed>  onClose   = onC.asObservable();
+    @Getter private final Observable<MGWebsocketData.Message> onMessage = onM.asObservable();
+    @Getter private final Observable<MGWebsocketData.Error>   onError   = onE.asObservable();
 
     @Getter(AccessLevel.PACKAGE)
     private final List<String> messageBuffer = new ArrayList<>();
@@ -68,7 +68,7 @@ public class MGWebsocket {
     public void connect() {
 
         if (client == null) {
-            client = MGWebsocketUtil.createWebsocketClient(getConfig().getUrl(), onO, onM, onC, onE);
+            client = MGWebsocketUtil.createWebsocketClient(getConfig().getUrl(), onO, onC, onM, onE);
         }
 
         client.connect();

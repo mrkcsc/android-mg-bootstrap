@@ -1,25 +1,50 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * Created by mrkcsc on 3/11/15.
  */
-public class MGWebsocketData<T extends MGWebsocketData.Data> {
+public class MGWebsocketData {
 
-    @Getter
-    private T data;
+    // Private constructor.
+    private MGWebsocketData() { }
 
-    public static class Data {
+    @Data @AllArgsConstructor(staticName = "create")
+    public static class Open {
 
+        // Http status code.
+        private short httpStatus;
+
+        // Http status message.
+        private String httpStatusMessage;
     }
 
-    public static class Open extends Data {
+    @Data @AllArgsConstructor(staticName = "create")
+    public static class Closed {
 
+        // Status code.
+        private int code;
+
+        // Closed reason.
+        private String reason;
+
+        // Remotely closed.
+        private boolean remote;
     }
 
-    public MGWebsocketData(T data) {
+    @Data @AllArgsConstructor(staticName = "create")
+    public static class Message {
 
-        this.data = data;
+        // Raw message.
+        private String message;
+    }
+
+    @Data @AllArgsConstructor(staticName = "create")
+    public static class Error {
+
+        // Exception.
+        private Exception ex;
     }
 }

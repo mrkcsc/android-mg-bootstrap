@@ -36,6 +36,8 @@ class MGWebsocketUtil {
             }
         });
 
+        // TODO: Add received message buffering.
+
         websocket.getOnC().subscribe(data -> {
 
             // TODO: Add delay.
@@ -63,35 +65,35 @@ class MGWebsocketUtil {
      */
     static WebSocketClient createWebsocketClient(
             @NonNull String url,
-            @NonNull PublishSubject<MGWebsocketData> onO,
-            @NonNull PublishSubject<MGWebsocketData> onM,
-            @NonNull PublishSubject<MGWebsocketData> onC,
-            @NonNull PublishSubject<MGWebsocketData> onE) {
+            @NonNull PublishSubject<MGWebsocketData.Open>    onO,
+            @NonNull PublishSubject<MGWebsocketData.Closed>  onC,
+            @NonNull PublishSubject<MGWebsocketData.Message> onM,
+            @NonNull PublishSubject<MGWebsocketData.Error>   onE) {
 
         return new WebSocketClient(MGWebsocketUtil.createURI(url)) {
 
             @Override
-            public void onOpen(ServerHandshake handshakedata) {
+            public void onOpen(ServerHandshake handshakeData) {
 
-                onO.onNext(new MGWebsocketData<>(new MGWebsocketData.Open()));
+                onO.onNext(MGWebsocketData.Open.create(handshakeData.getHttpStatus(), handshakeData.getHttpStatusMessage()));
             }
 
             @Override
             public void onMessage(String message) {
 
-                onM.onNext(new MGWebsocketData<>(new MGWebsocketData.Open()));
+                onM.onNext(MGWebsocketData.Message.create(message));
             }
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
 
-                onC.onNext(new MGWebsocketData<>(new MGWebsocketData.Open()));
+                onC.onNext(MGWebsocketData.Closed.create(code, reason, remote));
             }
 
             @Override
             public void onError(Exception ex) {
 
-                onE.onNext(new MGWebsocketData<>(new MGWebsocketData.Open()));
+                onE.onNext(MGWebsocketData.Error.create(ex));
             }
         };
     }
@@ -107,14 +109,19 @@ class MGWebsocketUtil {
         }
 
         switch (client.getReadyState()) {
+
             case CONNECTING:
                 return MGWebsocket.STATE.CONNECTING;
+
             case OPEN:
                 return MGWebsocket.STATE.OPEN;
+
             case CLOSING:
                 return MGWebsocket.STATE.CLOSING;
+
             case CLOSED:
                 return MGWebsocket.STATE.CLOSED;
+
             case NOT_YET_CONNECTED:
             default:
                 return MGWebsocket.STATE.NOT_YET_CONNECTED;

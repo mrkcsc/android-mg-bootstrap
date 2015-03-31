@@ -7,6 +7,7 @@ import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,14 +33,53 @@ public class TestActivity extends MGLifecycleActivity {
 
         MGLog.getConfig().init(this);
 
-        MGLog.getConfig().setError((t, message, args) -> {
-
-        });
-        MGLog.getConfig().setInfo((t, message, args) -> {
-
-        });
-
         MGLog.e("LOl test");
+
+        MGWebsocket websocket =  MGWebsocket.create();
+
+        websocket.getConfig().setUrl("ws://echo.websocket.org");
+        websocket.getConfig().setReconnect(true);
+        websocket.getConfig().setBuffered(true);
+
+        websocket.getOnOpen()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .takeUntil(getPaused())
+                .subscribe(open -> {
+
+                    MGLog.e("Open: " + open);
+                });
+
+        websocket.getOnClose()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .takeUntil(getPaused())
+                .subscribe(closed -> {
+
+                    MGLog.e("Closed: " + closed);
+                });
+
+        websocket.getOnError()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .takeUntil(getPaused())
+                .subscribe(error -> {
+
+                    MGLog.e("Error: " + error);
+                });
+
+        websocket.getOnMessage()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .takeUntil(getPaused())
+                .subscribe(message -> {
+
+                    MGLog.e("Message: " + message);
+                });
+
+        websocket.connect();
+        websocket.message("Test message");
+
+        getPaused().subscribe(o -> {
+
+            websocket.close();
+        });
     }
 
     @OnClick(R.id.test_button)
