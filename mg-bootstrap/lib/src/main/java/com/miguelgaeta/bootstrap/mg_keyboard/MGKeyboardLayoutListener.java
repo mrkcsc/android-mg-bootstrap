@@ -71,7 +71,7 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
         // The keyboard is closed but the root view is resized, restore it - this
         // can happen if user pauses an activity while a keyboard is open.
-        if (!metrics.isKeyboardOpen() && keyboardRootViewHeight != metrics.getWindowHeight()) {
+        if (fullscreen && !metrics.isKeyboardOpen() && keyboardRootViewHeight != metrics.getWindowHeight()) {
 
             keyboardRootView.getLayoutParams().height = metrics.getWindowHeight();
             keyboardRootView.requestLayout();
