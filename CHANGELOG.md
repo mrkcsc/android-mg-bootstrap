@@ -1,3 +1,7 @@
+## 1.3.5 - 2015-03-31
+
+- Initial working implementation of MGWebsocket client.
+
 ## 1.3.4 - 2015-03-31
 
 - Bug fix for MGKeyboard.
