@@ -1,3 +1,7 @@
+## 1.3.4 - 2015-03-31
+
+- Bug fix for MGKeyboard.
+
 ## 1.3.3 - 2015-03-30
 
 - Paused observable now retrieved with getPaused().  Transition delay observable retrieved with getTransitions.getDelay()
