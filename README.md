@@ -1,6 +1,18 @@
 # Android MG Bootstrap
 An opinionated bootstrap library for android projects that includes commonly used dependancies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
 
+## MG Anim
+
+A animation helper library that provides common animation patterns in a simple API.
+
+#### Configuration
+
+- No configuration needed!
+
+#### Usage
+
+- TODO: Fade
+
 ## MG Log
 
 A simple logging wrapper over Timber (https://github.com/JakeWharton/timber).  Use this to more easily log messages with a standard tag across projects.  By default it also filters out any log statement in production, or you can configure custom behavior in this enviornment.
