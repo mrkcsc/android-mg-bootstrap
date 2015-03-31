@@ -11,7 +11,22 @@ A animation helper library that provides common animation patterns in a simple A
 
 #### Usage
 
-- TODO: Fade
+- Fade in/out views with a simple wrapper call - supports end states of View.VISIBLE,INVISIBLE and GONE.  Returns an observable that emits an event when the animation completes.
+
+```java
+
+// Basic fade in call.
+MGAnimFade.setVisibility(someView, View.VISIBLE);
+
+// Observe the fade completion callback.
+MGAnimFade.setVisibility(fadeTestView, View.GONE)
+        .takeUntil(getPaused())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(o -> {
+            
+            // Do some action.
+        });
+```
 
 ## MG Log
 
