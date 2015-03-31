@@ -34,6 +34,9 @@ class MGKeyboardMetrics {
     @Getter(lazy = true, value = AccessLevel.PACKAGE)
     private final PublishSubject<Boolean> opened = PublishSubject.create();
 
+    // Used for size computations.
+    private Rect windowVisibleDisplayFrame = new Rect();
+
     /**
      * Gets a list of recognized keyboard heights for
      * the current active keyboard identifier.
@@ -71,27 +74,22 @@ class MGKeyboardMetrics {
     }
 
     /**
-     * Get current keyboard height by guessing it
-     * using the current root view and window height.
+     * Get current root view height.
      */
-    int getCurrentKeyboardHeight(View rootView) {
-
-        // Rect holder.
-        Rect rect = new Rect();
+    int getCurrentRootViewHeight(View rootView) {
 
         // Fetch current height.
-        rootView.getWindowVisibleDisplayFrame(rect);
+        rootView.getWindowVisibleDisplayFrame(windowVisibleDisplayFrame);
 
         // Compute the height from rect holder.
-        int rootViewHeight = (rect.bottom - rect.top);
+        int rootViewHeight = (windowVisibleDisplayFrame.bottom - windowVisibleDisplayFrame.top);
 
         // Track the window height.
         if (windowHeight < rootViewHeight) {
             windowHeight = rootViewHeight;
         }
 
-        // Fetch current height of the keyboard.
-        return windowHeight - rootViewHeight;
+        return rootViewHeight;
     }
 
     /**

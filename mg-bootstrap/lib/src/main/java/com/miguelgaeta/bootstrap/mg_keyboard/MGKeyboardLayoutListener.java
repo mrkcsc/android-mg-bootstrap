@@ -18,6 +18,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by mrkcsc on 3/27/15.
+ *
+ * TODO: Investigate using getHeight() on root view.
  */
 class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -61,12 +63,15 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
         // Current is now previous keyboard height.
         int keyboardHeightPrevious = keyboardHeightCurrent;
 
-        // Calculate the current keyboard height.
-        keyboardHeightCurrent = metrics.getCurrentKeyboardHeight(keyboardRootView);
+        // Current root view height.
+        int keyboardRootViewHeight = metrics.getCurrentRootViewHeight(keyboardRootView);
 
-        // The keyboard is closed but the root view is resized, restore it - this can happen
-        // if user pauses an activity while a keyboard is open.
-        if (!metrics.isKeyboardOpen() && keyboardRootView.getHeight() != metrics.getWindowHeight()) {
+        // Calculate the current keyboard height.
+        keyboardHeightCurrent = metrics.getWindowHeight() - keyboardRootViewHeight;
+
+        // The keyboard is closed but the root view is resized, restore it - this
+        // can happen if user pauses an activity while a keyboard is open.
+        if (!metrics.isKeyboardOpen() && keyboardRootViewHeight != metrics.getWindowHeight()) {
 
             keyboardRootView.getLayoutParams().height = metrics.getWindowHeight();
             keyboardRootView.requestLayout();

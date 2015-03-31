@@ -2,6 +2,7 @@ package com.miguelgaeta;
 
 import android.app.Application;
 
+import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
@@ -23,5 +24,8 @@ public class TestApplication extends Application {
 
         // Initialize preferences.
         MGPreference.getConfig().init(this);
+
+        MGKeyboard.getConfig().init(this);
+        MGKeyboard.getConfig().setRootViewResize(true);
     }
 }
