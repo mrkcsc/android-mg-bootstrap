@@ -1,5 +1,8 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -39,6 +42,14 @@ public class MGWebsocketData {
 
         // Raw message.
         private String message;
+
+        /**
+         * Fetch as a json element.
+         */
+        public JsonElement getMessageJson() {
+
+            return new JsonParser().parse(message);
+        }
     }
 
     @Data @AllArgsConstructor(staticName = "create")
