@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
-import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
-import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import butterknife.ButterKnife;
 import lombok.Getter;
-import rx.Observable;
 import rx.subjects.PublishSubject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -36,11 +32,6 @@ public class MGLifecycleActivity extends ActionBarActivity {
     private static boolean goingBack;
 
     @Getter
-    // Standard time it takes to transition activities.
-    private Observable<Long> transitionDelay = MGDelay
-            .delay(MGReflection.getInteger(R.integer.animation_time_standard));
-
-    @Getter
     // Configuration object for the activity.
     private MGLifecycleActivityConfig config = new MGLifecycleActivityConfig(this);
 
@@ -48,7 +39,9 @@ public class MGLifecycleActivity extends ActionBarActivity {
     // Custom transitions object for the activity.
     private MGLifecycleActivityTransitions transitions = new MGLifecycleActivityTransitions(this);
 
-    protected PublishSubject<Void> paused = PublishSubject.create();
+    @Getter
+    // Custom observable that emits activity paused events.
+    private PublishSubject<Void> paused = PublishSubject.create();
 
     /**
      * Handles setting the content view

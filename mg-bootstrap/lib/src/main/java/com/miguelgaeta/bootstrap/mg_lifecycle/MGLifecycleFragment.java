@@ -21,8 +21,9 @@ public class MGLifecycleFragment extends Fragment {
     // Configuration object for the fragment.
     private MGLifecycleFragmentConfig config = new MGLifecycleFragmentConfig();
 
-    // Can be used by RXJava to detect when the fragment is paused.
-    protected PublishSubject<Void> paused = PublishSubject.create();
+    @Getter
+    // Custom observable that emits activity paused events.
+    private PublishSubject<Void> paused = PublishSubject.create();
 
     /**
      * Auto-inflate the fragment view based
