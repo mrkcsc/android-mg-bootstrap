@@ -3,7 +3,7 @@ An opinionated bootstrap library for android projects that includes commonly use
 
 ## MG Anim
 
-A animation helper library that provides common animation patterns in a simple API.
+A animation helper library that provides common animation patterns in a simple API (fades, springs, movements, etc).
 
 #### Configuration
 
