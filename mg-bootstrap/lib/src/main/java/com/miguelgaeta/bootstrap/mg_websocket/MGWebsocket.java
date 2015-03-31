@@ -2,6 +2,8 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 
@@ -11,6 +13,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 /**
@@ -99,6 +102,24 @@ public class MGWebsocket {
             // Send when connected.
             messageBuffer.add(message);
         }
+    }
+
+    /**
+     * Send a message but serializes the object
+     * before sending it.
+     */
+    public void message(@NonNull Object jsonObject) {
+
+        Observable.create(subscriber -> {
+
+            // Send serialized message.
+            message(new Gson().toJson(jsonObject));
+
+            // Done with observable.
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.computation())
+                .subscribe();
     }
 
     /**
