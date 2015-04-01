@@ -88,27 +88,27 @@ class App extends Application {
 - Create an MGPreference object typed to an object of your choosing - provide a unique string identifier for lookups. Note:  You can make the variable final or/or static if you choose because the lookup is done by key.
 
 ```java
-    // You can back primitive class wrappers.
-    MGPreference<Integer> preference0 = MGPreference.create("INTEGER_PREFERENCE");
-    
-    // You can back classes that use generics.
-    MGPreference<Map<String, List<String>>> preference1 = MGPreference.create("MAP_PREFERENCE");
+// You can back primitive class wrappers.
+MGPreference<Integer> preference0 = MGPreference.create("INTEGER_PREFERENCE");
 
-    // You can back complex objects.
-    MGPreference<MGRestClientErrorModel> preference2 = MGPreference.create("OBJECT_PREFERENCE");
+// You can back classes that use generics.
+MGPreference<Map<String, List<String>>> preference1 = MGPreference.create("MAP_PREFERENCE");
+
+// You can back complex objects.
+MGPreference<MGRestClientErrorModel> preference2 = MGPreference.create("OBJECT_PREFERENCE");
 ```
 
 - Once you variable is delcared, get and/or set its value as needed.  Get will return null if no value has been previously set.
 
 ```java
-    // Fetch with get.
-    int value = preference0.get();
-    
-    // Set with set.
-    preference0.set(100);
-    
-    // Clear value.
-    preference0.clear();
+// Fetch with get.
+int value = preference0.get();
+
+// Set with set.
+preference0.set(100);
+
+// Clear value.
+preference0.clear();
 ```
 
 ## MG Websocket
