@@ -140,7 +140,10 @@ websocket.getConfig().setReconnectDelay(1000);
 - Connecting and disconnecting: 
 
 ```java
+// Open socket.
 websocket.connect();
+
+// Close socket.
 websocket.close();
 ```
 
@@ -169,11 +172,10 @@ public enum STATE {
 - Listening for websocket events (also available - getOnOpen, getOnClose and getOnError):
 
 ```java
-        websocket.getOnMessage()
-                .observeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(message -> {
-
-                    MGLog.e("Message: " + message.getMessageJson());
-                });
+// Listen for messages.
+websocket.getOnMessage()
+        .subscribe(message -> {
+        
+            MGLog.e("Message: " + message.getMessageJson());
+        });
 ```
