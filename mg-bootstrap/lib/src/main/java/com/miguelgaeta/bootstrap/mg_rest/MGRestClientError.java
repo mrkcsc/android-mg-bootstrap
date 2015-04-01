@@ -130,26 +130,44 @@ public class MGRestClientError implements Action1<Throwable> {
 
         List<String> errorMessages = new ArrayList<>();
 
-        // Attempt to serialize error response from the server.
-        MGRestClientErrorModel error = (MGRestClientErrorModel)retrofitError
-                .getBodyAs(MGRestClientErrorModel.class);
+        try {
 
-        if (error != null && error.getError() != null) {
+            retrofitError.getBody();
 
-            // Use the server provided error message.
-            errorMessages.add(error.getError().getMessage());
+        } catch (Exception e) {
 
-        } else {
+            // Last resort - emit the raw error message.
+            errorMessages.add(retrofitError.getMessage());
+        }
 
-            List<String> genericErrorMessages = tryHandleErrorResultGeneric(retrofitError);
+        if (errorMessages.size() == 0) {
 
-            if (genericErrorMessages != null) {
+            MGRestClientErrorModel error = null;
 
-                errorMessages.addAll(genericErrorMessages);
+            try {
+
+                // Attempt to serialize error response from the server.
+                error = (MGRestClientErrorModel)retrofitError.getBodyAs(MGRestClientErrorModel.class);
+
+            } catch (Exception ignored) { }
+
+            if (error != null && error.getError() != null) {
+
+                // Use the server provided error message.
+                errorMessages.add(error.getError().getMessage());
+
             } else {
 
-                // If all approached failed, emit a generic error message.
-                errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+                List<String> genericErrorMessages = tryHandleErrorResultGeneric(retrofitError);
+
+                if (genericErrorMessages != null) {
+
+                    errorMessages.addAll(genericErrorMessages);
+                } else {
+
+                    // If we cannot serialize the result, emit a generic error message.
+                    errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+                }
             }
         }
 
