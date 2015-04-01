@@ -110,3 +110,70 @@ class App extends Application {
     // Clear value.
     preference0.clear();
 ```
+
+## MG Websocket
+
+A wrapper library on top of an android websocket client library (http://java-websocket.org/) that layers in RxJava observables for events and supports more fined tuned configuration options.  The underlying websocket library is no longer maintained so future released may swap this out for a newer implementation.
+
+#### Configuration
+
+```java
+
+// Initialize a web socket.
+websocket =  MGWebsocket.create();
+
+// Provide it a url - required.
+websocket.getConfig().setUrl("ws://10.0.1.11:3001");
+
+// Should auto reconnect - optional.
+websocket.getConfig().setReconnect(true);
+
+// Should messages buffer - optional.
+websocket.getConfig().setBuffered(true);
+
+// Time to reconnect - optional.
+websocket.getConfig().setReconnectDelay(1000);
+```
+
+#### Usage
+
+- Connecting and disconnecting: 
+
+```java
+websocket.connect();
+websocket.close();
+```
+
+- Sending messages to the socket:
+
+```java
+// You can send a complex object to be serialized.
+websocket.message(testComplexObject);
+
+// Or just a string.
+websocket.message("test");
+```
+
+- Getting websocket state:
+
+```java
+// Fetch the state.
+MGWebsocket.STATE state = websocket.getState();
+
+// Supported states.
+public enum STATE {
+        NOT_YET_CONNECTED, CONNECTING, OPEN, CLOSING, CLOSED
+}
+```
+
+- Listening for websocket events (also available - getOnOpen, getOnClose and getOnError):
+
+```java
+        websocket.getOnMessage()
+                .observeOn(AndroidSchedulers.mainThread())
+                .takeUntil(getPaused())
+                .subscribe(message -> {
+
+                    MGLog.e("Message: " + message.getMessageJson());
+                });
+```
