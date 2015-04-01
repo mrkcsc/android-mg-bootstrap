@@ -39,11 +39,13 @@ class MGWebsocketUtil {
 
             } else {
 
-                // Flush the message buffer.
                 for (String message : websocket.getMessageBuffer()) {
 
                     websocket.getClient().send(message);
                 }
+
+                // Flush the message buffer.
+                websocket.getMessageBuffer().clear();
             }
         });
 
