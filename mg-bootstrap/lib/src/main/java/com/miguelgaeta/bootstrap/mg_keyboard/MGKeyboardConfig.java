@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import rx.Observable;
-import rx.subjects.PublishSubject;
 
 /**
  * Created by mrkcsc on 3/27/15.
@@ -79,22 +78,12 @@ public class MGKeyboardConfig {
         // Register the callbacks.
         application.registerActivityLifecycleCallbacks(new MGLifecycleCallbacks() {
 
-            protected PublishSubject<Void> paused = PublishSubject.create();
-
             @Override
             public void onActivityStarted(Activity activity) {
                 super.onActivityStarted(activity);
 
                 // Set layout listener.
-                setGlobalLayoutListener(activity, paused);
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-                super.onActivityPaused(activity);
-
-                // Now paused.
-                paused.onNext(null);
+                setGlobalLayoutListener(activity, getPaused());
             }
         });
     }
