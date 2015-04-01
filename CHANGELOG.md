@@ -1,3 +1,7 @@
+## 1.3.7 - 2015-03-31
+
+- Bug fixes.
+
 ## 1.3.5 - 2015-03-31
 
 - Initial working implementation of MGWebsocket client.
