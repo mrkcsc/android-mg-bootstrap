@@ -22,14 +22,14 @@ public class MGLifecycleCallbacks implements Application.ActivityLifecycleCallba
     public void onActivityStarted(Activity activity) { }
 
     @Override
-    public void onActivityResumed(Activity activity) {
+    public void onActivityResumed(Activity activity) { }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
 
         // Now paused.
         paused.onNext(null);
     }
-
-    @Override
-    public void onActivityPaused(Activity activity) { }
 
     @Override
     public void onActivityStopped(Activity activity) { }
