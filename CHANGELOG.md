@@ -1,3 +1,7 @@
+## 1.4.1 - 2015-04-02
+
+- Added an RXJava extnsion class to MGPreference.
+
 ## 1.3.7 - 2015-03-31
 
 - Bug fixes.

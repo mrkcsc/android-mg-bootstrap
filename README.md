@@ -69,6 +69,8 @@ MGLog.e("Here is a message that logs at info level.");
 
 A powerful wrapper on top of androids native preferences http://developer.android.com/guide/topics/ui/settings.html which by default can only store primative types.  Allows for persisting of arbitrary complex objects and adds a level of memory caching to them.
 
+An RXJava utility class is also presented that allows you to represent objects as persisted, observable, fetchable and publishable streams.
+
 #### Configuration
 
 - Initialize the preferences utility in your application class.
@@ -110,6 +112,25 @@ preference0.set(100);
 // Clear value.
 preference0.clear();
 ```
+
+- Create an RxJava enabled version of a preference as follows:
+
+```java
+// Create like a normal preference object.
+MGPreferenceRx<TestObject> test = _Data.create("TestObject");
+
+// Subscribe to updates.
+test.get().subscribe(integer -> {
+    
+});
+
+// Will return null if no value set.
+TestObject = test.getBlocking();
+
+// Set value.
+test.set(new TestObject());
+```
+
 
 ## MG Websocket
 
