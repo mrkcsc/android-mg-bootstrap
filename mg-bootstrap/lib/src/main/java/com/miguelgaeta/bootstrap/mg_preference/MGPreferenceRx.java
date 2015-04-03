@@ -26,7 +26,7 @@ public class MGPreferenceRx<T> {
      * Can be used by to publish
      * a new value to the data class.
      */
-    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final PublishSubject<T> dataPublisher = PublishSubject.create();
 
     /**
@@ -55,6 +55,14 @@ public class MGPreferenceRx<T> {
         dataCache = MGPreference.create(key);
 
         init();
+    }
+
+    /**
+     * Set the data observable.
+     */
+    public void set(T t) {
+
+        getDataPublisher().onNext(t);
     }
 
     /**
