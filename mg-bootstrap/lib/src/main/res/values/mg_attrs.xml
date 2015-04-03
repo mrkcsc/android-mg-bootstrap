@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Scrim insets frame layout -->
+    <declare-styleable name="ScrimInsetsView">
+
+        <!-- Foreground color -->
+        <attr name="insetForeground" format="reference|color" />
+
+    </declare-styleable>
+
+</resources>
