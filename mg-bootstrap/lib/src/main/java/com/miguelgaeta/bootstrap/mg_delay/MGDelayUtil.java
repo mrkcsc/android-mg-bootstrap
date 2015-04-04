@@ -2,7 +2,6 @@ package com.miguelgaeta.bootstrap.mg_delay;
 
 import java.util.concurrent.TimeUnit;
 
-import lombok.NonNull;
 import rx.Observable;
 
 /**
@@ -14,7 +13,7 @@ class MGDelayUtil {
      * Setup an observable object based
      * on the specified delay parameters.
      */
-    static Observable<Long> observe(long delayMilliseconds, boolean loop, boolean startImmediately) {
+    static Observable<Void> observe(long delayMilliseconds, boolean loop, boolean startImmediately) {
 
         // Create timer or looping observable.
         Observable<Long> observable = loop ?
@@ -27,18 +26,10 @@ class MGDelayUtil {
             observable = observable.startWith(0L);
         }
 
-        return observable;
-    }
+        return observable.flatMap(aLong -> Observable.create(subscriber -> {
 
-    /**
-     * Setup an observable object based on the
-     * specified delayed parameters and invoke
-     * callback on observable subscription.
-     */
-    static void observe(long delayMilliseconds, boolean loop, boolean startImmediately,
-                        @NonNull final MGDelayCallback callback) {
-
-        MGDelayUtil.observe(delayMilliseconds, loop, startImmediately)
-                .subscribe(o -> callback.run());
+            subscriber.onNext(null);
+            subscriber.onCompleted();
+        }));
     }
 }

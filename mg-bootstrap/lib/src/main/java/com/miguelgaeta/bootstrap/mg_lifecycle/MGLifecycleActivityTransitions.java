@@ -6,14 +6,13 @@ import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
-import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
 
 /**
  * Created by Miguel on 1/23/2015. Copyright 2014 Blitz Studios
  */
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings("UnusedDeclaration,ConstantConditions")
 public class MGLifecycleActivityTransitions {
 
     @Setter
@@ -24,10 +23,7 @@ public class MGLifecycleActivityTransitions {
     // Transitions be played in reverse.
     private boolean reversed = false;
 
-    @Getter
-    // Standard delay on transitions.
-    private Observable<Long> delay = MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard));
-
+    // Associated activity.
     private Activity activity;
     
     /**
@@ -35,6 +31,14 @@ public class MGLifecycleActivityTransitions {
      */
     MGLifecycleActivityTransitions(Activity activity) {
         this.activity = activity;
+    }
+
+    /**
+     * Standard delay on transitions.
+     */
+    public Observable<Void> getDelay() {
+
+        return  MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard));
     }
 
     /**
