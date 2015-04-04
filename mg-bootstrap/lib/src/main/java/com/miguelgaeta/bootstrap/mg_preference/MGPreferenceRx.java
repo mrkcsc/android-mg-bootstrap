@@ -36,12 +36,22 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final Observable<T> data = getDataPublisher().distinctUntilChanged().cache(1);
 
+    private final boolean dataCacheEnabled;
+
     /**
      * Static initializer.
      */
     public static <T> MGPreferenceRx<T> create(String key) {
 
-        return new MGPreferenceRx<>(key);
+        return new MGPreferenceRx<>(key, true);
+    }
+
+    /**
+     * Static initializer, cached flag.
+     */
+    public static <T> MGPreferenceRx<T> create(String key, boolean cached) {
+
+        return new MGPreferenceRx<>(key, cached);
     }
 
     /**
@@ -49,10 +59,11 @@ public class MGPreferenceRx<T> {
      * and uses that to initialize rest of the
      * data object.
      */
-    private MGPreferenceRx(String key) {
+    private MGPreferenceRx(String key, boolean cached) {
 
         // Initialize data cache.
         dataCache = MGPreference.create(key);
+        dataCacheEnabled = cached;
 
         init();
     }
@@ -85,17 +96,16 @@ public class MGPreferenceRx<T> {
 
     private void init() {
 
-        getData().subscribe(d -> {
+        getData().subscribe(data -> {
 
-            // If value has changed from cache.
-            if (getDataCache().get() != d) {
-
-                // Persist.
-                dataCache.set(d);
+            // If value has changed persist it.
+            if (dataCacheEnabled && getDataCache().get() != data) {
+                dataCache.set(data);
             }
         });
 
-        if (getDataCache().get() != null) {
+        // If a cached value exists (and caching enabled).
+        if (dataCacheEnabled && getDataCache().get() != null) {
 
             // Publish initial value.
             getDataPublisher().onNext(getDataCache().get());
