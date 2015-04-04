@@ -1,13 +1,27 @@
 # Android MG Bootstrap
 An opinionated bootstrap library for android projects that includes commonly used dependancies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
 
+## MG Delay
+
+A simple helper wrapper class for RxJava to create simple delay and looping observables.
+
+#### Usage
+
+```java
+
+// Simple five second delay,
+MGDelay.delay(5000).subscribe(aVoid -> { });
+
+// Loop on an interval.
+MGDelay.delay(1000, true).subscribe(aVoid -> {});
+
+// Start looping immediatly.
+MGDelay.delay(1000, true, true).subscribe(aVoid -> {});
+```
+
 ## MG Anim
 
 A animation helper library that provides common animation patterns in a simple API (fades, springs, movements, etc).
-
-#### Configuration
-
-- No configuration needed!
 
 #### Usage
 

@@ -1,3 +1,7 @@
+## 1.4.3 - 2015-04-03
+
+- Added documentation for MGDelay.
+
 ## 1.4.1 - 2015-04-02
 
 - Added an RXJava extnsion class to MGPreference.
