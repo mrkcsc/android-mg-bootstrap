@@ -35,7 +35,7 @@ public class TestActivity extends MGLifecycleActivity {
 
         MGDelay.delay(5000).subscribe(aVoid -> {
 
-            MGLog.e("Delay ping.");
+            MGLog.e("Ping");
         });
 
         MGWebsocket websocket =  MGWebsocket.create();
