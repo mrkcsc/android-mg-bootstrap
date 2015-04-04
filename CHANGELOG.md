@@ -1,3 +1,7 @@
+## 1.4.5 - 2015-04-03
+
+- Updated MGPreferenceRx with a cached option overload.
+
 ## 1.4.3 - 2015-04-03
 
 - Added documentation for MGDelay.
