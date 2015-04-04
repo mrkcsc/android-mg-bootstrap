@@ -133,6 +133,9 @@ preference0.clear();
 // Create like a normal preference object.
 MGPreferenceRx<TestObject> test = _Data.create("TestObject");
 
+// Optional caching overload.
+MGPreferenceRx<TestObject> test = _Data.create("TestObject", false);
+
 // Subscribe to updates.
 test.get().subscribe(integer -> {
     
