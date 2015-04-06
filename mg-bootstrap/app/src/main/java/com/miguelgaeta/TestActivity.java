@@ -44,18 +44,27 @@ public class TestActivity extends MGLifecycleActivity {
                     MGLog.e("Value: " + testPref);
                 });
 
-        if (getPref().getBlocking() == null) {
-            getPref().set(new TestPref());
+        MGDelay.delay(1000)
+                .takeUntil(getPaused())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aVoid -> {
+                    if (getPref().getBlocking() == null) {
+                        getPref().set(new TestPref());
 
-            MGLog.e("New pref");
-        } else {
+                        MGLog.e("New pref");
+                    } else {
 
-            TestPref testPref = getPref().getBlocking();
+                        TestPref testPref = getPref().getBlocking();
 
-            testPref.getPayload().add("new value");
+                        testPref.getPayload().add("new value");
 
-            getPref().set(testPref);
-        }
+                        MGLog.e("Pushing: " + testPref);
+
+                        getPref().set(testPref);
+                    }
+                });
+
+
 
         fadeTestView.setVisibility(View.GONE);
 
