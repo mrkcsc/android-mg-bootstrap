@@ -137,12 +137,18 @@ MGPreferenceRx<TestObject> test = _Data.create("TestObject");
 MGPreferenceRx<TestObject> test = _Data.create("TestObject", false);
 
 // Subscribe to updates.
-test.get().subscribe(integer -> {
+test.get().subscribe(object -> {
     
 });
 
-// Will return null if no value set.
-TestObject = test.getBlocking();
+// If false, don't emit nulls.
+test.get(false).subscribe(object -> {});
+
+// Blocking.
+TestObject t0 = test.getBlocking();
+
+// Blocking with default value.
+TestObject t1 =  test.getBlocking(new TestObject());
 
 // Set value.
 test.set(new TestObject());
