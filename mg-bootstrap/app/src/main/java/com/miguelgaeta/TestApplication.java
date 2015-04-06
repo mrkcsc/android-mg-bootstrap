@@ -3,6 +3,7 @@ package com.miguelgaeta;
 import android.app.Application;
 
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
@@ -18,6 +19,9 @@ public class TestApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Initialize logging.
+        MGLog.getConfig().init(this);
 
         // Initialize reflection.
         MGReflection.getConfig().init(this);

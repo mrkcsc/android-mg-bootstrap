@@ -34,8 +34,9 @@ public class MGPreferenceRx<T> {
      * the most recent published value is.
      */
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final Observable<T> data = getDataPublisher().distinctUntilChanged().cache(1);
+    private final Observable<T> data = getDataPublisher().cache(1);
 
+    // If disabled, no not cache to disk.
     private final boolean dataCacheEnabled;
 
     /**

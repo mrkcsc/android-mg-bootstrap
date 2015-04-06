@@ -7,20 +7,55 @@ import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
-import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
+import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import lombok.Data;
+import lombok.Getter;
 import rx.android.schedulers.AndroidSchedulers;
 
 
 public class TestActivity extends MGLifecycleActivity {
+
+    @Data
+    private static class TestPref {
+
+        private List<String> payload = new ArrayList<>();
+    }
+
+    @Getter(lazy = true)
+    private static final MGPreferenceRx<TestPref> pref = MGPreferenceRx.create("TEST_PREF");
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getPref().get()
+                .takeUntil(getPaused())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(testPref -> {
+
+                    MGLog.e("Value: " + testPref);
+                });
+
+        if (getPref().getBlocking() == null) {
+            getPref().set(new TestPref());
+
+            MGLog.e("New pref");
+        } else {
+
+            TestPref testPref = getPref().getBlocking();
+
+            testPref.getPayload().add("new value");
+
+            getPref().set(testPref);
+        }
 
         fadeTestView.setVisibility(View.GONE);
 
@@ -31,8 +66,7 @@ public class TestActivity extends MGLifecycleActivity {
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
 
-        MGLog.getConfig().init(this);
-
+        /*
         MGDelay.delay(5000).subscribe(aVoid -> {
 
             MGLog.e("Ping");
@@ -83,6 +117,7 @@ public class TestActivity extends MGLifecycleActivity {
 
             websocket.close();
         });
+        */
     }
 
     @OnClick(R.id.test_button)
