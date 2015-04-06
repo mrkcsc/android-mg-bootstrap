@@ -1,3 +1,7 @@
+## 1.4.8 - 2015-04-06
+
+- Added some additional method to MGPreferenceRx (see documentation).
+
 ## 1.4.5 - 2015-04-03
 
 - Updated MGPreferenceRx with a cached option overload.
