@@ -1,3 +1,7 @@
+## 1.5.0 - 2015-04-06
+
+- Revamped backgrounded to use internal lifecycle callbacks and utilize MGPreferenceRx.  MGPreferenceRx internally uses a BehaviorSubject now.  Lifecycle activity/fragment classes now have access to a onCreateOrResume lifecycle method.
+
 ## 1.4.8 - 2015-04-06
 
 - Added some additional method to MGPreferenceRx (see documentation).
