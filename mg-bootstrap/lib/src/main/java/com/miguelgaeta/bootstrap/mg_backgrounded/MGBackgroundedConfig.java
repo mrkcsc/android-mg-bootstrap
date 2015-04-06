@@ -1,41 +1,58 @@
 package com.miguelgaeta.bootstrap.mg_backgrounded;
 
+import android.app.Activity;
+import android.app.Application;
+
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
+import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import rx.subjects.PublishSubject;
+import rx.Subscription;
 
 /**
  * Created by mrkcsc on 2/17/15.
  */
 public class MGBackgroundedConfig {
 
-    // Tracks the backgrounded state internally.
-    @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final PublishSubject<Boolean> backgrounded = PublishSubject.create();
+    // Time to be backgrounded.
+    private static final int MILLISECONDS_UNTIL_BACKGROUNDED = 1000;
+
+    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", false);
+
+    @Getter
+    private static Subscription backgroundedSubscription;
 
     /**
-     * Clears existing observable subscription and
-     * emits a backgrounded true flag on a delay.
+     * Initializes background tracking.
      */
-    @SuppressWarnings("unused")
-    public void activityPaused() {
+    public void init(Application application) {
 
-        activityResumed();
+        application.registerActivityLifecycleCallbacks(new MGLifecycleCallbacks() {
 
-        MGDelay.delay(1000)
-                .takeUntil(getBackgrounded())
-                .subscribe(timestamp -> getBackgrounded().onNext(true));
-    }
+            @Override
+            public void onActivityResumed(Activity activity) {
+                super.onActivityResumed(activity);
 
-    /**
-     * Emits a no longer backgrounded flag
-     * when an activity app controls is resumed.
-     */
-    @SuppressWarnings("unused")
-    public void activityResumed() {
+                // Cancel pending backgrounded emission.
+                if (getBackgroundedSubscription() != null) {
+                    getBackgroundedSubscription().unsubscribe();
+                }
 
-        getBackgrounded().onNext(false);
+                // No longer backgrounded.
+                MGBackgroundedConfig.getBackgrounded().set(false);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                super.onActivityPaused(activity);
+
+                // On a delay, trigger backgrounded.
+                backgroundedSubscription = MGDelay.delay(MILLISECONDS_UNTIL_BACKGROUNDED)
+                    .subscribe(timestamp -> getBackgrounded().set(true));
+            }
+        });
     }
 }

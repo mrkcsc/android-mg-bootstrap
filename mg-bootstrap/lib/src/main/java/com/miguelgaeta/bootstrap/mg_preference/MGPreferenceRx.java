@@ -3,7 +3,7 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.BehaviorSubject;
 
 /**
  * Represents a data object that is automatically exposed as
@@ -27,14 +27,7 @@ public class MGPreferenceRx<T> {
      * a new value to the data class.
      */
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final PublishSubject<T> dataPublisher = PublishSubject.create();
-
-    /**
-     * Observable of the data that emits whatever
-     * the most recent published value is.
-     */
-    @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final Observable<T> data = getDataPublisher().cache(1);
+    private final BehaviorSubject<T> dataPublisher = BehaviorSubject.create();
 
     // If disabled, no not cache to disk.
     private final boolean dataCacheEnabled;
@@ -82,7 +75,9 @@ public class MGPreferenceRx<T> {
      */
     public Observable<T> get(boolean emitNull) {
 
-        return emitNull ? getData() : getData().filter(data -> data != null);
+        return emitNull ?
+            getDataPublisher().asObservable() :
+            getDataPublisher().filter(data -> data != null);
     }
 
     /**
@@ -99,7 +94,7 @@ public class MGPreferenceRx<T> {
      */
     public T getBlocking(T defaultValue) {
 
-        return getData().toBlocking().mostRecent(defaultValue).iterator().next();
+        return getDataPublisher().toBlocking().mostRecent(defaultValue).iterator().next();
     }
 
     public T getBlocking() {
@@ -109,7 +104,7 @@ public class MGPreferenceRx<T> {
 
     private void init() {
 
-        getData().subscribe(data -> {
+        getDataPublisher().subscribe(data -> {
 
             if (dataCacheEnabled) {
                 dataCache.set(data);

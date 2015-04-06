@@ -38,7 +38,33 @@ public class MGLifecycleFragment extends Fragment {
 
         onCreateView(savedInstanceState, view);
 
+        // Invoke create or resume.
+        onCreateOrResume();
+
+        // Create version has been invoked.
+        getConfig().setOnCreateOrResumeInvoked(true);
+
         return view;
+    }
+
+    /**
+     * Helper lifecycle method that runs either in onCreate or onResume.
+     */
+    protected void onCreateOrResume() {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (getConfig().isOnCreateOrResumeInvoked()) {
+            getConfig().setOnCreateOrResumeInvoked(false);
+        } else {
+
+            // On resume version invoked.
+            onCreateOrResume();
+        }
     }
 
     @Override

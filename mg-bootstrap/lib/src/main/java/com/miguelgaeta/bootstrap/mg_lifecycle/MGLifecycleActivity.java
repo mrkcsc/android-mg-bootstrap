@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
-
 import butterknife.ButterKnife;
 import lombok.Getter;
 import rx.subjects.PublishSubject;
@@ -59,6 +57,21 @@ public class MGLifecycleActivity extends ActionBarActivity {
 
         // Inject butter-knife views.
         ButterKnife.inject(this);
+
+        // Invoke create or resume.
+        onCreateOrResume();
+
+        // Create version has been invoked.
+        getConfig().setOnCreateOrResumeInvoked(true);
+    }
+
+    /**
+     * Helper lifecycle method that runs either on
+     * create or resume.  This is helpful for RxJava
+     * based observables that die on pause.
+     */
+    protected void onCreateOrResume() {
+
     }
 
     /**
@@ -69,8 +82,6 @@ public class MGLifecycleActivity extends ActionBarActivity {
         super.onPause();
 
         paused.onNext(null);
-
-        MGBackgrounded.getConfig().activityPaused();
 
         transitions.run(goingBack, false);
     }
@@ -83,11 +94,17 @@ public class MGLifecycleActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        MGBackgrounded.getConfig().activityResumed();
-
         transitions.run(goingBack, true);
 
         goingBack = false;
+
+        if (getConfig().isOnCreateOrResumeInvoked()) {
+            getConfig().setOnCreateOrResumeInvoked(false);
+        } else {
+
+            // On resume version invoked.
+            onCreateOrResume();
+        }
     }
 
     /**

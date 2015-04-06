@@ -12,10 +12,6 @@ public class MGBackgrounded {
     @Getter
     private static MGBackgroundedConfig config = new MGBackgroundedConfig();
 
-    @Getter (lazy = true)
-    private static final Observable<Boolean> observable
-            = MGBackgroundedConfig.getBackgrounded().distinctUntilChanged().cache(1);
-
     /**
      * Is the application currently in the background.  "In the background"
      * is defined as when we have left the foreground for more than one second.
@@ -23,6 +19,15 @@ public class MGBackgrounded {
     public static boolean isBackgrounded() {
 
         // Fetch the most recent backgrounded value.
-        return getObservable().toBlocking().mostRecent(false).iterator().next();
+        return MGBackgroundedConfig.getBackgrounded().getBlocking(false);
+    }
+
+    /**
+     * Emits backgrounded state.
+     */
+    public static Observable<Boolean> get() {
+
+        // Return non-null distinct backgrounded events.
+        return MGBackgroundedConfig.getBackgrounded().get(false).distinctUntilChanged();
     }
 }

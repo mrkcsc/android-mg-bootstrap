@@ -19,4 +19,14 @@ public class MGLifecycleFragmentConfig {
     @Getter
     @Setter(AccessLevel.PACKAGE)
     private boolean recreated;
+
+    /**
+     * Track if the helper lifecycle method createOrResume
+     * has been invoked.  This is helpful when there is code
+     * you want to either run in onCreate or subsequently
+     * in the onResume lifecycle methods.
+     */
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private boolean onCreateOrResumeInvoked;
 }
