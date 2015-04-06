@@ -98,8 +98,7 @@ public class MGPreferenceRx<T> {
 
         getData().subscribe(data -> {
 
-            // If value has changed persist it.
-            if (dataCacheEnabled && getDataCache().get() != data) {
+            if (dataCacheEnabled) {
                 dataCache.set(data);
             }
         });
