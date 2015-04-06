@@ -78,21 +78,33 @@ public class MGPreferenceRx<T> {
     }
 
     /**
+     * Get the data observable, should it emit null values.
+     */
+    public Observable<T> get(boolean emitNull) {
+
+        return emitNull ? getData() : getData().filter(data -> data != null);
+    }
+
+    /**
      * Get the data observable.
      */
     public Observable<T> get() {
 
-        return getData();
+        return get(true);
     }
 
     /**
-     * Get a blocking version of the data observable.  Because it is
-     * blocking, will return a default value if no previous
-     * value has been set or returned from cache.
+     * Get blocking version of the data observable. Provide
+     * a default value if none is found.
      */
+    public T getBlocking(T defaultValue) {
+
+        return getData().toBlocking().mostRecent(defaultValue).iterator().next();
+    }
+
     public T getBlocking() {
 
-        return getData().toBlocking().mostRecent(null).iterator().next();
+        return getBlocking(null);
     }
 
     private void init() {
