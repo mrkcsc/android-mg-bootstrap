@@ -1,3 +1,7 @@
+## 1.5.1 - 2015-04-06
+
+- Added an activity fade transition, move transitions enum into enclosing class.
+
 ## 1.5.0 - 2015-04-06
 
 - Revamped backgrounded to use internal lifecycle callbacks and utilize MGPreferenceRx.  MGPreferenceRx internally uses a BehaviorSubject now.  Lifecycle activity/fragment classes now have access to a onCreateOrResume lifecycle method.
