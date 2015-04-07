@@ -19,16 +19,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 @SuppressWarnings("UnusedDeclaration")
 public class MGLifecycleActivity extends ActionBarActivity {
 
-    public enum Type {
-        STANDARD,
-        SLIDE_HORIZONTAL,
-        SLIDE_VERTICAL,
-        SLIDE_POP_VERTICAL,
-        SLIDE_POP_HORIZONTAL
-    }
-
-    private static boolean goingBack;
-
     @Getter
     // Configuration object for the activity.
     private MGLifecycleActivityConfig config = new MGLifecycleActivityConfig(this);
@@ -40,6 +30,9 @@ public class MGLifecycleActivity extends ActionBarActivity {
     @Getter
     // Custom observable that emits activity paused events.
     private PublishSubject<Void> paused = PublishSubject.create();
+
+    // Tracks if we are currently going back.
+    private static boolean goingBack;
 
     /**
      * Handles setting the content view

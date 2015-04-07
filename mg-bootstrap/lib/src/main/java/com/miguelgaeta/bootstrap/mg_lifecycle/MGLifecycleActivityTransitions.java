@@ -17,7 +17,7 @@ public class MGLifecycleActivityTransitions {
 
     @Setter
     // Type of transition.
-    private MGLifecycleActivity.Type type = MGLifecycleActivity.Type.SLIDE_POP_HORIZONTAL;
+    private Type type = Type.SLIDE_POP_HORIZONTAL;
 
     @Setter
     // Transitions be played in reverse.
@@ -25,7 +25,19 @@ public class MGLifecycleActivityTransitions {
 
     // Associated activity.
     private Activity activity;
-    
+
+    /**
+     * Supported transition types.
+     */
+    public enum Type {
+        FADE,
+        STANDARD,
+        SLIDE_HORIZONTAL,
+        SLIDE_VERTICAL,
+        SLIDE_POP_VERTICAL,
+        SLIDE_POP_HORIZONTAL
+    }
+
     /**
      * Hold reference to current activity.
      */
