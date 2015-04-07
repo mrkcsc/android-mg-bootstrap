@@ -63,7 +63,7 @@ public class MGAnimFade {
             Animation anim = AnimationUtils.loadAnimation(view.getContext(), animationResourceId);
 
             // Finish observable when complete.
-            anim.setAnimationListener(new OnAnimationEnd() {
+            anim.setAnimationListener(new MGAnimListener() {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
@@ -77,17 +77,5 @@ public class MGAnimFade {
         });
 
         return animationObservable.observeOn(AndroidSchedulers.mainThread());
-    }
-
-    /**
-     * Only exposes the onAnimationEnd callback.
-     */
-    private static abstract class OnAnimationEnd implements Animation.AnimationListener {
-
-        @Override
-        public void onAnimationStart(Animation animation) { }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) { }
     }
 }
