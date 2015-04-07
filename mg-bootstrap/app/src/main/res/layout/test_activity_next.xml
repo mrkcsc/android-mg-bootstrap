@@ -1,7 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center"
+    android:orientation="vertical">
 
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:gravity="center"
+        android:text="dfdfdfdkfsdfksd kfsk dfksdfk sd kfds kfk sdfk sdk fsdk fkdsfk sd kf ksdf"
+        android:background="#999"/>
 </LinearLayout>

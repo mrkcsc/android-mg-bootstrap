@@ -129,6 +129,15 @@ public class TestActivity extends MGLifecycleActivity {
         */
     }
 
+    protected void onCreateOrResume() {
+        super.onCreateOrResume();
+
+        MGDelay.delay(5000).observeOn(AndroidSchedulers.mainThread()).subscribe(aVoid -> {
+
+            startActivity(TestActivityNext.class);
+        });
+    }
+
     @OnClick(R.id.test_button)
     public void testButtonClick() {
         startActivity(TestActivityNext.class);
