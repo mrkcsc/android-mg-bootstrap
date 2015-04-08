@@ -7,13 +7,17 @@ import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
-import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
+import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,11 +28,21 @@ public class TestActivity extends MGLifecycleActivity {
     @Data
     private static class TestPref {
 
-        private List<String> payload = new ArrayList<>();
+        private List<MGRestClientErrorModel> payload = new ArrayList<>();
+    }
+
+    @Data @AllArgsConstructor
+    private static class TestData {
+
+        private int data1;
+        private String data2;
     }
 
     @Getter(lazy = true)
-    private static final MGPreferenceRx<TestPref> pref = MGPreferenceRx.create("TEST_PREF");
+    private static final MGPreference<Map<Integer, TestData>> pref = MGPreference.create("TEST_PREF_10");
+
+    @Getter(lazy = true)
+    private static final MGPreference<TestPref> pref1 = MGPreference.create("TEST_PREF_3");
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
@@ -36,6 +50,17 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Map<Integer, TestData> a = new HashMap<>();
+
+        a.put(-10, new TestData(100, "test data"));
+        a.put(-11, new TestData(9999, "asdsd"));
+
+        getPref1().set(new TestPref());
+        getPref().set(a);
+
+        MGLog.e("Get: " + getPref().get());
+
+        /*
         getPref().get()
                 .takeUntil(getPaused())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -63,6 +88,7 @@ public class TestActivity extends MGLifecycleActivity {
                         getPref().set(testPref);
                     }
                 });
+                */
 
 
 
