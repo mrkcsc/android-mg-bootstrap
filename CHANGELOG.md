@@ -1,3 +1,7 @@
+## 1.5.3 - 2015-04-07
+
+- Added support for Maps and Collections of complex objects in MGPreference.
+
 ## 1.5.1 - 2015-04-06
 
 - Added an activity fade transition, move transitions enum into enclosing class.
