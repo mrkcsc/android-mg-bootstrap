@@ -1,3 +1,7 @@
+## 1.5.4 - 2015-04-09
+
+- Added a recycler view holder helper class.
+
 ## 1.5.3 - 2015-04-07
 
 - Added support for Maps and Collections of complex objects in MGPreference.
