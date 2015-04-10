@@ -8,6 +8,7 @@ import android.widget.TextView;
 /**
  * Created by Miguel Gaeta on 4/10/15.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class MGViewText extends TextView {
 
     public MGViewText(Context context) {

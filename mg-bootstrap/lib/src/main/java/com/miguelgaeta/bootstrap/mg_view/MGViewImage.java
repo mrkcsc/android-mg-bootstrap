@@ -11,6 +11,7 @@ import android.widget.ImageView;
  * This image view subclass properly respects the max height
  * attribute (as it should - thanks android).
  */
+@SuppressWarnings("UnusedDeclaration")
 public class MGViewImage extends ImageView {
 
     private int maxHeight;
