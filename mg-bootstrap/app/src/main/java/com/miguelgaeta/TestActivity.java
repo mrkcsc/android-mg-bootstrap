@@ -9,6 +9,7 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
+import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,12 +102,6 @@ public class TestActivity extends MGLifecycleActivity {
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
 
-        /*
-        MGDelay.delay(5000).subscribe(aVoid -> {
-
-            MGLog.e("Ping");
-        });
-
         MGWebsocket websocket =  MGWebsocket.create();
 
         websocket.getConfig().setUrl("ws://echo.websocket.org");
@@ -152,7 +147,6 @@ public class TestActivity extends MGLifecycleActivity {
 
             websocket.close();
         });
-        */
     }
 
     protected void onCreateOrResume() {

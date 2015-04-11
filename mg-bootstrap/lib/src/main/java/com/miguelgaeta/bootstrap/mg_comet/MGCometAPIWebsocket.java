@@ -6,10 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientSSL;
 
-import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -208,9 +208,13 @@ class MGCometAPIWebsocket {
             }
         };
 
-        // Provide SSL socket to the client.
-        mWebSocketClient.setWebSocketFactory
-                (new DefaultSSLWebSocketClientFactory(MGRestClientSSL.createInsecureSSLContext()));
+        // TODO: Hook up SSL.
+
+        try {
+            mWebSocketClient.setSocket(MGRestClientSSL.createInsecureSSLSocketFactory().createSocket());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

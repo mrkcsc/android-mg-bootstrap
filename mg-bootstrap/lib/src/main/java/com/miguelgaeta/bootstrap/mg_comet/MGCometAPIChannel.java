@@ -118,8 +118,7 @@ public class MGCometAPIChannel {
         if (callbackIdentifier != null) {
 
             // Add callback, with receiving class.
-            mCallbacks.put(callbackIdentifier,
-                    new Pair<MGCometAPICallback, Class>(callback, receivingClass));
+            mCallbacks.put(callbackIdentifier, new Pair<>(callback, receivingClass));
         }
     }
 
@@ -171,7 +170,7 @@ public class MGCometAPIChannel {
 
         // Initialize if needed.
         if (queuedMessages == null) {
-            queuedMessages = new ArrayList<JsonObject>();
+            queuedMessages = new ArrayList<>();
         }
 
         // Add to queue.
@@ -203,19 +202,15 @@ public class MGCometAPIChannel {
         // Since the message will always be sent to
         // an activity or fragment, make it easy on
         // the callee and run result on UI thread.
-        associatedActivity.runOnUiThread(new Runnable() {
+        associatedActivity.runOnUiThread(() -> {
 
-            @Override
-            public void run() {
+            // Fetch associated data payload.
+            JsonObject data = jsonObject.getAsJsonObject("data");
 
-                // Fetch associated data payload.
-                JsonObject data = jsonObject.getAsJsonObject("data");
+            if (data != null) {
 
-                if (data != null) {
-
-                    // Send the callbackEntry with current activity/fragment as the receiving class.
-                    callback.messageReceived(activityOrFragment, jsonObject.getAsJsonObject("data"));
-                }
+                // Send the callbackEntry with current activity/fragment as the receiving class.
+                callback.messageReceived(activityOrFragment, jsonObject.getAsJsonObject("data"));
             }
         });
     }
@@ -237,7 +232,7 @@ public class MGCometAPIChannel {
     String getJsonString(boolean subscribe) {
 
         // Initialize dictionary.
-        HashMap<String, Object> jsonDictionary = new HashMap<String, Object>();
+        HashMap<String, Object> jsonDictionary = new HashMap<>();
 
         // Place parameters into dictionary.
         jsonDictionary.put("action", subscribe ? "subscribe" : "unsubscribe");

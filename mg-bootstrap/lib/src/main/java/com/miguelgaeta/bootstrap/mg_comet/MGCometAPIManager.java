@@ -46,12 +46,12 @@ public class MGCometAPIManager implements MGCometAPIWebsocket.OnMessageCallback 
 
         // Initialize active channels map.
         if (instance().mActiveChannels == null) {
-            instance().mActiveChannels = new HashMap<String, MGCometAPIChannel>();
+            instance().mActiveChannels = new HashMap<>();
         }
 
         // Initialize activities and fragments.
         if (instance().mCurrentActivityAndFragments == null) {
-            instance().mCurrentActivityAndFragments = new ArrayList<Object>();
+            instance().mCurrentActivityAndFragments = new ArrayList<>();
         }
 
         // Open the web socket.
