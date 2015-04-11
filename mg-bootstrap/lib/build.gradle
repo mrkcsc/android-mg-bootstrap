@@ -20,7 +20,7 @@ buildscript {
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '1.6.0'
+    PUBLISH_VERSION = '1.6.1'
 }
 
 android {
@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 41
-        versionName "1.6.0"
+        versionCode 42
+        versionName "1.6.1"
     }
 
     compileOptions {
@@ -71,7 +71,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
 
     // Used for push notifications.
-    compile 'com.google.android.gms:play-services:7.0.0'
+    compile 'com.google.android.gms:play-services-gcm:7.0.0'
 
     // Rx Java (reactive programming)
     compile 'io.reactivex:rxjava:1.0.8'
