@@ -1,3 +1,7 @@
+## 1.6.0 - 2015-04-11
+
+- Added an updated websocket to the core with better SSL support.
+
 ## 1.5.4 - 2015-04-09
 
 - Added a recycler view holder helper class.
