@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import butterknife.ButterKnife;
+import lombok.Getter;
 
 /**
  * Created by Miguel Gaeta on 4/9/15.
@@ -11,6 +12,7 @@ import butterknife.ButterKnife;
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends RecyclerView.ViewHolder {
 
+    @Getter
     private T adapter;
 
     private MGViewRecyclerHolder(View itemView) {
