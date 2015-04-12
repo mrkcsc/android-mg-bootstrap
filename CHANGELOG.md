@@ -1,3 +1,7 @@
+## 1.6.4 - 2015-04-11
+
+- Serialization bug fixes on MGPreference.
+
 ## 1.6.3 - 2015-04-11
 
 - Added Transition.NONE animation for activity transitions.
