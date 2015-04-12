@@ -1,3 +1,7 @@
+## 1.6.3 - 2015-04-11
+
+- Added Transition.NONE animation for activity transitions.
+
 ## 1.6.0 - 2015-04-11
 
 - Added an updated websocket to the core with better SSL support.
