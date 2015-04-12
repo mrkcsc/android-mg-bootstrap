@@ -20,7 +20,7 @@ buildscript {
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '1.6.2'
+    PUBLISH_VERSION = '1.6.3'
 }
 
 android {
@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 43
-        versionName "1.6.2"
+        versionCode 44
+        versionName "1.6.3"
     }
 
     compileOptions {

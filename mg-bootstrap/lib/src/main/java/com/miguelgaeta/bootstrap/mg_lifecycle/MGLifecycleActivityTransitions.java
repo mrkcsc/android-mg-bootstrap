@@ -30,6 +30,7 @@ public class MGLifecycleActivityTransitions {
      * Supported transition types.
      */
     public enum Type {
+        NONE,
         FADE,
         STANDARD,
         SLIDE_HORIZONTAL,
@@ -62,23 +63,31 @@ public class MGLifecycleActivityTransitions {
 
         if ((!goingBack && entering) || (goingBack && !entering)) {
 
-            String animationResourcePrefix = "activity_" + type.name().toLowerCase();
+            if (type == Type.NONE) {
 
-            if (reversed) {
+                // Don't animate anything.
+                activity.overridePendingTransition(0, 0);
 
-                entering = !entering;
+            } else {
+
+                String animationResourcePrefix = "activity_" + type.name().toLowerCase();
+
+                if (reversed) {
+
+                    entering = !entering;
+                }
+
+                int enterAnimation = entering ?
+                        MGReflection.getResourceId(animationResourcePrefix + "_open_in", R.anim.class) :
+                        MGReflection.getResourceId(animationResourcePrefix + "_close_in", R.anim.class);
+
+                int exitAnimation = entering ?
+                        MGReflection.getResourceId(animationResourcePrefix + "_open_out", R.anim.class) :
+                        MGReflection.getResourceId(animationResourcePrefix + "_close_out", R.anim.class);
+
+                // Override the default animation activity animations.
+                activity.overridePendingTransition(enterAnimation, exitAnimation);
             }
-
-            int enterAnimation = entering ?
-                    MGReflection.getResourceId(animationResourcePrefix + "_open_in", R.anim.class) :
-                    MGReflection.getResourceId(animationResourcePrefix + "_close_in", R.anim.class);
-
-            int exitAnimation = entering ?
-                    MGReflection.getResourceId(animationResourcePrefix + "_open_out", R.anim.class) :
-                    MGReflection.getResourceId(animationResourcePrefix + "_close_out", R.anim.class);
-
-            // Override the default animation activity animations.
-            activity.overridePendingTransition(enterAnimation, exitAnimation);
         }
     }
 }

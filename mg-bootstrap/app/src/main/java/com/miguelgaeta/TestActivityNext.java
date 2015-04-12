@@ -14,6 +14,6 @@ public class TestActivityNext extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getTransitions().setType(MGLifecycleActivityTransitions.Type.FADE);
+        getTransitions().setType(MGLifecycleActivityTransitions.Type.NONE);
     }
 }

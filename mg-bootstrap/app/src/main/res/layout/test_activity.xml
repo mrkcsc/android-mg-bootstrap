@@ -14,11 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/test_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test Button" />
+
 
         <View
             android:id="@+id/fade_test_view"
@@ -26,4 +22,9 @@
             android:layout_height="100dp"
             android:background="#000" />
     </LinearLayout>
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Button" />
 </LinearLayout>
