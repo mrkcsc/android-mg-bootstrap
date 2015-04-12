@@ -10,6 +10,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -107,6 +109,7 @@ public class MGRestClient {
         setupSSL(okHttpClient);
 
         okHttpClient.setConnectTimeout(getConfig().getTimeoutInSections(), TimeUnit.SECONDS);
+        okHttpClient.setCookieHandler(getPersistentCookieManager());
 
         return new OkClient(okHttpClient);
     }
@@ -142,5 +145,18 @@ public class MGRestClient {
             // Assign it to the client.
             okHttpClient.setSslSocketFactory(sslSocketFactory);
         }
+    }
+
+    /**
+     * Persist cookies across requests.
+     */
+    private CookieManager getPersistentCookieManager() {
+
+        CookieManager cookieManager = new CookieManager();
+
+        // Accept all cookies and persist them.
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+
+        return cookieManager;
     }
 }
