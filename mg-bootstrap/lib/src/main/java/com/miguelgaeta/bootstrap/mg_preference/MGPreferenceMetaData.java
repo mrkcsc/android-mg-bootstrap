@@ -4,10 +4,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 
 import java.util.Collection;
 import java.util.Map;
@@ -35,7 +35,7 @@ class MGPreferenceMetaData<T> {
     private final String keyTypeToken;
 
     // Gson serializer.
-    private final Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+    private final Gson gson = MGRestClient.getGson();
 
     /**
      * Creates a new preference object that is backed

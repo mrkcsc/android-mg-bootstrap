@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_rest;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
@@ -47,7 +48,7 @@ public class MGRestClient {
         String endpoint = getConfig().getBaseAPIURL();
 
         // Handles date de/serialization.
-        Converter converter = getJsonConverter();
+        Converter converter = getGsonConverter();
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setClient(client)
@@ -64,6 +65,33 @@ public class MGRestClient {
         return builder.build();
     }
 
+    /**
+     * Create a gson object configured to handle
+     * JodaTime dates and any additional custom
+     * configuration options that may be needed.
+     */
+    public static Gson getGson() {
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        // Fetch ISO formatter.
+        DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
+
+        JsonSerializer<DateTime> typeAdapterSerialization = (sourceDate, typeOf, context) ->
+                sourceDate == null ? null : new JsonPrimitive(dateTimeFormatter.print(sourceDate));
+
+        JsonDeserializer<DateTime> typeAdapterDeserialization = (jsonDate, typeOf, context) ->
+                jsonDate == null ? null : new DateTime(jsonDate.getAsString());
+
+        // Support complex map keys.
+        gsonBuilder.enableComplexMapKeySerialization();
+
+        gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterSerialization);
+        gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterDeserialization);
+
+        return gsonBuilder.create();
+    }
+
     private void addAuthorizationHeader(RequestInterceptor.RequestFacade request) {
 
         if (getConfig().getAuthorizationToken() != null) {
@@ -75,7 +103,7 @@ public class MGRestClient {
      * Create a custom GSON converter that can
      * handle de/serialization of JodaTime date objects.
      */
-    private GsonConverter getJsonConverter() {
+    private GsonConverter getGsonConverter() {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
 
@@ -85,13 +113,13 @@ public class MGRestClient {
         JsonSerializer<DateTime> typeAdapterSerialization = (sourceDate, typeOf, context) ->
                 sourceDate == null ? null : new JsonPrimitive(dateTimeFormatter.print(sourceDate));
 
-        JsonDeserializer<DateTime> TypeAdapterDeserialization = (jsonDate, typeOf, context) ->
+        JsonDeserializer<DateTime> typeAdapterDeserialization = (jsonDate, typeOf, context) ->
                 jsonDate == null ? null : new DateTime(jsonDate.getAsString());
 
         gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterSerialization);
-        gsonBuilder.registerTypeAdapter(DateTime.class, TypeAdapterDeserialization);
+        gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterDeserialization);
 
-        return new GsonConverter(gsonBuilder.create());
+        return new GsonConverter(getGson());
     }
 
     /**

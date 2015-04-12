@@ -15,6 +15,11 @@ import rx.Observable;
 @SuppressWarnings("UnusedDeclaration,ConstantConditions")
 public class MGLifecycleActivityTransitions {
 
+    // To ensure the most fluid transitions or animations when
+    // people wait on activity transitions to finish add a small
+    // buffer to the actual animation time.
+    private static final int TRANSITION_DELAY_BUFFER = 100;
+
     @Setter
     // Type of transition.
     private Type type = Type.SLIDE_POP_HORIZONTAL;
@@ -51,7 +56,7 @@ public class MGLifecycleActivityTransitions {
      */
     public Observable<Void> getDelay() {
 
-        return  MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard));
+        return  MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard) + TRANSITION_DELAY_BUFFER);
     }
 
     /**
