@@ -15,6 +15,9 @@ public class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends Recycl
     @Getter
     private T adapter;
 
+    @Getter
+    private View itemView;
+
     private MGViewRecyclerHolder(View itemView) {
         super(itemView);
     }
@@ -24,6 +27,9 @@ public class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends Recycl
 
         // Set the adapter.
         this.adapter = adapter;
+
+        // Set the item view.
+        this.itemView = itemView;
 
         // Enable butter knife.
         ButterKnife.inject(this, itemView);
