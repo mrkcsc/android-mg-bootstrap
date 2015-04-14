@@ -29,23 +29,22 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final BehaviorSubject<T> dataPublisher = BehaviorSubject.create();
 
-    // If disabled, no not cache to disk.
-    private final boolean dataCacheEnabled;
-
     /**
      * Static initializer.
      */
     public static <T> MGPreferenceRx<T> create(String key) {
 
-        return new MGPreferenceRx<>(key, true);
+        return new MGPreferenceRx<>(key, null, true);
     }
 
-    /**
-     * Static initializer, cached flag.
-     */
-    public static <T> MGPreferenceRx<T> create(String key, boolean cached) {
+    public static <T> MGPreferenceRx<T> create(String key, T defaultValue) {
 
-        return new MGPreferenceRx<>(key, cached);
+        return new MGPreferenceRx<>(key, defaultValue, true);
+    }
+
+    public static <T> MGPreferenceRx<T> create(String key, T defaultValue, boolean cached) {
+
+        return new MGPreferenceRx<>(key, defaultValue, cached);
     }
 
     /**
@@ -53,13 +52,12 @@ public class MGPreferenceRx<T> {
      * and uses that to initialize rest of the
      * data object.
      */
-    private MGPreferenceRx(String key, boolean cached) {
+    private MGPreferenceRx(String key, T defaultValue, boolean cached) {
 
         // Initialize data cache.
         dataCache = MGPreference.create(key);
-        dataCacheEnabled = cached;
 
-        init();
+        init(defaultValue, cached);
     }
 
     /**
@@ -89,33 +87,38 @@ public class MGPreferenceRx<T> {
     }
 
     /**
-     * Get blocking version of the data observable. Provide
-     * a default value if none is found.
+     * Get blocking version of the data observable.
      */
-    public T getBlocking(T defaultValue) {
-
-        return getDataPublisher().toBlocking().mostRecent(defaultValue).iterator().next();
-    }
-
     public T getBlocking() {
 
-        return getBlocking(null);
+        return getDataPublisher().toBlocking().mostRecent(null).iterator().next();
     }
 
-    private void init() {
+    /**
+     * Initialize the observable data stream
+     * and if caching is enabled, set up
+     * future value emissions.
+     */
+    private void init(T defaultValue, boolean cached) {
 
         getDataPublisher().subscribe(data -> {
 
-            if (dataCacheEnabled) {
+            if (cached) {
+
                 dataCache.set(data);
             }
         });
 
         // If a cached value exists (and caching enabled).
-        if (dataCacheEnabled && getDataCache().get() != null) {
+        if (cached && getDataCache().get() != null) {
 
             // Publish initial value.
             getDataPublisher().onNext(getDataCache().get());
+
+        } else {
+
+            // Otherwise emit the default.
+            getDataPublisher().onNext(defaultValue);
         }
     }
 }

@@ -20,7 +20,7 @@ public class MGBackgroundedConfig {
     private static final int MILLISECONDS_UNTIL_BACKGROUNDED = 1000;
 
     @Getter(lazy = true, value = AccessLevel.PACKAGE)
-    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", false);
+    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", false, false);
 
     @Getter
     private static Subscription backgroundedSubscription;

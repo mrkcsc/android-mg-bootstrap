@@ -19,7 +19,7 @@ public class MGBackgrounded {
     public static boolean isBackgrounded() {
 
         // Fetch the most recent backgrounded value.
-        return MGBackgroundedConfig.getBackgrounded().getBlocking(false);
+        return MGBackgroundedConfig.getBackgrounded().getBlocking();
     }
 
     /**

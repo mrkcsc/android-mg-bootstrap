@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
+import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
-import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class TestActivity extends MGLifecycleActivity {
     private static final MGPreference<Map<Integer, TestData>> pref = MGPreference.create("TEST_PREF_10");
 
     @Getter(lazy = true)
-    private static final MGPreference<TestPref> pref1 = MGPreference.create("TEST_PREF_3");
+    private static final MGPreferenceRx<TestPref> pref1 = MGPreferenceRx.create("TEST_PREF_3");
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
@@ -51,15 +52,19 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MGLog.e("Is backgrounded: " + MGBackgrounded.isBackgrounded());
+
         Map<Integer, TestData> a = new HashMap<>();
 
         a.put(-10, new TestData(100, "test data"));
         a.put(-11, new TestData(9999, "asdsd"));
 
-        getPref1().set(new TestPref());
         getPref().set(a);
 
-        MGLog.e("Get: " + getPref().get());
+        getPref1().get().subscribe(testPref -> {
+
+            MGLog.e("Pref: " + testPref);
+        });
 
         /*
         getPref().get()
@@ -91,8 +96,6 @@ public class TestActivity extends MGLifecycleActivity {
                 });
                 */
 
-
-
         fadeTestView.setVisibility(View.GONE);
 
         MGDelay.delay(1000)
@@ -102,6 +105,7 @@ public class TestActivity extends MGLifecycleActivity {
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
 
+        /*
         MGWebsocket websocket =  MGWebsocket.create();
 
         websocket.getConfig().setUrl("ws://echo.websocket.org");
@@ -147,6 +151,7 @@ public class TestActivity extends MGLifecycleActivity {
 
             websocket.close();
         });
+        */
     }
 
     protected void onCreateOrResume() {
