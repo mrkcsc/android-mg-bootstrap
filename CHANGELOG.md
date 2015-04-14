@@ -1,3 +1,11 @@
+## 1.6.5 - 2015-04-14
+
+- Api and behavior changes for MGPreferenceRx.  By default all PrefRx object will emit a null as their first initial value if no other value is present in the cache or previously set by the user.
+
+- Additionally a new overload has been added to the create call to allow to user to provide a custom default value.  The cache parameter that used to be the overloaded 2nd parameter of the create call has now been moved to the third parameter overload (requiring a default value to be set for its use (can be set to null as the default)).
+
+- This change essentially eliminates the need for getBlocking as a subscription will be guaranteed to at least immediately return the default value, however for convenience it has been left in place.  However the "defaultValue" overload has been removed as it is now covered in the create call.
+
 ## 1.6.4 - 2015-04-11
 
 - Serialization bug fixes on MGPreference.
