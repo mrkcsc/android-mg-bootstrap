@@ -1,4 +1,4 @@
-## 1.6.5 - 2015-04-14
+## 1.6.6 - 2015-04-14
 
 - Api and behavior changes for MGPreferenceRx.  By default all PrefRx object will emit a null as their first initial value if no other value is present in the cache or previously set by the user.
 
