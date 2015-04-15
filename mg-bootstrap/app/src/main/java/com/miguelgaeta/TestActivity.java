@@ -4,12 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
-import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
-import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 
 import java.util.ArrayList;
@@ -41,10 +39,10 @@ public class TestActivity extends MGLifecycleActivity {
     }
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<Integer, TestData>> pref = MGPreference.create("TEST_PREF_10");
+    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10");
 
-    @Getter(lazy = true)
-    private static final MGPreferenceRx<TestPref> pref1 = MGPreferenceRx.create("TEST_PREF_3");
+    //@Getter(lazy = true)
+    //private static final MGPreferenceRx<TestPref> pref1 = MGPreferenceRx.create("TEST_PREF_3");
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
@@ -52,19 +50,31 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MGLog.e("Is backgrounded: " + MGBackgrounded.isBackgrounded());
+        Map<Integer, List<TestData>> prefData = new HashMap<>();
 
-        Map<Integer, TestData> a = new HashMap<>();
+        List<TestData> td1 = new ArrayList<>();
+        List<TestData> td2 = new ArrayList<>();
 
-        a.put(-10, new TestData(100, "test data"));
-        a.put(-11, new TestData(9999, "asdsd"));
+        td1.add(new TestData(10, "td1_1"));
+        td1.add(new TestData(11, "td1_2"));
 
-        getPref().set(a);
+        td2.add(new TestData(20, "td2_1"));
+        td2.add(new TestData(21, "td2_2"));
 
-        getPref1().get().subscribe(testPref -> {
+        prefData.put(-10, td1);
+        prefData.put(-11, td2);
 
-            MGLog.e("Pref: " + testPref);
-        });
+        getPref().set(prefData);
+
+        for (Integer integer: getPref().get().keySet()) {
+
+            MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
+        }
+
+        //getPref1().get().subscribe(testPref -> {
+
+        //    MGLog.e("Pref: " + testPref);
+        //});
 
         /*
         getPref().get()
