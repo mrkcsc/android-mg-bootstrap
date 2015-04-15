@@ -23,6 +23,16 @@ ext {
     PUBLISH_VERSION = '1.6.7'
 }
 
+// Disable javadoc lint errors.
+if (JavaVersion.current().isJava8Compatible()) {
+
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
