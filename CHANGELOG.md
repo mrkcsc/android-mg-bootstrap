@@ -1,3 +1,7 @@
+## 1.6.7 - 2015-04-15
+
+- MGPreference now supports fully nested maps and lists, eg:  MGPreference<Map<Integer, List<SomeObject>> - will not deserialize other types of generics such as SomeObject<T> only collections and maps.
+
 ## 1.6.6 - 2015-04-14
 
 - Api and behavior changes for MGPreferenceRx.  By default all PrefRx object will emit a null as their first initial value if no other value is present in the cache or previously set by the user.
