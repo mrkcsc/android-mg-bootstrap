@@ -1,6 +1,6 @@
 ## 1.6.8 - 2015-04-15
 
-- Websocket can now (insecurely) connect to WSS if the url provided is of that format.
+- `MGWebsocket` can now (insecurely) connect to WSS if the url provided is of that format.
 
 ## 1.6.7 - 2015-04-15
 
