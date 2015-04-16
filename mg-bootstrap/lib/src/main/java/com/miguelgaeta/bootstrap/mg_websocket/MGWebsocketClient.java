@@ -80,7 +80,10 @@ class MGWebsocketClient {
 
     public void disconnect() {
 
-        if (client != null) {
+        // Don't need to call close if already happened or happening.
+        boolean closed = getState() != MGWebsocketState.CLOSED && getState() != MGWebsocketState.CLOSING;
+
+        if (client != null && !closed) {
             client.close();
             clientDesiredState = MGWebsocketState.CLOSED;
         }
