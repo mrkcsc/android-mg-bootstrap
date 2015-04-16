@@ -1,3 +1,7 @@
+## 1.6.8 - 2015-04-15
+
+- Websocket can now (insecurely) connect to WSS if the url provided is of that format.
+
 ## 1.6.7 - 2015-04-15
 
 - MGPreference now supports fully nested maps and lists, eg:  MGPreference<Map<Integer, List<SomeObject>> - will not deserialize other types of generics such as SomeObject<T> only collections and maps.
