@@ -19,6 +19,8 @@ Libraries used and included projects are documented in the [Wiki](https://github
 
 ### License
 
+*Copyright 2015 Miguel Gaeta*
+
     Copyright 2015 Miguel Gaeta
 
     Licensed under the Apache License, Version 2.0 (the "License");
