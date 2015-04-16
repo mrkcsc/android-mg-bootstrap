@@ -15,6 +15,10 @@ compile 'com.miguelgaeta.bootstrap:mg-bootstrap:1.6.7'
 
 See wiki
 
+```
+asd asd (asdasd)[asdasd]
+```
+
 ### License
 
     Copyright 2015 Miguel Gaeta
