@@ -4,7 +4,7 @@ An opinionated bootstrap library for android projects that includes commonly use
 
 ### Installation
 
-*Latest version can be found via (JCenter)[asdasd]
+*Latest version can be found via [Bintray](https://bintray.com/bintray/jcenter)
 
 ```groovy
 
