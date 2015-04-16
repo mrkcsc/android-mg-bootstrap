@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,6 +45,9 @@ class MGWebsocketClient {
 
     // Connect to url.
     private String url;
+
+    // Subscription to keep alive observable.
+    private Subscription heartBeatSubscription;
 
     /**
      * This is the state we want the client to be in. If
@@ -106,6 +110,17 @@ class MGWebsocketClient {
         })
             .subscribeOn(Schedulers.computation())
             .subscribe();
+    }
+
+    /**
+     * Provides new heartbeat parameters.
+     */
+    public void heartBeat(Integer heartBeatInterval, String message) {
+
+        // If the socket is opened, try to keep it
+        // open by sending keep alive messages on
+        // an interval defined by the user.
+        configureHeartbeat(heartBeatInterval, message);
     }
 
     /**
@@ -250,6 +265,30 @@ class MGWebsocketClient {
     }
 
     /**
+     * Cancels any existing heartbeat and if an
+     * interval if provided, starts sending new
+     * heartbeat messages while connection open.
+     */
+    private void configureHeartbeat(Integer keepAliveInterval, String keepAliveMessage) {
+
+        if (heartBeatSubscription != null) {
+            heartBeatSubscription.unsubscribe();
+        }
+
+        if (keepAliveInterval != null) {
+
+            heartBeatSubscription = MGDelay.delay(keepAliveInterval, true).subscribe(aVoid -> {
+
+                if (getState() == MGWebsocketState.OPENED) {
+
+                    // Send keep alive message.
+                    message(keepAliveMessage, false);
+                }
+            });
+        }
+    }
+
+    /**
      * Create a URI object from a
      * provided string.  Throws a runtime
      * exception if the url is invalid.
@@ -265,12 +304,19 @@ class MGWebsocketClient {
         }
     }
 
+    /**
+     * Only reconnect if state mismatch, and reconnect
+     * delay is specified.
+     */
     private boolean shouldReconnect() {
 
         return clientDesiredState == MGWebsocketState.OPENED
             && (getState() == MGWebsocketState.CLOSED || getState() == MGWebsocketState.CLOSING) && reconnectDelay != null;
     }
 
+    /**
+     * Only disconnect if state mismatch.
+     */
     private boolean shouldDisconnect() {
 
         return clientDesiredState == MGWebsocketState.CLOSED

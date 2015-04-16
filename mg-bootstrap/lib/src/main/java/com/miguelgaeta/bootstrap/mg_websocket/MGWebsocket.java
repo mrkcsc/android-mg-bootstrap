@@ -53,6 +53,16 @@ public class MGWebsocket {
     }
 
     /**
+     * Set a keep alive message for the web socket. Provide
+     * null values to disable.  Interval is
+     * defined in minutes.
+     */
+    public void heartBeat(Integer interval, String message) {
+
+        client.heartBeat(interval, message);
+    }
+
+    /**
      * Get the current state of the web
      * socket (connected, connecting, etc).
      */

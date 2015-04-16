@@ -157,6 +157,7 @@ public class TestActivity extends MGLifecycleActivity {
 
         websocket.connect();
         websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
+        websocket.heartBeat(10000, "ping");
 
         getPaused().subscribe(o -> {
 
