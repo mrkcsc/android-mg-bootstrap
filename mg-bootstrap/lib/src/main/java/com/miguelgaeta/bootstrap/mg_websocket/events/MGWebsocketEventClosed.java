@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_websocket;
+package com.miguelgaeta.bootstrap.mg_websocket.events;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

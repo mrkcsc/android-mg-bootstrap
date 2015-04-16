@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_websocket;
+package com.miguelgaeta.bootstrap.mg_websocket.events;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

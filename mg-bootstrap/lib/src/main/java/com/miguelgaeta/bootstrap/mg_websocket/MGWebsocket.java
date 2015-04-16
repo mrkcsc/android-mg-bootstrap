@@ -2,6 +2,11 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import android.support.annotation.NonNull;
 
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventOpened;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;

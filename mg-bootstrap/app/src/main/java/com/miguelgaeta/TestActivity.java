@@ -118,42 +118,46 @@ public class TestActivity extends MGLifecycleActivity {
                 });
 
 
+
+    }
+
+    protected void onCreateOrResume() {
+        super.onCreateOrResume();
+
+        setupSocket();
+    }
+
+    @OnClick(R.id.test_button)
+    public void testButtonClick() {
+        startActivity(TestActivityNext.class);
+    }
+
+    private void setupSocket() {
+
         MGWebsocket websocket = new MGWebsocket();
 
         websocket.getConfig().setUrl("ws://echo.websocket.org");//("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
         websocket.getConfig().setBuffered(true);
 
-        websocket.onOpened()
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .takeUntil(getPaused())
-            .subscribe(open -> {
+        websocket.onOpened().takeUntil(getPaused()).subscribe(open -> {
 
-                MGLog.e("Open: " + open);
-            });
+            MGLog.e("Open: " + open);
+        });
 
-        websocket.onClosed()
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .takeUntil(getPaused())
-            .subscribe(closed -> {
+        websocket.onClosed().takeUntil(getPaused()).subscribe(closed -> {
 
-                MGLog.e("Closed: " + closed);
-            });
+            MGLog.e("Closed: " + closed);
+        });
 
-        websocket.onError()
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .takeUntil(getPaused())
-            .subscribe(error -> {
+        websocket.onError().takeUntil(getPaused()).subscribe(error -> {
 
-                MGLog.e("Error: " + error);
-            });
+            MGLog.e("Error: " + error);
+        });
 
-        websocket.onMessage()
-        .subscribeOn(AndroidSchedulers.mainThread())
-            .takeUntil(getPaused())
-            .subscribe(message -> {
+        websocket.onMessage().takeUntil(getPaused()).subscribe(message -> {
 
-                MGLog.e("Message: " + message);
-            });
+            MGLog.e("Message: " + message);
+        });
 
         websocket.connect();
         websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
@@ -163,19 +167,5 @@ public class TestActivity extends MGLifecycleActivity {
 
             websocket.disconnect();
         });
-    }
-
-    protected void onCreateOrResume() {
-        super.onCreateOrResume();
-
-        //MGDelay.delay(5000).observeOn(AndroidSchedulers.mainThread()).subscribe(aVoid -> {
-
-            //startActivity(TestActivityNext.class);
-        //});
-    }
-
-    @OnClick(R.id.test_button)
-    public void testButtonClick() {
-        startActivity(TestActivityNext.class);
     }
 }

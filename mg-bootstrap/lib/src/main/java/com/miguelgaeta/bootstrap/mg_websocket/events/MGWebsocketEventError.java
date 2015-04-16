@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_websocket;
+package com.miguelgaeta.bootstrap.mg_websocket.events;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,11 +9,8 @@ import lombok.ToString;
  * Created by mrkcsc on 4/15/15.
  */
 @AllArgsConstructor(staticName = "create") @Getter @ToString @EqualsAndHashCode
-public class MGWebsocketEventOpened {
+public class MGWebsocketEventError {
 
-    // Http status code.
-    private short httpStatus;
-
-    // Http status message.
-    private String httpStatusMessage;
+    // Exception.
+    private Exception exception;
 }

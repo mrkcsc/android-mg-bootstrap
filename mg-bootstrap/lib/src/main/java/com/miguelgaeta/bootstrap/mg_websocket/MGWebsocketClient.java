@@ -4,6 +4,10 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientSSL;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventOpened;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -65,6 +69,11 @@ class MGWebsocketClient {
         configureReconnect();
     }
 
+    /**
+     * Connect to the web socket given a
+     * specified url.  Optionally provide a
+     * specified reconnection delay.=
+     */
     public void connect(@NonNull String url, Integer reconnectDelay) {
 
         // Update url.
@@ -78,6 +87,9 @@ class MGWebsocketClient {
         clientDesiredState = MGWebsocketState.OPENED;
     }
 
+    /**
+     * Close the socket.
+     */
     public void disconnect() {
 
         // Don't need to call close if already happened or happening.
@@ -89,6 +101,11 @@ class MGWebsocketClient {
         }
     }
 
+    /**
+     * Send a string to the web socket.  If
+     * buffer flag is set, send the message as
+     * soon as web socket is connected.
+     */
     public void message(@NonNull String message, boolean buffered) {
 
         if (client != null && client.getReadyState() == WebSocket.READYSTATE.OPEN) {
@@ -101,6 +118,9 @@ class MGWebsocketClient {
         }
     }
 
+    /**
+     * Send an arbitrary object as a json string.
+     */
     public void message(@NonNull Object message, boolean buffered) {
 
         Observable.create(subscriber -> {
