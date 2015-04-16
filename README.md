@@ -14,8 +14,7 @@ compile 'com.miguelgaeta.bootstrap:mg-bootstrap:1.6.7'
 
 ### Usage
 
-Libraries used and included projects are documented in the [Wiki](https://github.com/mrkcsc/android-mg-bootstrap/wiki)
-
+*Libraries used and included projects are documented in the [Wiki](https://github.com/mrkcsc/android-mg-bootstrap/wiki)*
 
 ### License
 
