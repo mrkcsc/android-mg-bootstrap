@@ -1,7 +1,8 @@
-# Android MG Bootstrap
+## Android MG Bootstrap
+
 An opinionated bootstrap library for android projects that includes commonly used dependancies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
 
-## Installation
+### Installation
 
 ```groovy
 
@@ -10,12 +11,11 @@ compile 'com.miguelgaeta.bootstrap:mg-bootstrap:1.6.7'
     
 ```
 
-## Usage
+### Usage
 
 See wiki
 
-License
--------
+### License
 
     Copyright 2013 Jake Wharton
 
