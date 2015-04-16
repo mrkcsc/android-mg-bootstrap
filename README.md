@@ -4,6 +4,8 @@ An opinionated bootstrap library for android projects that includes commonly use
 
 ### Installation
 
+*Latest version can be found via (JCenter)[asdasd]
+
 ```groovy
 
 compile 'com.miguelgaeta.bootstrap:mg-bootstrap:1.6.7'
