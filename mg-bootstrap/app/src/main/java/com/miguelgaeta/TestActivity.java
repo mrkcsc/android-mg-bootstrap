@@ -118,50 +118,49 @@ public class TestActivity extends MGLifecycleActivity {
                 });
 
 
-        MGWebsocket websocket =  MGWebsocket.create();
+        MGWebsocket websocket = new MGWebsocket();
 
-        websocket.getConfig().setUrl("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
-        websocket.getConfig().setReconnect(true);
+        websocket.getConfig().setUrl("ws://echo.websocket.org");//("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
         websocket.getConfig().setBuffered(true);
 
-        websocket.getOnOpen()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(open -> {
+        websocket.onOpened()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .takeUntil(getPaused())
+            .subscribe(open -> {
 
-                    MGLog.e("Open: " + open);
-                });
+                MGLog.e("Open: " + open);
+            });
 
-        websocket.getOnClose()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(closed -> {
+        websocket.onClosed()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .takeUntil(getPaused())
+            .subscribe(closed -> {
 
-                    MGLog.e("Closed: " + closed);
-                });
+                MGLog.e("Closed: " + closed);
+            });
 
-        websocket.getOnError()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(error -> {
+        websocket.onError()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .takeUntil(getPaused())
+            .subscribe(error -> {
 
-                    MGLog.e("Error: " + error);
-                });
+                MGLog.e("Error: " + error);
+            });
 
-        websocket.getOnMessage()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(message -> {
+        websocket.onMessage()
+        .subscribeOn(AndroidSchedulers.mainThread())
+            .takeUntil(getPaused())
+            .subscribe(message -> {
 
-                    MGLog.e("Message: " + message);
-                });
+                MGLog.e("Message: " + message);
+            });
 
         websocket.connect();
         websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
 
         getPaused().subscribe(o -> {
 
-            websocket.close();
+            websocket.disconnect();
         });
     }
 
