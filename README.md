@@ -6,18 +6,14 @@ An opinionated bootstrap library for android projects that includes commonly use
 
 ```groovy
 
-// Latest version.
 compile 'com.miguelgaeta.bootstrap:mg-bootstrap:1.6.7'
     
 ```
 
 ### Usage
 
-See wiki
+Libraries used and included projects are documented in the wiki
 
-```
-asd asd (asdasd)[asdasd]
-```
 
 ### License
 
