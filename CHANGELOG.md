@@ -4,7 +4,7 @@
 
 ## 1.6.7 - 2015-04-15
 
-- MGPreference now supports fully nested maps and lists, eg:  MGPreference<Map<Integer, List<SomeObject>> - will not deserialize other types of generics such as SomeObject<T> only collections and maps.
+- MGPreference now supports fully nested maps and lists, eg:  `MGPreference<Map<Integer, List<SomeObject>>` - will not deserialize other types of generics such as `SomeObject<T>` only collections and maps.
 
 ## 1.6.6 - 2015-04-14
 
