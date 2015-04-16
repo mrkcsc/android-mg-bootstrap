@@ -9,9 +9,9 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
+import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +50,7 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 
         List<TestData> td1 = new ArrayList<>();
@@ -70,6 +71,7 @@ public class TestActivity extends MGLifecycleActivity {
 
             MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
         }
+        */
 
         //getPref1().get().subscribe(testPref -> {
 
@@ -115,10 +117,10 @@ public class TestActivity extends MGLifecycleActivity {
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
 
-        /*
+
         MGWebsocket websocket =  MGWebsocket.create();
 
-        websocket.getConfig().setUrl("ws://echo.websocket.org");
+        websocket.getConfig().setUrl("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
         websocket.getConfig().setReconnect(true);
         websocket.getConfig().setBuffered(true);
 
@@ -155,22 +157,21 @@ public class TestActivity extends MGLifecycleActivity {
                 });
 
         websocket.connect();
-        websocket.message("Test message");
+        websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
 
         getPaused().subscribe(o -> {
 
             websocket.close();
         });
-        */
     }
 
     protected void onCreateOrResume() {
         super.onCreateOrResume();
 
-        MGDelay.delay(5000).observeOn(AndroidSchedulers.mainThread()).subscribe(aVoid -> {
+        //MGDelay.delay(5000).observeOn(AndroidSchedulers.mainThread()).subscribe(aVoid -> {
 
-            startActivity(TestActivityNext.class);
-        });
+            //startActivity(TestActivityNext.class);
+        //});
     }
 
     @OnClick(R.id.test_button)

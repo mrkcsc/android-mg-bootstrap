@@ -3,12 +3,16 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 import android.support.annotation.NonNull;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClientSSL;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import rx.subjects.PublishSubject;
 
@@ -76,7 +80,7 @@ class MGWebsocketUtil {
             @NonNull PublishSubject<MGWebsocketData.Message> onM,
             @NonNull PublishSubject<MGWebsocketData.Error>   onE) {
 
-        return new WebSocketClient(MGWebsocketUtil.createURI(url)) {
+        WebSocketClient client = new WebSocketClient(MGWebsocketUtil.createURI(url)) {
 
             @Override
             public void onOpen(ServerHandshake handshakeData) {
@@ -102,6 +106,24 @@ class MGWebsocketUtil {
                 onE.onNext(MGWebsocketData.Error.create(ex));
             }
         };
+
+        if (url.contains("wss")) {
+
+            // Create an ssl socket factory with our all-trusting manager.
+            SSLSocketFactory sslSocketFactory = MGRestClientSSL.createInsecureSSLSocketFactory();
+
+            try {
+
+                if (sslSocketFactory != null) {
+
+                    // Provide SSL socket to the client.
+                    client.setSocket(sslSocketFactory.createSocket());
+                }
+
+            } catch (IOException ignored) { }
+        }
+
+        return client;
     }
 
     /**
