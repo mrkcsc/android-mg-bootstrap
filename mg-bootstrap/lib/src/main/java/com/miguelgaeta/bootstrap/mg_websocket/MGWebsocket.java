@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import android.support.annotation.NonNull;
 
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
@@ -65,6 +66,15 @@ public class MGWebsocket {
     public void heartBeat(Integer interval, String message) {
 
         client.heartBeat(interval, message);
+    }
+
+    /**
+     * Provides new heartbeat parameters,  accepts
+     * an object tht will be serialized to json.
+     */
+    public void heartBeat(Integer interval, Object message) {
+
+        client.heartBeat(interval, MGRestClient.getGson().toJson(message));
     }
 
     /**
