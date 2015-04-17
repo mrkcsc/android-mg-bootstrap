@@ -1,3 +1,7 @@
+## 1.7.3 - 2015-04-16
+
+- Byg fixes in `MGPreferenceRx` and `MGWebsocket`
+
 ## 1.7.1 - 2015-04-16
 
 - Can provide objects as the heartbeat message now.
