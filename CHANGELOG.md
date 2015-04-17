@@ -1,6 +1,26 @@
+## 1.7.3 - 2015-04-16
+
+- Byg fixes in `MGPreferenceRx` and `MGWebsocket`
+
+## 1.7.1 - 2015-04-16
+
+- Can provide objects as the heartbeat message now.
+
+## 1.7.0 - 2015-04-16
+
+- Bug fix for reconnecting in `MGWebsocket`
+
+## 1.6.9 - 2015-04-16
+
+- `MGWebsocket` api changes (see docs).
+
+## 1.6.8 - 2015-04-15
+
+- `MGWebsocket` can now (insecurely) connect to WSS if the url provided is of that format.
+
 ## 1.6.7 - 2015-04-15
 
-- MGPreference now supports fully nested maps and lists, eg:  MGPreference<Map<Integer, List<SomeObject>> - will not deserialize other types of generics such as SomeObject<T> only collections and maps.
+- MGPreference now supports fully nested maps and lists, eg:  `MGPreference<Map<Integer, List<SomeObject>>` - will not deserialize other types of generics such as `SomeObject<T>` only collections and maps.
 
 ## 1.6.6 - 2015-04-14
 

@@ -9,9 +9,9 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
+import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +50,7 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 
         List<TestData> td1 = new ArrayList<>();
@@ -70,6 +71,7 @@ public class TestActivity extends MGLifecycleActivity {
 
             MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
         }
+        */
 
         //getPref1().get().subscribe(testPref -> {
 
@@ -115,66 +117,55 @@ public class TestActivity extends MGLifecycleActivity {
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
 
-        /*
-        MGWebsocket websocket =  MGWebsocket.create();
 
-        websocket.getConfig().setUrl("ws://echo.websocket.org");
-        websocket.getConfig().setReconnect(true);
-        websocket.getConfig().setBuffered(true);
 
-        websocket.getOnOpen()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(open -> {
-
-                    MGLog.e("Open: " + open);
-                });
-
-        websocket.getOnClose()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(closed -> {
-
-                    MGLog.e("Closed: " + closed);
-                });
-
-        websocket.getOnError()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(error -> {
-
-                    MGLog.e("Error: " + error);
-                });
-
-        websocket.getOnMessage()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .takeUntil(getPaused())
-                .subscribe(message -> {
-
-                    MGLog.e("Message: " + message);
-                });
-
-        websocket.connect();
-        websocket.message("Test message");
-
-        getPaused().subscribe(o -> {
-
-            websocket.close();
-        });
-        */
     }
 
     protected void onCreateOrResume() {
         super.onCreateOrResume();
 
-        MGDelay.delay(5000).observeOn(AndroidSchedulers.mainThread()).subscribe(aVoid -> {
-
-            startActivity(TestActivityNext.class);
-        });
+        setupSocket();
     }
 
     @OnClick(R.id.test_button)
     public void testButtonClick() {
         startActivity(TestActivityNext.class);
+    }
+
+    private void setupSocket() {
+
+        MGWebsocket websocket = new MGWebsocket();
+
+        websocket.getConfig().setUrl("ws://echo.websocket.org");//("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
+        websocket.getConfig().setBuffered(true);
+
+        websocket.onOpened().takeUntil(getPaused()).subscribe(open -> {
+
+            MGLog.e("Open: " + open);
+        });
+
+        websocket.onClosed().takeUntil(getPaused()).subscribe(closed -> {
+
+            MGLog.e("Closed: " + closed);
+        });
+
+        websocket.onError().takeUntil(getPaused()).subscribe(error -> {
+
+            MGLog.e("Error: " + error);
+        });
+
+        websocket.onMessage().takeUntil(getPaused()).subscribe(message -> {
+
+            MGLog.e("Message: " + message);
+        });
+
+        websocket.connect();
+        websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
+        websocket.heartBeat(10000, "ping");
+
+        getPaused().subscribe(o -> {
+
+            websocket.disconnect();
+        });
     }
 }

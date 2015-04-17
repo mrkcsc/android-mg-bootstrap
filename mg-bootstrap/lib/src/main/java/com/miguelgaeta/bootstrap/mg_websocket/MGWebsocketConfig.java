@@ -7,31 +7,38 @@ import lombok.Setter;
 /**
  * Created by mrkcsc on 3/10/15.
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings("UnusedDeclaration") @Setter @Getter(AccessLevel.PACKAGE)
 public class MGWebsocketConfig {
 
     /**
      * Should we buffer messages send to the web-socket -
      * by that we mean, save them while connection closed.
      */
-    @Setter @Getter(AccessLevel.PACKAGE)
     private boolean buffered = true;
 
     /**
-     * Should reconnect on errors.
+     * Time to wait before reconnect.  Set to
+     * null if you do not want to re connect
+     * on errors (unusual but sure).
      */
-    @Setter @Getter(AccessLevel.PACKAGE)
-    private boolean reconnect = true;
+    private Integer reconnectDelay = 10000;
 
     /**
-     * Time to wait before reconnect.
+     * If set, this is the interval used to
+     * ping the websocket to keep the
+     * connection alive.
      */
-    @Setter @Getter(AccessLevel.PACKAGE)
-    private int reconnectDelay = 10000;
+    private Integer keepAliveInterval;
 
     /**
-     * Url to connect to.
+     * If keep alive is defined, will send
+     * this message as the payload.
      */
-    @Setter @Getter(AccessLevel.PACKAGE)
+    private String keepAliveMessage;
+
+    /**
+     * Url to connect to.  Should be of the
+     * prefix format ws:// or wss://
+     */
     private String url;
 }
