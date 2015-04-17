@@ -1,3 +1,11 @@
+## 1.7.0 - 2015-04-16
+
+- Bug fix for reconnecting in `MGWebsocket`
+
+## 1.6.9 - 2015-04-16
+
+- `MGWebsocket` api changes (see docs).
+
 ## 1.6.8 - 2015-04-15
 
 - `MGWebsocket` can now (insecurely) connect to WSS if the url provided is of that format.
