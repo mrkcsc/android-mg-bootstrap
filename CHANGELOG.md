@@ -1,3 +1,7 @@
+## 1.7.0 - 2015-04-16
+
+- Bug fix for reconnecting in `MGWebsocket`
+
 ## 1.6.9 - 2015-04-16
 
 - `MGWebsocket` api changes (see docs).
