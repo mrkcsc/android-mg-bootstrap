@@ -334,7 +334,9 @@ class MGWebsocketClient {
     private boolean shouldReconnect() {
 
         return clientDesiredState == MGWebsocketState.OPENED
-            && (getState() == MGWebsocketState.CLOSED || getState() == MGWebsocketState.CLOSING) && reconnectDelay != null;
+            && (getState() == MGWebsocketState.CLOSED  ||
+                getState() == MGWebsocketState.CLOSING ||
+                getState() == MGWebsocketState.NOT_YET_CONNECTED) && reconnectDelay != null;
     }
 
     /**
