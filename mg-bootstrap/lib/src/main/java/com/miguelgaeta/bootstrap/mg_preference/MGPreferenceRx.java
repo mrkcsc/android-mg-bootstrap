@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.SerializedSubject;
 
 /**
  * Represents a data object that is automatically exposed as
@@ -27,7 +28,7 @@ public class MGPreferenceRx<T> {
      * a new value to the data class.
      */
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final BehaviorSubject<T> dataPublisher = BehaviorSubject.create();
+    private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
 
     /**
      * Static initializer.
