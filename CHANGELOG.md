@@ -1,3 +1,7 @@
+## 1.7.1 - 2015-04-16
+
+- Can provide objects as the heartbeat message now.
+
 ## 1.7.0 - 2015-04-16
 
 - Bug fix for reconnecting in `MGWebsocket`
