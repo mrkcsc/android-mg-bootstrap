@@ -10,7 +10,7 @@ import lombok.Getter;
  * Created by Miguel Gaeta on 4/9/15.
  */
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends RecyclerView.ViewHolder {
+public abstract class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends RecyclerView.ViewHolder {
 
     @Getter
     private T adapter;
@@ -28,4 +28,6 @@ public class MGViewRecyclerHolder<T extends RecyclerView.Adapter> extends Recycl
         // Enable butter knife.
         ButterKnife.inject(this, itemView);
     }
+
+    public abstract void configure(int position);
 }
