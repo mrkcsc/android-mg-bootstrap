@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientSSL;
@@ -93,7 +94,10 @@ class MGWebsocketClient {
     public void disconnect() {
 
         // Don't need to call close if already happened or happening.
-        boolean closed = getState() != MGWebsocketState.CLOSED && getState() != MGWebsocketState.CLOSING;
+        boolean closed =
+            getState() == MGWebsocketState.CLOSED  ||
+            getState() == MGWebsocketState.CLOSING ||
+            getState() == MGWebsocketState.NOT_YET_CONNECTED;
 
         if (client != null && !closed) {
             client.close();
@@ -189,6 +193,8 @@ class MGWebsocketClient {
             @Override
             public void onOpen(ServerHandshake handshakeData) {
 
+                MGLog.e("open event");
+
                 getEventCls().set(null);
                 getEventErr().set(null);
                 getEventOpn().set(MGWebsocketEventOpened.create(handshakeData.getHttpStatus(), handshakeData.getHttpStatusMessage()));
@@ -202,6 +208,8 @@ class MGWebsocketClient {
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
+
+                MGLog.e("close event");
 
                 getEventOpn().set(null);
                 getEventErr().set(null);
@@ -298,9 +306,13 @@ class MGWebsocketClient {
             heartBeatSubscription.unsubscribe();
         }
 
+        MGLog.e("heartbeat at: " + keepAliveInterval);
+
         if (keepAliveInterval != null) {
 
             heartBeatSubscription = MGDelay.delay(keepAliveInterval, true).subscribe(aVoid -> {
+
+                MGLog.e("Heartbeat me: " + getState() + " " + keepAliveMessage);
 
                 if (getState() == MGWebsocketState.OPENED) {
 
