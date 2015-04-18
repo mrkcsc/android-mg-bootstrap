@@ -1,6 +1,10 @@
+## 1.7.5 - 2015-04-17
+
+- Added a version code cache breaker to `MGPreference`
+
 ## 1.7.3 - 2015-04-16
 
-- Byg fixes in `MGPreferenceRx` and `MGWebsocket`
+- Bug fixes in `MGPreferenceRx` and `MGWebsocket`
 
 ## 1.7.1 - 2015-04-16
 
