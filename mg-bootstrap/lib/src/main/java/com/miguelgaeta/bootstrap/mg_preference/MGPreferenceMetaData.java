@@ -37,6 +37,9 @@ class MGPreferenceMetaData<T> {
         // Set config.
         this.config = config;
 
+        // Append cache breaker.
+        key += "_" + config.getVersionCode();
+
         // Set key.
         this.key = key;
         this.keyTypeToken = key + "_TYPE_TOKEN";
