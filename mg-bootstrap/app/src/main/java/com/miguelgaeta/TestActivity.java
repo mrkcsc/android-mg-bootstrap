@@ -12,6 +12,7 @@ import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,6 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 
         List<TestData> td1 = new ArrayList<>();
@@ -66,12 +66,13 @@ public class TestActivity extends MGLifecycleActivity {
         prefData.put(-11, td2);
 
         getPref().set(prefData);
+        getPref().set(prefData);
+        getPref().set(prefData);
 
         for (Integer integer: getPref().get().keySet()) {
 
             MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
         }
-        */
 
         //getPref1().get().subscribe(testPref -> {
 
@@ -124,7 +125,7 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreateOrResume() {
         super.onCreateOrResume();
 
-        setupSocket();
+        //setupSocket();
     }
 
     @OnClick(R.id.test_button)

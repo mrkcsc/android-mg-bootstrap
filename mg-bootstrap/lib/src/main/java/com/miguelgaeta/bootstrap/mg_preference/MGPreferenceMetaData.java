@@ -2,9 +2,15 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -27,6 +33,9 @@ class MGPreferenceMetaData<T> {
 
     // Gson serializer.
     private final Gson gson = MGRestClient.getGson();
+
+    // Holds any active serialization subscription.
+    private Subscription serializationSubscription;
 
     /**
      * Creates a new preference object that is backed
@@ -117,13 +126,37 @@ class MGPreferenceMetaData<T> {
         } else {
 
             // Locally cache value.
-            //locallyCachedValue = value;
+            locallyCachedValue = value;
 
-            SharedPreferences.Editor editor = getSharedPreferencesEditor();
+            if (serializationSubscription != null) {
+                serializationSubscription.unsubscribe();
+            }
 
-            editor.putString(key, gson.toJson(value));
-            editor.putString(keyTypeToken, gson.toJson(MGPreferenceTypeToken.create(value)));
-            editor.apply();
+            // Create an observable that serializes the value and generates its type token.
+            Observable<Pair<String, String>> serializationObservable = Observable.create(subscriber -> {
+
+                String key = gson.toJson(value);
+                String keyTypeToken = gson.toJson(MGPreferenceTypeToken.create(value));
+
+                subscriber.onNext(new Pair<>(key, keyTypeToken));
+                subscriber.onCompleted();
+            });
+
+            serializationSubscription = serializationObservable
+
+                // Perform serialization on worker thread.
+                .subscribeOn(Schedulers.computation())
+
+                // Update shared preferences on main thread.
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(keyTypeTokenPair -> {
+
+                    SharedPreferences.Editor editor = getSharedPreferencesEditor();
+
+                    editor.putString(key, keyTypeTokenPair.first);
+                    editor.putString(keyTypeToken, keyTypeTokenPair.second);
+                    editor.apply();
+                });
         }
     }
 }
