@@ -7,7 +7,26 @@ import java.util.Map;
 /**
  * Created by Miguel Gaeta on 4/20/15.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRxUtils {
+
+    /**
+     * Put or update a new map item in a
+     * preference item.
+     */
+    public static <K, V> void putMapItem(MGPreferenceRx<Map<K, V>> source, K key, V value) {
+
+        source.get().take(1).subscribe(sourceMap -> {
+
+            nullCheck(sourceMap);
+
+            // Update source map key.
+            sourceMap.put(key, value);
+
+            // Update the source.
+            source.set(sourceMap);
+        });
+    }
 
     /**
      * Merge a new key value pair into a preference of a
