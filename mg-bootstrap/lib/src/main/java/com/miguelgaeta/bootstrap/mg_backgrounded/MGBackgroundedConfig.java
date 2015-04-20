@@ -19,8 +19,13 @@ public class MGBackgroundedConfig {
     // Time to be backgrounded.
     private static final int MILLISECONDS_UNTIL_BACKGROUNDED = 1000;
 
+    /**
+     * Keep track of backgrounded state, assume we are backgrounded
+     * as the initial value and proceed from there by observing
+     * activity lifecycle callbacks.
+     */
     @Getter(lazy = true, value = AccessLevel.PACKAGE)
-    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", false, false);
+    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", true, false);
 
     @Getter
     private static Subscription backgroundedSubscription;
