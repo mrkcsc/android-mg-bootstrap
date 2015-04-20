@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,8 +44,6 @@ class MGPreferenceTypeToken {
      * the normally unobtainable type tokens of objects
      * defined by generics.
      *
-     * EG: Map<String, List<SomeObject>>
-     *
      * Currently only supports collections and maps.
      */
     public static MGPreferenceTypeToken create(Object object) {
@@ -54,7 +53,7 @@ class MGPreferenceTypeToken {
         typeToken.typeToken = object.getClass().getName();
         typeToken.typeClassifier = ObjectType.TYPE_OBJECT;
 
-        if (object instanceof Collection && ((Collection)object).size() > 0) {
+        if (isNonEmptyCollection(object)) {
 
             typeToken.typeClassifier = ObjectType.TYPE_COLLECTION;
             typeToken.typeTokenCollectionElement = MGPreferenceTypeToken.create(((Collection)object).iterator().next());
@@ -64,11 +63,27 @@ class MGPreferenceTypeToken {
 
             typeToken.typeClassifier = ObjectType.TYPE_MAP;
 
-            // Fetch key from map.
-            Object key = ((Map)object).keySet().iterator().next();
+            // Fetch keys in the map.
+            Set keySet = ((Map)object).keySet();
 
-            typeToken.typeTokenMapKeyElement = MGPreferenceTypeToken.create(key);
-            typeToken.typeTokenMapValueElement = MGPreferenceTypeToken.create( ((Map)object).get(key));
+            // Initialize index.
+            int index = 0;
+
+            for (Object key: keySet) {
+
+                Object value = ((Map)object).get(key);
+
+                // If value is not a collection, or is a non-empty collection, or is the last key in the set.
+                if (!(value instanceof Collection) || isNonEmptyCollection(((Map)object).get(key)) || index == keySet.size() - 1) {
+
+                    typeToken.typeTokenMapKeyElement = MGPreferenceTypeToken.create(key);
+                    typeToken.typeTokenMapValueElement = MGPreferenceTypeToken.create(((Map)object).get(key));
+
+                    break;
+                }
+
+                index++;
+            }
         }
 
         return typeToken;
@@ -157,5 +172,14 @@ class MGPreferenceTypeToken {
     public Object fromJson(Gson gson, JsonElement jsonElement) {
 
         return fromJson(gson, jsonElement.toString());
+    }
+
+    /**
+     * Test if an object is an instance of a collection
+     * and is not empty.
+     */
+    private static boolean isNonEmptyCollection(Object object) {
+
+        return object instanceof Collection && ((Collection)object).size() > 0;
     }
 }

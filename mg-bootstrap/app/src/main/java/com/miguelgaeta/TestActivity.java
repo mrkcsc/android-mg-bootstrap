@@ -65,8 +65,9 @@ public class TestActivity extends MGLifecycleActivity {
         prefData.put(-10, td1);
         prefData.put(-11, td2);
 
-        getPref().set(prefData);
-        getPref().set(prefData);
+        // Test shit data.
+        prefData.put(-12, new ArrayList<>());
+
         getPref().set(prefData);
 
         for (Integer integer: getPref().get().keySet()) {
