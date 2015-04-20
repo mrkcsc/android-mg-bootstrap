@@ -1,3 +1,7 @@
+## 1.7.7 - 2015-04-20
+
+- Support for `MGPreference<Map<String, List<Object>>` where the list of object is sometimes empty (nulls will still likely crash.
+
 ## 1.7.6 - 2015-04-20
 
 - Fixed a faulty assumption in MGBackgrounded - that when the utility is initialized we are guaranteed to not be in the background. This can be proven false in the case of GCM broadcast receivers. Now provide a default value of true to backgrounded.
