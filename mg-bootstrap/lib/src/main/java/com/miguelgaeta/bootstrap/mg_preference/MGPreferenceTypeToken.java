@@ -16,7 +16,7 @@ import lombok.ToString;
  * Created by Miguel Gaeta on 4/15/15.
  */
 @SuppressWarnings("UnusedDeclaration") @Getter @ToString @EqualsAndHashCode
-public class MGPreferenceTypeToken {
+class MGPreferenceTypeToken {
 
     private enum ObjectType {
 
