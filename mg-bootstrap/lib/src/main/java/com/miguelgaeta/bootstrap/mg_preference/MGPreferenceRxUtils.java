@@ -29,6 +29,26 @@ public class MGPreferenceRxUtils {
     }
 
     /**
+     * Create empty map list for key.
+     */
+    public static <K, V> void createMapList(MGPreferenceRx<Map<K, List<V>>> source, K key) {
+
+        source.get().take(1).subscribe(sourceMap -> {
+
+            nullCheck(sourceMap);
+
+            if (!sourceMap.containsKey(key)) {
+
+                // Update list im map.
+                sourceMap.put(key, new ArrayList<>());
+
+                // Update the source.
+                source.set(sourceMap);
+            }
+        });
+    }
+
+    /**
      * Merge a new key value pair into a preference of a
      * map of a list object.  Will merge new value into
      * the map assuming it does not already contain it.
