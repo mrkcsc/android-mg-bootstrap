@@ -55,6 +55,16 @@ public class MGPreferenceRxUtils {
      */
     public static <K, V> void addMapListItem(MGPreferenceRx<Map<K, List<V>>> source, K key, V value) {
 
+        addMapListItem(source, key, value, null);
+    }
+
+    /**
+     * Merge a new key value pair into a preference of a
+     * map of a list object.  Will merge new value into
+     * the map assuming it does not already contain it.
+     */
+    public static <K, V> void addMapListItem(MGPreferenceRx<Map<K, List<V>>> source, K key, V value, Integer position) {
+
         source.get().take(1).subscribe(sourceMap -> {
 
             nullCheck(sourceMap);
@@ -70,8 +80,15 @@ public class MGPreferenceRxUtils {
 
             if (!list.contains(value)) {
 
-                // Add new value.
-                list.add(value);
+                if (position == null) {
+
+                    // Append.
+                    list.add(value);
+                } else {
+
+                    // Insert.
+                    list.add(position, value);
+                }
 
                 // Update list im map.
                 sourceMap.put(key, list);
