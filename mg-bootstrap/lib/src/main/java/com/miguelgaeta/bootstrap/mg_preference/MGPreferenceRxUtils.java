@@ -75,7 +75,10 @@ public class MGPreferenceRxUtils {
             // Or take from source if exists.
             if (sourceMap.containsKey(key)) {
 
-                list = sourceMap.get(key);
+                for (V sourceMapValue : sourceMap.get(key)) {
+
+                    list.add(sourceMapValue);
+                }
             }
 
             if (!list.contains(value)) {
@@ -112,9 +115,16 @@ public class MGPreferenceRxUtils {
             // Or take from source if exists.
             if (sourceMap.containsKey(key)) {
 
-                List<V> list = sourceMap.get(key);
+                List<V> list = new ArrayList<>();
+
+                for (V sourceMapValue : sourceMap.get(key)) {
+
+                    list.add(sourceMapValue);
+                }
 
                 if (list.contains(value)) {
+
+                    // Remove value.
                     list.remove(value);
 
                     // Update list im map.
