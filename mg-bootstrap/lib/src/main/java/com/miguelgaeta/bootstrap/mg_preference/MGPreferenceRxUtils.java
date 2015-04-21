@@ -10,6 +10,8 @@ import java.util.Map;
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRxUtils {
 
+
+
     /**
      * Put or update a new map item in a
      * preference item.
@@ -29,9 +31,10 @@ public class MGPreferenceRxUtils {
     }
 
     /**
-     * Create empty map list for key.
+     * Put a default item into a map of
+     * preference if it doesn't exist.
      */
-    public static <K, V> void createMapList(MGPreferenceRx<Map<K, List<V>>> source, K key) {
+    public static <K, V> void putMapDefault(MGPreferenceRx<Map<K, V>> source, K key, V defaultValue) {
 
         source.get().take(1).subscribe(sourceMap -> {
 
@@ -39,8 +42,8 @@ public class MGPreferenceRxUtils {
 
             if (!sourceMap.containsKey(key)) {
 
-                // Update list im map.
-                sourceMap.put(key, new ArrayList<>());
+                // Put default value.
+                sourceMap.put(key, defaultValue);
 
                 // Update the source.
                 source.set(sourceMap);

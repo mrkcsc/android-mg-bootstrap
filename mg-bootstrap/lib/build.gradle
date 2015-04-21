@@ -20,7 +20,7 @@ buildscript {
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '1.8.1'
+    PUBLISH_VERSION = '1.8.2'
 }
 
 // Disable javadoc lint errors.
@@ -40,8 +40,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 81
-        versionName "1.8.1"
+        versionCode 82
+        versionName "1.8.2"
     }
 
     compileOptions {
