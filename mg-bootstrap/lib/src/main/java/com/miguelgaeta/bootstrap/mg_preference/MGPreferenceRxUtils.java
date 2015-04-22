@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import rx.functions.Action1;
+
 /**
  * Created by Miguel Gaeta on 4/20/15.
  */
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRxUtils {
-
-
 
     /**
      * Put or update a new map item in a
@@ -18,9 +18,7 @@ public class MGPreferenceRxUtils {
      */
     public static <K, V> void putMapItem(MGPreferenceRx<Map<K, V>> source, K key, V value) {
 
-        source.get().take(1).subscribe(sourceMap -> {
-
-            nullCheck(sourceMap);
+        takeLatest(source, sourceMap -> {
 
             // Update source map key.
             sourceMap.put(key, value);
@@ -36,9 +34,7 @@ public class MGPreferenceRxUtils {
      */
     public static <K, V> void putMapDefault(MGPreferenceRx<Map<K, V>> source, K key, V defaultValue) {
 
-        source.get().take(1).subscribe(sourceMap -> {
-
-            nullCheck(sourceMap);
+        takeLatest(source, sourceMap -> {
 
             if (!sourceMap.containsKey(key)) {
 
@@ -68,9 +64,7 @@ public class MGPreferenceRxUtils {
      */
     public static <K, V> void addMapListItem(MGPreferenceRx<Map<K, List<V>>> source, K key, V value, Integer position) {
 
-        source.get().take(1).subscribe(sourceMap -> {
-
-            nullCheck(sourceMap);
+        takeLatest(source, sourceMap -> {
 
             // Fetch new key object.
             List<V> list = new ArrayList<>();
@@ -110,10 +104,8 @@ public class MGPreferenceRxUtils {
      * keyed to some arbitrary value.
      */
     public static <K, V> void removeMapListItem(MGPreferenceRx<Map<K, List<V>>> source, K key, V value) {
-        
-        source.get().take(1).subscribe(sourceMap -> {
 
-            nullCheck(sourceMap);
+        takeLatest(source, sourceMap -> {
 
             // Or take from source if exists.
             if (sourceMap.containsKey(key)) {
@@ -151,5 +143,21 @@ public class MGPreferenceRxUtils {
             // Should not happen until source is not configured with default.
             throw new RuntimeException("Cannot merge a store stream that is null.");
         }
+    }
+
+    /**
+     * Take latest value of preference with a
+     * null check.
+     */
+    private static <T> void takeLatest(MGPreferenceRx<T> source, Action1<? super T> callback) {
+
+        source.get().take(1).subscribe(sourceResult -> {
+
+            // Make sure source not null.
+            nullCheck(sourceResult);
+
+            // Invoke callback.
+            callback.call(sourceResult);
+        });
     }
 }
