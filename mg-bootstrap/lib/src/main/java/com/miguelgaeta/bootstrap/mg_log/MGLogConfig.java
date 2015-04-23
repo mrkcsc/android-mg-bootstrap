@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_log;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
@@ -28,44 +29,35 @@ public class MGLogConfig {
         boolean debug = (boolean)MGReflection.getBuildConfigValue(context, "DEBUG");
 
         // Plant the associated tree based on environment.
-        Timber.plant(debug ? new Timber.DebugTree() : getProductionTree());
+        Timber.plant(debug ? new Timber.DebugTree() : new ProductionTree(info, error));
     }
 
     /**
      * Hollow logging tree that invokes configured
      * callbacks if provided by the user.
      */
-    private Timber.HollowTree getProductionTree() {
+    private static class ProductionTree extends Timber.Tree {
 
-        return new Timber.HollowTree() {
+        private final MGLog.Callback.Info info;
 
-            @Override
-            public void i(String message, Object... args) {
+        private final MGLog.Callback.Error error;
 
-                i(null, message, args);
+        ProductionTree(MGLog.Callback.Info info, MGLog.Callback.Error error) {
+
+            this.info = info;
+
+            this.error = error;
+        }
+
+        @Override protected void log(int priority, String tag, String message, Throwable t) {
+
+            if (info != null && priority == Log.INFO) {
+                info.run(t, message);
             }
 
-            @Override
-            public void i(Throwable t, String message, Object... args) {
-
-                if (info != null) {
-                    info.run(t, message, args);
-                }
+            if (error != null && priority == Log.ERROR) {
+                error.run(t, message);
             }
-
-            @Override
-            public void e(String message, Object... args) {
-
-                e(null, message, args);
-            }
-
-            @Override
-            public void e(Throwable t, String message, Object... args) {
-
-                if (error != null) {
-                    error.run(t, message, args);
-                }
-            }
-        };
+        }
     }
 }

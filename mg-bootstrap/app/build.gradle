@@ -1,19 +1,11 @@
-// Used for Java 8 closure back-port.
-apply plugin: 'me.tatarka.retrolambda'
+plugins {
+
+    // Backport of Java 8 closures.
+    id "me.tatarka.retrolambda" version "3.0.1"
+}
 
 // This is an application module.
 apply plugin: 'com.android.application'
-
-// Retro lambda dependencies.
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-    }
-}
 
 android {
     compileSdkVersion 22
@@ -50,7 +42,4 @@ dependencies {
 
     // Include core library.
     compile project(':lib')
-
-    // Support libraries.
-    compile 'com.android.support:appcompat-v7:22.0.0'
 }

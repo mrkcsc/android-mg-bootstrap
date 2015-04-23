@@ -1,26 +1,17 @@
-// Used for Java 8 closure back-port.
-apply plugin: 'me.tatarka.retrolambda'
+plugins {
+
+    // Backport of Java 8 closures.
+    id "me.tatarka.retrolambda" version "3.0.1"
+}
 
 // This is a library module.
 apply plugin: 'com.android.library'
-
-// Retro lambda dependencies.
-buildscript {
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-    }
-}
 
 // Repo publish parameters.
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '1.8.6'
+    PUBLISH_VERSION = '1.9.0'
 }
 
 // Disable javadoc lint errors.
@@ -40,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 86
-        versionName "1.8.6"
+        versionCode 90
+        versionName "1.9.0"
     }
 
     compileOptions {
@@ -72,7 +63,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.0.0'
 
     // Provides support for annotated get/set.
-    compile 'org.projectlombok:lombok:1.16.2'
+    compile 'org.projectlombok:lombok:1.16.4'
 
     // Custom fonts library.
     compile 'uk.co.chrisjenx:calligraphy:2.0.2'
@@ -84,7 +75,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:7.0.0'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.8'
+    compile 'io.reactivex:rxjava:1.0.9'
     compile 'io.reactivex:rxandroid:0.24.0'
 
     // Google json library.
@@ -102,11 +93,11 @@ dependencies {
     // ISO time format handler
     compile 'net.danlew:android.joda:2.7.1'
 
+    // Logging library.
+    compile 'com.jakewharton.timber:timber:3.0.1'
+
     // Web socket client.
     compile files('libs/java-web-socket-7c3b223.jar')
-
-    // Logging library.
-    compile 'com.jakewharton.timber:timber:2.7.1'
 }
 
 // Deployment script: https://github.com/blundell/release-android-library
