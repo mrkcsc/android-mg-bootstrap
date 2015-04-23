@@ -13,6 +13,9 @@ public class MGRestClientConfig {
     private boolean loggingEnabled;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
+    private boolean cookieStorageEnabled;
+
+    @Setter @Getter(value = AccessLevel.PACKAGE)
     private String baseAPIURL;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
