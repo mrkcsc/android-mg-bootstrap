@@ -26,6 +26,9 @@ class MGPreferenceMetaData<T> {
     // android preferences every fetch.
     private T locallyCachedValue;
 
+    // Default value of this item.
+    private T defaultValue;
+
     // The key used by the android preferences
     // underlying system (should be unique).
     private final String key;
@@ -41,7 +44,7 @@ class MGPreferenceMetaData<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    MGPreferenceMetaData(String key, MGPreferenceConfig config) {
+    MGPreferenceMetaData(String key, T defaultValue, MGPreferenceConfig config) {
 
         // Set config.
         this.config = config;
@@ -52,6 +55,9 @@ class MGPreferenceMetaData<T> {
         // Set key.
         this.key = key;
         this.keyTypeToken = key + "_TYPE_TOKEN";
+
+        // Set default value.
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -109,6 +115,11 @@ class MGPreferenceMetaData<T> {
                     locallyCachedValue = (T)typeToken.fromJson(gson, keyJson);
                 }
             }
+        }
+
+        if (locallyCachedValue == null && defaultValue != null) {
+
+            return defaultValue;
         }
 
         return locallyCachedValue;

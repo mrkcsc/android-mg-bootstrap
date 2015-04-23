@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Created by mrkcsc on 12/5/14.
@@ -18,19 +19,29 @@ public class MGPreference<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    private MGPreference(String key) {
+    private MGPreference(String key, T defaultValue) {
 
         // Meta data does all the heavy lifting.
-        metaData = new MGPreferenceMetaData<>(key, getConfig());
+        metaData = new MGPreferenceMetaData<>(key, defaultValue, getConfig());
     }
 
     /**
      * Create a new preference object backed by
      * a concrete class object.
      */
-    public static <T> MGPreference<T> create(String key) {
+    public static <T> MGPreference<T> create(@NonNull String key) {
 
-        return new MGPreference<>(key);
+        return new MGPreference<>(key, null);
+    }
+
+    /**
+     * Create a new preference object backed by
+     * a concrete class object. Provide a default
+     * initial value.
+     */
+    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue) {
+
+        return new MGPreference<>(key, defaultValue);
     }
 
     /**

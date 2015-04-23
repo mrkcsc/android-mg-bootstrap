@@ -56,9 +56,9 @@ public class MGPreferenceRx<T> {
     private MGPreferenceRx(String key, T defaultValue, boolean cached) {
 
         // Initialize data cache.
-        dataCache = MGPreference.create(key);
+        dataCache = MGPreference.create(key, defaultValue);
 
-        init(defaultValue, cached);
+        init(cached);
     }
 
     /**
@@ -100,7 +100,7 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(T defaultValue, boolean cached) {
+    private void init(boolean cached) {
 
         getDataPublisher().subscribe(data -> {
 
@@ -110,16 +110,7 @@ public class MGPreferenceRx<T> {
             }
         });
 
-        // If a cached value exists (and caching enabled).
-        if (cached && getDataCache().get() != null) {
-
-            // Publish initial value.
-            getDataPublisher().onNext(getDataCache().get());
-
-        } else {
-
-            // Otherwise emit the default.
-            getDataPublisher().onNext(defaultValue);
-        }
+        // Publish initial value.
+        getDataPublisher().onNext(getDataCache().get());
     }
 }
