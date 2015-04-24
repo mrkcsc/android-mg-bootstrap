@@ -46,11 +46,12 @@ class MGPreferenceTypeToken {
      *
      * Currently only supports collections and maps.
      */
+    @SuppressWarnings("ConstantConditions")
     public static MGPreferenceTypeToken create(Object object) {
 
         MGPreferenceTypeToken typeToken = new MGPreferenceTypeToken();
 
-        typeToken.typeToken = object.getClass().getName();
+        typeToken.typeToken = object != null ? object.getClass().getName() : Void.class.getName();
         typeToken.typeClassifier = ObjectType.TYPE_OBJECT;
 
         if (isNonEmptyCollection(object)) {
@@ -73,8 +74,8 @@ class MGPreferenceTypeToken {
 
                 Object value = ((Map)object).get(key);
 
-                // If value is not a collection, or is a non-empty collection, or is the last key in the set.
-                if (!(value instanceof Collection) || isNonEmptyCollection(((Map)object).get(key)) || index == keySet.size() - 1) {
+                // If value is not null, a collection, or is a non-empty collection, or is the last key in the set.
+                if (value != null || !(value instanceof Collection) || isNonEmptyCollection(((Map)object).get(key)) || index == keySet.size() - 1) {
 
                     typeToken.typeTokenMapKeyElement = MGPreferenceTypeToken.create(key);
                     typeToken.typeTokenMapValueElement = MGPreferenceTypeToken.create(((Map)object).get(key));
