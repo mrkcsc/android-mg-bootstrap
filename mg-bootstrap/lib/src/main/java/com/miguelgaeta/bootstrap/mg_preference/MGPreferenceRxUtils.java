@@ -12,20 +12,29 @@ import rx.functions.Action1;
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRxUtils {
 
+    /// GENERAL
+
     /**
-     * Set item only if it has changed.
+     * Set an MG Preference rx item with generic
+     * error check handling, and equality checks.
      */
-    public static <T> void setItemIfChanged(MGPreferenceRx<T> source, T item) {
+    public static <T> void setItem(MGPreferenceRx<T> source, T item, boolean checkEquality) {
 
         takeLatest(source, sourceItem -> {
 
-            // Only update if data has changed.
-            if (!sourceItem.equals(item)) {
+            if (!checkEquality || !sourceItem.equals(item)) {
 
                 source.set(item);
             }
         });
     }
+
+    public static <T> void setItem(MGPreferenceRx<T> source, T item) {
+
+        setItem(source, item, true);
+    }
+
+    /// MAPS
 
     /**
      * Put or update a new map item in a
@@ -61,6 +70,8 @@ public class MGPreferenceRxUtils {
             }
         });
     }
+
+    /// MAP LISTS
 
     /**
      * Merge a new key value pair into a preference of a
