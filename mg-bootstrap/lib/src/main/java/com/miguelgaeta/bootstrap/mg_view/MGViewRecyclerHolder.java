@@ -46,7 +46,7 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
      * Simulates the on resume method of
      * fragments and activities.
      */
-    protected void onResume() {
+    protected void onResume(int position) {
 
         // Emit pause if the adapter paused.
         getPausedAdapter().takeUntil(getPaused()).subscribe(r -> {
@@ -73,10 +73,4 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
 
         return getPausedHolder().asObservable();
     }
-
-    /**
-     * Configuration method for the view holder.  This method
-     * is enforced for easy visibility.
-     */
-    public abstract void configure(int position);
 }

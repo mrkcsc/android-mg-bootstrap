@@ -35,17 +35,6 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
     }
 
     /**
-     * Invoke the lifecycle resume callback
-     * on the associated view holder.
-     */
-    @Override
-    public void onViewAttachedToWindow(MGViewRecyclerHolder holder) {
-        super.onViewAttachedToWindow(holder);
-
-        holder.onResume();
-    }
-
-    /**
      * Invoke the lifecycle pause callback
      * on the associated view holder.
      */
@@ -63,6 +52,6 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
     @Override
     public void onBindViewHolder(MGViewRecyclerHolder holder, int position) {
 
-        holder.configure(position);
+        holder.onResume(position);
     }
 }
