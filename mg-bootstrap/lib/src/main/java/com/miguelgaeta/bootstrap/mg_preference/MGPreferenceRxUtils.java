@@ -13,6 +13,21 @@ import rx.functions.Action1;
 public class MGPreferenceRxUtils {
 
     /**
+     * Set item only if it has changed.
+     */
+    public static <T> void setItemIfChanged(MGPreferenceRx<T> source, T item) {
+
+        takeLatest(source, sourceItem -> {
+
+            // Only update if data has changed.
+            if (!sourceItem.equals(item)) {
+
+                source.set(item);
+            }
+        });
+    }
+
+    /**
      * Put or update a new map item in a
      * preference item.
      */
