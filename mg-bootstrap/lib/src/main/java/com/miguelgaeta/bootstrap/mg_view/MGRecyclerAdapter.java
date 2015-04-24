@@ -14,24 +14,30 @@ import rx.Observable;
 public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyclerHolder> {
 
     @Getter(AccessLevel.PROTECTED)
-    private RecyclerView recycler;
+    private final RecyclerView recycler;
 
     @Getter(AccessLevel.PROTECTED)
     private final Observable<Void> paused;
 
+    @Getter(AccessLevel.PROTECTED)
+    private final Observable<Void> resumed;
+
     /**
      * This adapter streamlines common recycler view operations
-     * and boiler plate code.  In addition it exposts lifecycle
+     * and boiler plate code.  In addition it exposes lifecycle
      * methods to the view holder cells which allow for
      * much easier mutation.
-     */
-    public MGRecyclerAdapter(@NonNull RecyclerView recycler, @NonNull Observable<Void> paused) {
+    */
+    public MGRecyclerAdapter(@NonNull RecyclerView recycler, @NonNull Observable<Void> paused, @NonNull Observable<Void> resumed) {
 
         // Set recycler view.
         this.recycler = recycler;
 
         // Set on paused event.
         this.paused = paused;
+
+        // Set on resumed event.
+        this.resumed = resumed;
     }
 
     /**
@@ -40,9 +46,11 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
      */
     @Override
     public void onViewDetachedFromWindow(MGViewRecyclerHolder holder) {
-        super.onViewDetachedFromWindow(holder);
 
+        // Pause immediately.
         holder.onPause();
+
+        super.onViewDetachedFromWindow(holder);
     }
 
     /**
@@ -52,6 +60,7 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
     @Override
     public void onBindViewHolder(MGViewRecyclerHolder holder, int position) {
 
+        // Called with attached, and sooner.
         holder.onResume(position);
     }
 }

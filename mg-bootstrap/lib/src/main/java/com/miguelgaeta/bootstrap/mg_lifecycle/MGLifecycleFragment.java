@@ -25,6 +25,10 @@ public class MGLifecycleFragment extends Fragment {
     // Custom observable that emits activity paused events.
     private PublishSubject<Void> paused = PublishSubject.create();
 
+    @Getter
+    // Custom observable that emits activity resumed events.
+    private PublishSubject<Void> resumed = PublishSubject.create();
+
     /**
      * Auto-inflate the fragment view based
      * on standard naming convention.
@@ -58,6 +62,8 @@ public class MGLifecycleFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        resumed.onNext(null);
+
         if (getConfig().isOnCreateOrResumeInvoked()) {
             getConfig().setOnCreateOrResumeInvoked(false);
         } else {
@@ -71,7 +77,6 @@ public class MGLifecycleFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        // Emit pause event.
         paused.onNext(null);
     }
 

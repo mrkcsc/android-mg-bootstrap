@@ -31,6 +31,10 @@ public class MGLifecycleActivity extends ActionBarActivity {
     // Custom observable that emits activity paused events.
     private PublishSubject<Void> paused = PublishSubject.create();
 
+    @Getter
+    // Custom observable that emits activity resumed events.
+    private PublishSubject<Void> resumed = PublishSubject.create();
+
     // Tracks if we are currently going back.
     private static boolean goingBack;
 
@@ -86,6 +90,8 @@ public class MGLifecycleActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        resumed.onNext(null);
 
         transitions.run(goingBack, true);
 

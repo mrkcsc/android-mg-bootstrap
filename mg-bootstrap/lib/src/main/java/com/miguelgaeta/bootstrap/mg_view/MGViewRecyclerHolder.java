@@ -7,6 +7,7 @@ import butterknife.ButterKnife;
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
+import rx.Subscription;
 import rx.subjects.PublishSubject;
 
 /**
@@ -21,8 +22,13 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
     @Getter(AccessLevel.PRIVATE)
     private final PublishSubject<Void> pausedHolder = PublishSubject.create();
 
+    @Getter(AccessLevel.PACKAGE)
+    private boolean isResumed = false;
+
     @Getter(AccessLevel.PRIVATE)
     private final Observable<Void> pausedAdapter;
+
+    private Subscription resumedSubscription;
 
     /**
      * This recycler view holder subclass exposes
@@ -48,6 +54,17 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
      */
     protected void onResume(int position) {
 
+        // Kill resume subscription.
+        if (resumedSubscription != null) {
+            resumedSubscription.unsubscribe();
+        }
+
+        // Set it up again.
+        resumedSubscription = getAdapter().getResumed().subscribe(r -> {
+
+            onResume(position);
+        });
+
         // Emit pause if the adapter paused.
         getPausedAdapter().takeUntil(getPaused()).subscribe(r -> {
 
@@ -60,6 +77,11 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
      * fragments and activities.
      */
     protected void onPause() {
+
+        // Kill resume subscription.
+        if (resumedSubscription != null) {
+            resumedSubscription.unsubscribe();
+        }
 
         // Or if paused called directly.
         getPausedHolder().onNext(null);
