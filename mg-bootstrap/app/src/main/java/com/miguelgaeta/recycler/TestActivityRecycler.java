@@ -9,6 +9,8 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
+import org.joda.time.DateTime;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import lombok.Getter;
@@ -47,6 +49,6 @@ public class TestActivityRecycler extends MGLifecycleActivity {
     @OnClick(R.id.recycler_reload)
     public void onReloadClicked() {
 
-        getTestStream().set("reload string");
+        getTestStream().set("r: " + new DateTime().getMillis());
     }
 }

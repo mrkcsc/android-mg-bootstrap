@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import butterknife.ButterKnife;
 import lombok.Getter;
 import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -29,7 +30,7 @@ public class MGLifecycleActivity extends ActionBarActivity {
 
     @Getter
     // Custom observable that emits activity paused events.
-    private PublishSubject<Void> paused = PublishSubject.create();
+    private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.create());
 
     @Getter
     // Custom observable that emits activity resumed events.

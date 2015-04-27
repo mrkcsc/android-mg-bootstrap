@@ -8,7 +8,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
 
 /**
  * Created by Miguel Gaeta on 4/9/15.
@@ -20,10 +22,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     private final T adapter;
 
     @Getter(AccessLevel.PRIVATE)
-    private final PublishSubject<Void> pausedHolder = PublishSubject.create();
-
-    @Getter(AccessLevel.PRIVATE)
-    private final Observable<Void> pausedAdapter;
+    private final SerializedSubject<Void, Void> pausedHolder = new SerializedSubject<>(PublishSubject.create());
 
     private Subscription resumedSubscription;
 
@@ -37,9 +36,6 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
         // Set the adapter.
         this.adapter = adapter;
-
-        // Set adapter paused observable.
-        this.pausedAdapter = adapter.getPaused();
 
         // Enable butter knife.
         ButterKnife.inject(this, itemView);
@@ -65,13 +61,13 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         }
 
         // Set it up again.
-        resumedSubscription = getAdapter().getResumed().subscribe(r -> {
+        resumedSubscription = getAdapter().getResumed().observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
 
             onResume(position);
         });
 
-        // Emit pause if the adapter paused.
-        getPausedAdapter().takeUntil(getPaused()).subscribe(r -> {
+        // Emit pause
+        getAdapter().getPaused().takeUntil(getPaused()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
 
             getPausedHolder().onNext(null);
         });

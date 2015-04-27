@@ -2,8 +2,7 @@ package com.miguelgaeta.bootstrap.mg_recycler;
 
 import android.support.v7.widget.RecyclerView;
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,8 +23,6 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
 
     @Getter(AccessLevel.PROTECTED)
     private final Observable<Void> resumed;
-
-    private WeakReference<Map<String, MGRecyclerViewHolder>> sa;
 
     /**
      * This adapter streamlines common recycler view operations
