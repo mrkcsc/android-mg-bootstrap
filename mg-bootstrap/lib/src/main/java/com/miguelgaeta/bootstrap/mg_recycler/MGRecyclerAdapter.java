@@ -2,12 +2,9 @@ package com.miguelgaeta.bootstrap.mg_recycler;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 4/21/15.
@@ -18,41 +15,14 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
     @Getter(AccessLevel.PROTECTED)
     private final RecyclerView recycler;
 
-    @Getter(AccessLevel.PROTECTED)
-    private final Observable<Void> paused;
-
-    @Getter(AccessLevel.PROTECTED)
-    private final Observable<Void> resumed;
-
     /**
      * This adapter streamlines common recycler view operations
-     * and boiler plate code.  In addition it exposes lifecycle
-     * methods to the view holder cells which allow for
-     * much easier mutation.
+     * and boiler plate code.
     */
-    public MGRecyclerAdapter(@NonNull RecyclerView recycler, @NonNull Observable<Void> paused, @NonNull Observable<Void> resumed) {
+    public MGRecyclerAdapter(@NonNull RecyclerView recycler) {
 
         // Set recycler view.
         this.recycler = recycler;
-
-        // Set on paused event.
-        this.paused = paused;
-
-        // Set on resumed event.
-        this.resumed = resumed;
-    }
-
-    /**
-     * Invoke the lifecycle pause callback
-     * on the associated view holder.
-     */
-    @Override
-    public void onViewDetachedFromWindow(MGRecyclerViewHolder holder) {
-
-        // Pause immediately.
-        holder.onPause();
-
-        super.onViewDetachedFromWindow(holder);
     }
 
     /**
@@ -62,10 +32,7 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
     @Override
     public void onBindViewHolder(MGRecyclerViewHolder holder, int position) {
 
-        // Created.
-        holder.onCreate(position);
-
-        // Then resumed.
-        holder.onResume(position);
+        // Configure.
+        holder.onConfigure(position);
     }
 }

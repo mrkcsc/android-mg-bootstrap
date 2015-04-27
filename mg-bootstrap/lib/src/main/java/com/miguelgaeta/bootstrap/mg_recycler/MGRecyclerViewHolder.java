@@ -1,16 +1,13 @@
 package com.miguelgaeta.bootstrap.mg_recycler;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import butterknife.ButterKnife;
 import lombok.AccessLevel;
 import lombok.Getter;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
 
 /**
  * Created by Miguel Gaeta on 4/9/15.
@@ -20,11 +17,6 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
     @Getter(AccessLevel.PROTECTED)
     private final T adapter;
-
-    @Getter(AccessLevel.PRIVATE)
-    private final SerializedSubject<Void, Void> pausedHolder = new SerializedSubject<>(PublishSubject.create());
-
-    private Subscription resumedSubscription;
 
     /**
      * This recycler view holder subclass exposes
@@ -42,58 +34,18 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     }
 
     /**
+     * Short hand that auto inflated the resource.
+     */
+    public MGRecyclerViewHolder(@LayoutRes int layout, T adapter) {
+
+        this(LayoutInflater.from(adapter.getRecycler().getContext()).inflate(layout, adapter.getRecycler(), false), adapter);
+    }
+
+    /**
      * Simulated the one create method
      * of fragments and activities.
      */
-    protected void onCreate(int position) {
+    protected void onConfigure(int position) {
 
-    }
-
-    /**
-     * Simulates the on resume method of
-     * fragments and activities.
-     */
-    protected void onResume(int position) {
-
-        // Kill resume subscription.
-        if (resumedSubscription != null) {
-            resumedSubscription.unsubscribe();
-        }
-
-        // Set it up again.
-        resumedSubscription = getAdapter().getResumed().observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-
-            onResume(position);
-        });
-
-        // Emit pause
-        getAdapter().getPaused().takeUntil(getPaused()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-
-            getPausedHolder().onNext(null);
-        });
-    }
-
-    /**
-     * Simulates the on pause method of
-     * fragments and activities.
-     */
-    protected void onPause() {
-
-        // Kill resume subscription.
-        if (resumedSubscription != null) {
-            resumedSubscription.unsubscribe();
-        }
-
-        // Or if paused called directly.
-        getPausedHolder().onNext(null);
-    }
-
-    /**
-     * Gets the paused stream as
-     * an observable.
-     */
-    protected final Observable<Void> getPaused() {
-
-        return getPausedHolder().asObservable();
     }
 }
