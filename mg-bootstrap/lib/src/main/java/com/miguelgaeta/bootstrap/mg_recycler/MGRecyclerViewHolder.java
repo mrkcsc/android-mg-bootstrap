@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_view;
+package com.miguelgaeta.bootstrap.mg_recycler;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,16 +14,13 @@ import rx.subjects.PublishSubject;
  * Created by Miguel Gaeta on 4/9/15.
  */
 @SuppressWarnings({"unused", "FieldCanBeLocal" })
-public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends RecyclerView.ViewHolder {
+public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends RecyclerView.ViewHolder {
 
     @Getter(AccessLevel.PROTECTED)
     private final T adapter;
 
     @Getter(AccessLevel.PRIVATE)
     private final PublishSubject<Void> pausedHolder = PublishSubject.create();
-
-    @Getter(AccessLevel.PACKAGE)
-    private boolean isResumed = false;
 
     @Getter(AccessLevel.PRIVATE)
     private final Observable<Void> pausedAdapter;
@@ -35,7 +32,7 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
      * the associated adapter so it can self
      * configure itself.
      */
-    public MGViewRecyclerHolder(View itemView, T adapter) {
+    public MGRecyclerViewHolder(View itemView, T adapter) {
         super(itemView);
 
         // Set the adapter.
@@ -46,6 +43,14 @@ public abstract class MGViewRecyclerHolder<T extends MGRecyclerAdapter> extends 
 
         // Enable butter knife.
         ButterKnife.inject(this, itemView);
+    }
+
+    /**
+     * Simulated the one create method
+     * of fragments and activities.
+     */
+    protected void onCreate(int position) {
+
     }
 
     /**

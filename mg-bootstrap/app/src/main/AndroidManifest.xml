@@ -8,7 +8,7 @@
         android:icon="@null"
         android:theme="@style/Theme.AppCompat">
 
-        <activity android:name=".TestActivity">
+        <activity android:name=".recycler.TestActivityRecycler">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

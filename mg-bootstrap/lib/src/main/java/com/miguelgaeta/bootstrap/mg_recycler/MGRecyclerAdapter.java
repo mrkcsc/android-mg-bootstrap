@@ -1,6 +1,9 @@
-package com.miguelgaeta.bootstrap.mg_view;
+package com.miguelgaeta.bootstrap.mg_recycler;
 
 import android.support.v7.widget.RecyclerView;
+
+import java.lang.ref.WeakReference;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +14,7 @@ import rx.Observable;
  * Created by Miguel Gaeta on 4/21/15.
  */
 @SuppressWarnings("UnusedDeclaration")
-public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyclerHolder> {
+public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerViewHolder> {
 
     @Getter(AccessLevel.PROTECTED)
     private final RecyclerView recycler;
@@ -21,6 +24,8 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
 
     @Getter(AccessLevel.PROTECTED)
     private final Observable<Void> resumed;
+
+    private WeakReference<Map<String, MGRecyclerViewHolder>> sa;
 
     /**
      * This adapter streamlines common recycler view operations
@@ -45,7 +50,7 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
      * on the associated view holder.
      */
     @Override
-    public void onViewDetachedFromWindow(MGViewRecyclerHolder holder) {
+    public void onViewDetachedFromWindow(MGRecyclerViewHolder holder) {
 
         // Pause immediately.
         holder.onPause();
@@ -58,9 +63,12 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGViewRecyc
      * with the specified item at position.
      */
     @Override
-    public void onBindViewHolder(MGViewRecyclerHolder holder, int position) {
+    public void onBindViewHolder(MGRecyclerViewHolder holder, int position) {
 
-        // Called with attached, and sooner.
+        // Created.
+        holder.onCreate(position);
+
+        // Then resumed.
         holder.onResume(position);
     }
 }
