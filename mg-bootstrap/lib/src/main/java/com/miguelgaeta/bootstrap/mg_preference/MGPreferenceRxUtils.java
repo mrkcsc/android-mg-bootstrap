@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by Miguel Gaeta on 4/20/15.
@@ -12,7 +13,9 @@ import rx.functions.Action1;
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRxUtils {
 
+    //////////////////////////////
     /// GENERAL
+    //////////////////////////////
 
     /**
      * Set an MG Preference rx item with generic
@@ -34,7 +37,27 @@ public class MGPreferenceRxUtils {
         setItem(source, item, true);
     }
 
+    //////////////////////////////
     /// MAPS
+    //////////////////////////////
+
+    /**
+     * Merge a map item into a preference item.
+     */
+    public static <K, V> void mergeMapItem(MGPreferenceRx<Map<K, V>> source, K key, Func1<V, V> existingItem) {
+
+        takeLatest(source, sourceItem -> {
+
+            V mergedItem = existingItem.call(sourceItem.containsKey(key) ? sourceItem.get(key) : null);
+
+            // If result is merge is a new value, put new value and update stream.
+            if (!sourceItem.containsKey(key) || !sourceItem.get(key).equals(mergedItem)) {
+
+                sourceItem.put(key, mergedItem);
+                source.set(sourceItem);
+            }
+        });
+    }
 
     /**
      * Put or update a new map item in a
@@ -46,8 +69,6 @@ public class MGPreferenceRxUtils {
 
             // Update source map key.
             sourceMap.put(key, value);
-
-            // Update the source.
             source.set(sourceMap);
         });
     }
@@ -64,14 +85,14 @@ public class MGPreferenceRxUtils {
 
                 // Put default value.
                 sourceMap.put(key, defaultValue);
-
-                // Update the source.
                 source.set(sourceMap);
             }
         });
     }
 
-    /// MAP LISTS
+    //////////////////////////////
+    /// MAPS LISTS
+    //////////////////////////////
 
     /**
      * Merge a new key value pair into a preference of a
@@ -157,6 +178,10 @@ public class MGPreferenceRxUtils {
             }
         });
     }
+
+    //////////////////////////////
+    /// PRIVATE
+    //////////////////////////////
 
     /**
      * Ensure object that is emitted by a
