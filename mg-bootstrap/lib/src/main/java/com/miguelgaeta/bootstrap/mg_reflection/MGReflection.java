@@ -6,9 +6,6 @@ import android.graphics.Point;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
-import java.lang.reflect.Field;
-
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -18,11 +15,8 @@ import lombok.NonNull;
 @SuppressWarnings("UnusedDeclaration")
 public class MGReflection {
 
-    @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGReflection instance = new MGReflection();
-
-    @Getter
-    private static MGReflectionConfig config = new MGReflectionConfig();
+    @Getter(lazy = true)
+    private static final MGReflectionConfig config = new MGReflectionConfig();
 
     /**
      * Given a resource name as a string, fetch the associated
@@ -31,15 +25,16 @@ public class MGReflection {
      */
     public static Integer getResourceId(@NonNull String resourceName, @NonNull Class<?> resourceClass) {
 
-        try {
-            Field resourceField = resourceClass.getDeclaredField(resourceName);
+        // Fetch resources.
+        Resources resources = getConfig().getContext().getResources();
 
-            return resourceField.getInt(resourceField);
+        // Fetch application package.
+        String applicationPackageName = getConfig().getContext().getPackageName();
 
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        // Try to fetch associated resource id.
+        int resourceId = resources.getIdentifier(resourceName, resourceClass.getSimpleName(), applicationPackageName);
 
-            return null;
-        }
+        return resourceId == 0 ? null : resourceId;
     }
 
     /**
@@ -49,7 +44,7 @@ public class MGReflection {
      */
     public static Integer getInteger(int integerResourceId) {
 
-        return config.context.getResources().getInteger(integerResourceId);
+        return getConfig().getContext().getResources().getInteger(integerResourceId);
     }
 
     /**
@@ -58,7 +53,7 @@ public class MGReflection {
      */
     public static int dipToPixels(int densityPixels) {
 
-        Resources resources = config.context.getResources();
+        Resources resources = getConfig().getContext().getResources();
 
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 densityPixels, resources.getDisplayMetrics()));
@@ -72,7 +67,7 @@ public class MGReflection {
 
         Point point = new Point();
 
-        WindowManager windowManager = (WindowManager)config.context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager)getConfig().getContext().getSystemService(Context.WINDOW_SERVICE);
 
         windowManager.getDefaultDisplay().getSize(point);
 
@@ -95,7 +90,7 @@ public class MGReflection {
             // Fetch associated field.
             return clazz.getField(fieldName).get(null);
 
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+        } catch (Exception e) {
 
             return null;
         }
