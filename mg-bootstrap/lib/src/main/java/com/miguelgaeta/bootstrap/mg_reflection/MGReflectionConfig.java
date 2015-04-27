@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_reflection;
 
+import android.app.Application;
 import android.content.Context;
 
 /**
@@ -16,6 +17,15 @@ public class MGReflectionConfig {
      */
     public void init(Context context) {
 
-        this.context = context;
+        if (context instanceof Application) {
+
+            // Set the context.
+            this.context = context;
+
+        } else {
+
+            // Enforce use of an application context.
+            throw new RuntimeException("An application context is required.");
+        }
     }
 }
