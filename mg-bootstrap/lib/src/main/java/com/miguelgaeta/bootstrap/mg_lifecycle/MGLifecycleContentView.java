@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.miguelgaeta.bootstrap.R;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_strings.MGStrings;
 
 /**
@@ -20,7 +22,7 @@ class MGLifecycleContentView {
      */
     static void setContentView(@NonNull Activity activity) {
 
-        Integer contentView = MGLifecycleContentView.getContentView(activity.getClass(), activity);
+        Integer contentView = MGLifecycleContentView.getContentView(activity.getClass());
 
         if (contentView != null) {
 
@@ -34,7 +36,7 @@ class MGLifecycleContentView {
      */
     static View getContentView(@NonNull Fragment fragment, ViewGroup container, View view) {
 
-        Integer contentView = MGLifecycleContentView.getContentView(fragment.getClass(), fragment.getActivity());
+        Integer contentView = MGLifecycleContentView.getContentView(fragment.getClass());
 
         if (contentView != null) {
 
@@ -49,14 +51,11 @@ class MGLifecycleContentView {
      * convention based naming approach - the activity name
      * lower cased and underscored.
      */
-    private static Integer getContentView(@NonNull Class classObject, @NonNull Activity activity) {
+    private static Integer getContentView(@NonNull Class classObject) {
 
         String className = classObject.getSimpleName();
         String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
 
-        int resourceId = activity.getResources().getIdentifier(classNameFormatted, "layout",
-                activity.getApplicationContext().getPackageName());
-
-        return resourceId == 0 ? null : resourceId;
+        return MGReflection.getResourceId(classNameFormatted, R.layout.class);
     }
 }
