@@ -10,7 +10,7 @@ import rx.functions.Func1;
 /**
  * Created by Miguel Gaeta on 4/20/15.
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "unchecked"})
 public class MGPreferenceRxUtils {
 
     //////////////////////////////
@@ -42,19 +42,27 @@ public class MGPreferenceRxUtils {
     //////////////////////////////
 
     /**
-     * Merge a map item into a preference item.
+     * Merge a map item into a preference item.  If a concrete class
+     * if provided, will create a new map so that if merged, a
+     * different object is emitted.
      */
-    public static <K, V> void mergeMapItem(MGPreferenceRx<Map<K, V>> source, K key, Func1<V, V> existingItem) {
+    public static <K, V, G extends Map> void mergeMapItem(MGPreferenceRx<Map<K, V>> source, K key, Class<G> mapClass, Func1<V, V> existingItem) {
 
-        takeLatest(source, sourceItem -> {
+        takeLatest(source, sourceMap -> {
 
-            V mergedItem = existingItem.call(sourceItem.containsKey(key) ? sourceItem.get(key) : null);
+            V mergedItem = existingItem.call(sourceMap.containsKey(key) ? sourceMap.get(key) : null);
 
             // If result is merge is a new value, put new value and update stream.
-            if (!sourceItem.containsKey(key) || !sourceItem.get(key).equals(mergedItem)) {
+            if (!sourceMap.containsKey(key) || !sourceMap.get(key).equals(mergedItem)) {
 
-                sourceItem.put(key, mergedItem);
-                source.set(sourceItem);
+                // Create a copy if possible.
+                G sourceMapCopy = copyMap(sourceMap, mapClass);
+
+                // Insert merged item into copy.
+                sourceMapCopy.put(key, mergedItem);
+
+                // Set new item.
+                source.set(sourceMapCopy);
             }
         });
     }
@@ -63,13 +71,18 @@ public class MGPreferenceRxUtils {
      * Put or update a new map item in a
      * preference item.
      */
-    public static <K, V> void putMapItem(MGPreferenceRx<Map<K, V>> source, K key, V value) {
+    public static <K, V, G extends Map> void putMapItem(MGPreferenceRx<Map<K, V>> source, K key, V value, Class<G> mapClass) {
 
         takeLatest(source, sourceMap -> {
 
-            // Update source map key.
-            sourceMap.put(key, value);
-            source.set(sourceMap);
+            // Create a copy if possible.
+            G sourceMapCopy = copyMap(sourceMap, mapClass);
+
+            // Put new item.
+            sourceMapCopy.put(key, value);
+
+            // Set new item.
+            source.set(sourceMapCopy);
         });
     }
 
@@ -77,17 +90,53 @@ public class MGPreferenceRxUtils {
      * Put a default item into a map of
      * preference if it doesn't exist.
      */
-    public static <K, V> void putMapDefault(MGPreferenceRx<Map<K, V>> source, K key, V defaultValue) {
+    public static <K, V, G extends Map> void putMapDefault(MGPreferenceRx<Map<K, V>> source, K key, V defaultValue, Class<G> mapClass) {
 
         takeLatest(source, sourceMap -> {
 
             if (!sourceMap.containsKey(key)) {
 
+                // Create a copy if possible.
+                G sourceMapCopy = copyMap(sourceMap, mapClass);
+
                 // Put default value.
-                sourceMap.put(key, defaultValue);
-                source.set(sourceMap);
+                sourceMapCopy.put(key, defaultValue);
+
+                // Set new item.
+                source.set(sourceMapCopy);
             }
         });
+    }
+
+    /**
+     * Create a shallow copy of map.
+     */
+    private static <K, V, M extends Map> M copyMap(Map<K, V> source, Class<M> mapClass) {
+
+        M sourceItemCopy;
+
+        try {
+
+            if (mapClass != null) {
+
+                sourceItemCopy = mapClass.newInstance();
+
+                for (Map.Entry<K, V> entry : source.entrySet()) {
+
+                    sourceItemCopy.put(entry.getKey(), entry.getValue());
+                }
+
+            } else {
+
+                sourceItemCopy = (M) source;
+            }
+
+        } catch (Exception ignored) {
+
+            sourceItemCopy = (M) source;
+        }
+
+        return sourceItemCopy;
     }
 
     //////////////////////////////
