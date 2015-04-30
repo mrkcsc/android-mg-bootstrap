@@ -110,6 +110,12 @@ public class MGPreferenceRx<T> {
             }
         });
 
+        if (!cached) {
+
+            // Clear existing cache.
+            getDataCache().clear();
+        }
+
         // Publish initial value.
         getDataPublisher().onNext(getDataCache().get());
     }
