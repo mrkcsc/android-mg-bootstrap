@@ -1,3 +1,13 @@
+## 2.0.0 - 2015-05-01
+
+- Backpressure handling in MGPreferenceRx.  Updated create api.  Bug fixes.  
+
+- Added a custom RecyclerView adapter/holder implementation that strips away more boilerplate and enforces putting configuration logic in the view holder instead of the adapter
+
+- MG Reflection now has a cleaner API for fetching resources from strings (can pass in resource class isntead of class string).
+
+- REST client now supports configurable cookie storage that persists across launches.
+
 ## 1.7.7 - 2015-04-20
 
 - Support for `MGPreference<Map<String, List<Object>>` where the list of object is sometimes empty (nulls will still likely crash.
