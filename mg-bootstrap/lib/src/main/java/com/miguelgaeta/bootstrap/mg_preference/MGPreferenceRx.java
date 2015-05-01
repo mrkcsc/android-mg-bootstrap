@@ -70,13 +70,19 @@ public class MGPreferenceRx<T> {
     }
 
     /**
-     * Get the data observable, should it emit null values.
+     * Get the data publisher as a stream with a generic
+     * buffer back-pressure strategy.
      */
     public Observable<T> get(boolean emitNull) {
 
-        return emitNull ?
-            getDataPublisher().asObservable() :
-            getDataPublisher().filter(data -> data != null);
+        Observable<T> stream = getDataPublisher().onBackpressureBuffer();
+
+        if (emitNull) {
+
+            return stream.filter(data -> data != null);
+        }
+
+        return stream;
     }
 
     /**
@@ -102,7 +108,7 @@ public class MGPreferenceRx<T> {
      */
     private void init(boolean cached) {
 
-        getDataPublisher().subscribe(data -> {
+        get().subscribe(data -> {
 
             if (cached) {
 
@@ -117,6 +123,6 @@ public class MGPreferenceRx<T> {
         }
 
         // Publish initial value.
-        getDataPublisher().onNext(getDataCache().get());
+        set(getDataCache().get());
     }
 }

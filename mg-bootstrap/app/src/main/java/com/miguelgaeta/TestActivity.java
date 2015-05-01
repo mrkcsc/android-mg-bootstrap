@@ -8,6 +8,7 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -43,7 +44,7 @@ public class TestActivity extends MGLifecycleActivity {
     private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10");
 
     //@Getter(lazy = true)
-    //private static final MGPreferenceRx<TestPref> pref1 = MGPreferenceRx.create("TEST_PREF_3");
+    private static final MGPreferenceRx<List<String>> pref1 = MGPreferenceRx.create("TEST_PREF_3", new ArrayList<>(), false);
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
@@ -74,6 +75,8 @@ public class TestActivity extends MGLifecycleActivity {
 
             MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
         }
+
+        MGLog.e("BLOCKING: " + pref1.getBlocking());
 
         //getPref1().get().subscribe(testPref -> {
 
