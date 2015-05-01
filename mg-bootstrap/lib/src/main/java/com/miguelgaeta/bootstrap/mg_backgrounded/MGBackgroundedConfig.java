@@ -46,7 +46,6 @@ public class MGBackgroundedConfig {
                     getBackgroundedSubscription().unsubscribe();
                 }
 
-                // No longer backgrounded.
                 MGBackgroundedConfig.getBackgrounded().set(false);
             }
 
@@ -55,8 +54,7 @@ public class MGBackgroundedConfig {
                 super.onActivityPaused(activity);
 
                 // On a delay, trigger backgrounded.
-                backgroundedSubscription = MGDelay.delay(MILLISECONDS_UNTIL_BACKGROUNDED)
-                    .subscribe(timestamp -> getBackgrounded().set(true));
+                backgroundedSubscription = MGDelay.delay(MILLISECONDS_UNTIL_BACKGROUNDED).subscribe(timestamp -> getBackgrounded().set(true));
             }
         });
     }
