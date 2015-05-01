@@ -17,11 +17,11 @@ import rx.subjects.SerializedSubject;
 public class MGPreferenceRx<T> {
 
     /**
-     * Back value of this data into the
+     * Persist value of this data into the
      * android preferences object.
      */
     @Getter(AccessLevel.PRIVATE)
-    private final MGPreference<T> dataCache;
+    private MGPreference<T> dataCache;
 
     /**
      * Can be used by to publish
@@ -35,17 +35,12 @@ public class MGPreferenceRx<T> {
      */
     public static <T> MGPreferenceRx<T> create(String key) {
 
-        return new MGPreferenceRx<>(key, null, true);
+        return new MGPreferenceRx<>(key, null);
     }
 
     public static <T> MGPreferenceRx<T> create(String key, T defaultValue) {
 
-        return new MGPreferenceRx<>(key, defaultValue, true);
-    }
-
-    public static <T> MGPreferenceRx<T> create(String key, T defaultValue, boolean cached) {
-
-        return new MGPreferenceRx<>(key, defaultValue, cached);
+        return new MGPreferenceRx<>(key, defaultValue);
     }
 
     /**
@@ -53,12 +48,15 @@ public class MGPreferenceRx<T> {
      * and uses that to initialize rest of the
      * data object.
      */
-    private MGPreferenceRx(String key, T defaultValue, boolean cached) {
+    private MGPreferenceRx(String key, T defaultValue) {
 
-        // Initialize data cache.
-        dataCache = MGPreference.create(key, defaultValue);
+        if (key != null) {
 
-        init(cached);
+            // Initialize data cache.
+            dataCache = MGPreference.create(key, defaultValue);
+        }
+
+        init(defaultValue);
     }
 
     /**
@@ -106,23 +104,16 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(boolean cached) {
+    private void init(T defaultValue) {
 
         get().subscribe(data -> {
 
-            if (cached) {
-
-                dataCache.set(data);
+            if (getDataCache() != null) {
+                getDataCache().set(data);
             }
         });
 
-        if (!cached) {
-
-            // Clear existing cache.
-            getDataCache().clear();
-        }
-
-        // Publish initial value.
-        set(getDataCache().get());
+        // Set initial value from data cache, or just use provided default.
+        set(getDataCache() != null ? getDataCache().get() : defaultValue);
     }
 }

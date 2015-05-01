@@ -44,7 +44,7 @@ public class TestActivity extends MGLifecycleActivity {
     private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10");
 
     //@Getter(lazy = true)
-    private static final MGPreferenceRx<List<String>> pref1 = MGPreferenceRx.create("TEST_PREF_3", new ArrayList<>(), false);
+    private static final MGPreferenceRx<List<String>> pref1 = MGPreferenceRx.create(null, new ArrayList<>());
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 

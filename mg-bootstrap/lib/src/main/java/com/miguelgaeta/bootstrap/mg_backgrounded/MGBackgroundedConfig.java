@@ -25,7 +25,7 @@ public class MGBackgroundedConfig {
      * activity lifecycle callbacks.
      */
     @Getter(lazy = true, value = AccessLevel.PACKAGE)
-    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create("BACKGROUNDED", true, false);
+    private static final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create(null, true);
 
     @Getter
     private static Subscription backgroundedSubscription;

@@ -33,10 +33,10 @@ import rx.schedulers.Schedulers;
  */
 class MGWebsocketClient {
 
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create("WEBSOCKET_EVENTS_OPN", null, false);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create("WEBSOCKET_EVENTS_CLS", null, false);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create("WEBSOCKET_EVENTS_MSG", null, false);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create("WEBSOCKET_EVENTS_ERR", null, false);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create(null);
 
     @Getter(AccessLevel.PACKAGE)
     private final List<String> messageBuffer = new ArrayList<>();
