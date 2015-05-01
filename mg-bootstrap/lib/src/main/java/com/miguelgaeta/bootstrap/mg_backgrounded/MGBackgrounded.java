@@ -18,16 +18,15 @@ public class MGBackgrounded {
      */
     public static boolean isBackgrounded() {
 
-        // Fetch the most recent backgrounded value.
-        return MGBackgroundedConfig.getBackgrounded().getBlocking();
+        return getConfig().getBackgrounded().getBlocking();
     }
 
     /**
-     * Emits backgrounded state.
+     * Emits backgrounded state which is guaranteed
+     * to ne a non-null distinct until changed boolean.
      */
     public static Observable<Boolean> get() {
 
-        // Return non-null distinct backgrounded events.
-        return MGBackgroundedConfig.getBackgrounded().get(false).distinctUntilChanged();
+        return getConfig().getBackgrounded().get(false).distinctUntilChanged();
     }
 }
