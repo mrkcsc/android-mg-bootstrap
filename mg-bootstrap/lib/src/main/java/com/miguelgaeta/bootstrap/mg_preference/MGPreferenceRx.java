@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.SerializedSubject;
 
@@ -65,6 +66,32 @@ public class MGPreferenceRx<T> {
     public void set(T t) {
 
         getDataPublisher().onNext(t);
+    }
+
+    public void merge(Func1<T, T> mergeFunction) {
+
+        merge(mergeFunction, true);
+    }
+
+    public void merge(Func1<T, T> mergeFunction, boolean emitNull) {
+
+        merge(mergeFunction, emitNull, true);
+    }
+
+    public void merge(Func1<T, T> mergeFunction, boolean emitNull, boolean mergeOnChange) {
+
+        get(emitNull).take(1).subscribe(source -> {
+
+            T mergedSource = mergeFunction.call(source);
+
+            if (mergeOnChange) {
+
+                if (source == null ? mergedSource != null : !source.equals(mergedSource)) {
+
+                    set(mergedSource);
+                }
+            }
+        });
     }
 
     /**
