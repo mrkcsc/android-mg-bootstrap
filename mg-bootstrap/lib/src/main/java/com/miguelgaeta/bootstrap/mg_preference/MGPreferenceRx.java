@@ -102,7 +102,7 @@ public class MGPreferenceRx<T> {
 
         Observable<T> stream = getDataPublisher().onBackpressureBuffer();
 
-        if (emitNull) {
+        if (!emitNull) {
 
             return stream.filter(data -> data != null);
         }
