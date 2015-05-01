@@ -92,7 +92,7 @@ public class MGPreferenceRx<T> {
      */
     public T getBlocking() {
 
-        return getDataPublisher().toBlocking().mostRecent(null).iterator().next();
+        return get().toBlocking().mostRecent(null).iterator().next();
     }
 
     /**
