@@ -15,14 +15,32 @@ public class MGLifecycleCallbacks implements Application.ActivityLifecycleCallba
     @Getter
     private PublishSubject<Void> paused = PublishSubject.create();
 
+    private boolean onActivityCreatedOrResumedInvoked;
+
     @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) { }
+    public void onActivityCreated(Activity activity, Bundle bundle) {
+
+        onActivityCreatedOrResumed(activity, bundle);
+        onActivityCreatedOrResumedInvoked = true;
+    }
+
+    public void onActivityCreatedOrResumed(Activity activity, Bundle bundle) {
+
+    }
 
     @Override
     public void onActivityStarted(Activity activity) { }
 
     @Override
-    public void onActivityResumed(Activity activity) { }
+    public void onActivityResumed(Activity activity) {
+
+        if (onActivityCreatedOrResumedInvoked) {
+            onActivityCreatedOrResumedInvoked = false;
+        } else {
+
+            onActivityCreatedOrResumed(activity, null);
+        }
+    }
 
     @Override
     public void onActivityPaused(Activity activity) {
