@@ -35,4 +35,78 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
         // Configure.
         holder.onConfigure(position);
     }
+
+    public void notifyItemRangeRemoved(int positionStart, int itemCount, int scrollToPosition, boolean smoothScroll) {
+
+        notifyItemRangeRemoved(positionStart, itemCount);
+
+        scrollToPosition(scrollToPosition, smoothScroll);
+    }
+
+    public void notifyItemRangeRemoved(int positionStart, int itemCount, int scrollToPosition) {
+
+        notifyItemRangeRemoved(positionStart, itemCount, scrollToPosition, false);
+    }
+
+    public void notifyItemRangeInserted(int positionStart, int itemCount, int scrollToPosition, boolean smoothScroll) {
+
+        notifyItemRangeInserted(positionStart, itemCount);
+
+        scrollToPosition(scrollToPosition, smoothScroll);
+    }
+
+    public void notifyItemRangeInserted(int positionStart, int itemCount, int scrollToPosition) {
+
+        notifyItemRangeInserted(positionStart, itemCount, scrollToPosition, false);
+    }
+
+    public void notifyItemRemoved(int position, int scrollToPosition, boolean smoothScroll) {
+
+        notifyItemRemoved(position);
+
+        scrollToPosition(scrollToPosition, smoothScroll);
+    }
+
+    public void notifyItemRemoved(int position, int scrollToPosition) {
+
+        notifyItemRemoved(position, scrollToPosition, false);
+    }
+
+    public void notifyItemInserted(int position, int scrollToPosition, boolean smoothScroll) {
+
+        notifyItemInserted(position);
+
+        scrollToPosition(scrollToPosition, smoothScroll);
+    }
+
+    public void notifyItemInserted(int position, int scrollToPosition) {
+
+        notifyItemInserted(position, scrollToPosition, false);
+    }
+
+    /**
+     * Scroll to a position in the list.  Optionally
+     * can specify if the scrolling should be animated.
+     */
+    public void scrollToPosition(int position, boolean smoothScroll) {
+
+        if (smoothScroll) {
+
+            // Smooth scroll baby.
+            getRecycler().smoothScrollToPosition(position);
+
+        } else {
+
+            // Normal scroll.
+            getRecycler().scrollToPosition(position);
+        }
+    }
+
+    /**
+     * Scroll to a position in the list.
+     */
+    public void scrollToPosition(int position) {
+
+        scrollToPosition(position, false);
+    }
 }
