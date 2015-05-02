@@ -7,27 +7,26 @@ import android.support.v7.widget.RecyclerView;
 import com.miguelgaeta.R;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
-import org.joda.time.DateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import lombok.Getter;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by mrkcsc on 4/27/15.
  */
 public class TestActivityRecycler extends MGLifecycleActivity {
 
-    @Getter
-    public static final MGPreferenceRx<String> testStream = MGPreferenceRx.create("TEST_STREAM");
-
     @InjectView(R.id.recycler_view) RecyclerView recyclerView;
 
-    private TestActivityRecyclerAdapter recyclerViewAdapter;
+    @Getter
+    public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(null, new ArrayList<>());
+
+    private TestActivityRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +37,37 @@ public class TestActivityRecycler extends MGLifecycleActivity {
         getSupportActionBar().setTitle("Recycler");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewAdapter = new TestActivityRecyclerAdapter(recyclerView);
-        recyclerView.setAdapter(recyclerViewAdapter);
+        adapter = new TestActivityRecyclerAdapter(recyclerView);
+        recyclerView.setAdapter(adapter);
 
-        getTestStream().get(false).takeUntil(getPaused()).observeOn(AndroidSchedulers.mainThread()).subscribe(s -> {
+        List<Integer> dataInitial = new ArrayList<>();
 
-            MGLog.e("Reload");
+        dataInitial.add(1);
+        dataInitial.add(2);
+        dataInitial.add(3);
+        dataInitial.add(4);
+        dataInitial.add(5);
+        dataInitial.add(6);
+        dataInitial.add(7);
+        dataInitial.add(8);
 
-            recyclerViewAdapter.notifyDataSetChanged();
-        });
+        adapter.getData().setData(dataInitial);
     }
 
     @OnClick(R.id.recycler_reload)
     public void onReloadClicked() {
 
-        getTestStream().set("r: " + new DateTime().getMillis());
+        List<Integer> dataNew = new ArrayList<>();
+
+        dataNew.add(9);
+        dataNew.add(10);
+        dataNew.add(11);
+        dataNew.add(12);
+        dataNew.add(13);
+        dataNew.add(14);
+        dataNew.add(15);
+        dataNew.add(16);
+
+        adapter.getData().setData(dataNew);
     }
 }
