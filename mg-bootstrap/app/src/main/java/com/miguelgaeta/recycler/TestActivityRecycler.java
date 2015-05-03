@@ -11,6 +11,7 @@ import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,15 +60,33 @@ public class TestActivityRecycler extends MGLifecycleActivity {
 
         List<Integer> dataNew = new ArrayList<>();
 
-        dataNew.add(9);
-        dataNew.add(10);
-        dataNew.add(11);
-        dataNew.add(12);
-        dataNew.add(13);
-        dataNew.add(14);
-        dataNew.add(15);
-        dataNew.add(16);
+        int size = randInt(1, 10);
+
+        for (int i = 0; i < size; i++) {
+
+            int randValue;
+
+            do {
+
+                randValue = randInt(1, 15);
+
+            } while(dataNew.contains(randValue));
+
+            dataNew.add(randValue);
+        }
 
         adapter.getData().setData(dataNew);
+    }
+
+    public static int randInt(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+
+        return rand.nextInt((max - min) + 1) + min;
     }
 }

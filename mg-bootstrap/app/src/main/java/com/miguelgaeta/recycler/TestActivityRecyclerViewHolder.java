@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.widget.TextView;
 
 import com.miguelgaeta.R;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
 import butterknife.InjectView;
@@ -17,6 +18,8 @@ public class TestActivityRecyclerViewHolder extends MGRecyclerViewHolder<TestAct
 
     public TestActivityRecyclerViewHolder(@LayoutRes int layout, TestActivityRecyclerAdapter adapter) {
         super(layout, adapter);
+
+        itemText.setOnClickListener(view -> MGLog.e("Clicked at: " + getAdapterPosition()));
     }
 
     @Override
