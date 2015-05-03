@@ -75,6 +75,17 @@ public class TestActivityRecycler extends MGLifecycleActivity {
             dataNew.add(randValue);
         }
 
+        /*
+        dataNew.add(8);
+        dataNew.add(2);
+        dataNew.add(9);
+        dataNew.add(10);
+        dataNew.add(5);
+        dataNew.add(6);
+        dataNew.add(11);
+        dataNew.add(1);
+        */
+
         adapter.getData().setData(dataNew);
     }
 

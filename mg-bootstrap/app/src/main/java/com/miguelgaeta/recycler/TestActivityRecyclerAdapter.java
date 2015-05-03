@@ -30,23 +30,23 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
         LinkedHashMap<String, Integer> oldDataIndexes = generateIndexMap(oldData, keyGenerator);
         LinkedHashMap<String, Integer> newDataIndexes = generateIndexMap(newData, keyGenerator);
 
+        changeItems(oldDataIndexes, newDataIndexes);
+        removeItems(oldData, newDataIndexes, keyGenerator);
+        insertItems(newData, oldDataIndexes, keyGenerator);
+
         MGLog.e("Old: " + oldDataIndexes);
         MGLog.e("New: " + newDataIndexes);
 
-
-        remove(oldData, newDataIndexes, keyGenerator);
-        inserted(newData, oldDataIndexes, keyGenerator);
-
-
-        //notifyItemRangeInserted(1, 1);
+        MGLog.e(".");
+        MGLog.e("================================================");
+        MGLog.e(".");
     });
 
-    private void inserted(List<Integer> newData, LinkedHashMap<String, Integer> oldDataIndexes, Func1<Integer, String> keyGenerator) {
+    private void insertItems(List<Integer> newData, LinkedHashMap<String, Integer> oldDataIndexes, Func1<Integer, String> keyGenerator) {
 
         int count = 0;
 
         int startIndex = 0;
-        int startIndexOffset = 0;
 
         for (int i = 0; i < newData.size(); i++) {
 
@@ -60,11 +60,9 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
 
             } else if (count > 0) {
 
-                MGLog.e("Inserted: " + count + " at: " + (startIndex + startIndexOffset));
+                MGLog.e("Inserted: " + count + " at: " + startIndex);
 
-                notifyItemRangeInserted(startIndex + startIndexOffset, count);
-
-                startIndexOffset += count;
+                notifyItemRangeInserted(startIndex, count);
 
                 count = 0;
             }
@@ -72,13 +70,13 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
 
         if (count > 0) {
 
-            MGLog.e("Inserted: " + count + " at: " + (startIndex + startIndexOffset));
+            MGLog.e("Inserted: " + count + " at: " + startIndex);
 
-            notifyItemRangeRemoved(startIndex + startIndexOffset, count);
+            notifyItemRangeRemoved(startIndex, count);
         }
     }
 
-    private void remove(List<Integer> oldData, LinkedHashMap<String, Integer> newDataIndexes, Func1<Integer, String> keyGenerator) {
+    private void removeItems(List<Integer> oldData, LinkedHashMap<String, Integer> newDataIndexes, Func1<Integer, String> keyGenerator) {
 
         int count = 0;
 
@@ -90,16 +88,16 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
             if (!newDataIndexes.containsKey(keyGenerator.call(oldData.get(i)))) {
 
                 if (count == 0) {
-                    startIndex = i;
+                    startIndex = i + startIndexOffset;
                 }
 
                 count++;
 
             } else if (count > 0) {
 
-                MGLog.e("Removed: " + count + " at: " + (startIndex + startIndexOffset));
+                MGLog.e("Removed: " + count + " at: " + startIndex);
 
-                notifyItemRangeRemoved(startIndex + startIndexOffset, count);
+                notifyItemRangeRemoved(startIndex, count);
 
                 startIndexOffset -= count;
 
@@ -109,9 +107,32 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
 
         if (count > 0) {
 
-            MGLog.e("Removed: " + count + " at: " + (startIndex + startIndexOffset));
+            MGLog.e("Removed: " + count + " at: " + startIndex);
 
-            notifyItemRangeRemoved(startIndex + startIndexOffset, count);
+            notifyItemRangeRemoved(startIndex, count);
+        }
+    }
+
+    private void changeItems(LinkedHashMap<String, Integer> oldDataIndexes, LinkedHashMap<String, Integer> newDataIndexes) {
+
+        List<String> keys = new ArrayList<>(oldDataIndexes.keySet());
+
+        for (int i = 0; i < oldDataIndexes.size(); i++) {
+
+            String key = keys.get(i);
+
+            if (newDataIndexes.containsKey(key)) {
+
+                int oldIndex = oldDataIndexes.get(key);
+                int newIndex = newDataIndexes.get(key);
+
+                if (oldIndex != newIndex) {
+
+                    MGLog.e("Item at: " + oldIndex + " changed.");
+
+                    notifyItemChanged(oldIndex);
+                }
+            }
         }
     }
 
