@@ -5,14 +5,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import lombok.NonNull;
+import lombok.Setter;
 import rx.functions.Func1;
 
 /**
  * Created by Miguel Gaeta on 5/2/15.
+ *
+ * TODO: int lastFirstVisiblePosition = ((LinearLayoutManager)getRecycler().getLayoutManager()).findFirstCompletelyVisibleItemPosition();
  */
 public class MGRecyclerAdapterDataList<T> {
 
     private MGRecyclerAdapterData<List<T>> data;
+
+    @Setter
+    private MGRecyclerAdapterData.DataUpdated<List<T>> updated;
 
     /**
      * Convenience class that represents an arbitrary object
@@ -36,10 +42,14 @@ public class MGRecyclerAdapterDataList<T> {
             LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
             LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
 
-            dataList.changeItems(adapter, oldDataIndexes, newDataIndexes);
+            dataList.changeItems(adapter, oldDataIndexes, newDataIndexes, oldData, newData);
 
             dataList.removeItems(adapter, oldData, newDataIndexes, keyGenerator);
             dataList.insertItems(adapter, newData, oldDataIndexes, keyGenerator);
+
+            if (dataList.updated != null) {
+                dataList.updated.updated(oldData, newData);
+            }
         });
 
         return dataList;
@@ -69,7 +79,7 @@ public class MGRecyclerAdapterDataList<T> {
      * analysis and do actual item moves instead of just
      * notifying that the item at index has changed.
      */
-    private void changeItems(MGRecyclerAdapter adapter, LinkedHashMap<String, Integer> oldDataIndexes, LinkedHashMap<String, Integer> newDataIndexes) {
+    private void changeItems(MGRecyclerAdapter adapter, LinkedHashMap<String, Integer> oldDataIndexes, LinkedHashMap<String, Integer> newDataIndexes, List<T> oldData, List<T> newData) {
 
         List<String> keys = new ArrayList<>(oldDataIndexes.keySet());
 
@@ -82,7 +92,10 @@ public class MGRecyclerAdapterDataList<T> {
                 int oldIndex = oldDataIndexes.get(key);
                 int newIndex = newDataIndexes.get(key);
 
-                if (oldIndex != newIndex) {
+                T oldDataItem = oldData.get(oldIndex);
+                T newDataItem = newData.get(newIndex);
+
+                if (oldDataItem == null ? newDataItem != null : !oldDataItem.equals(newDataItem)) {
 
                     adapter.notifyItemChanged(oldIndex);
                 }
