@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
@@ -34,5 +35,7 @@ public class TestApplication extends Application {
         MGKeyboard.getConfig().setRootViewResize(true);
 
         MGBackgrounded.getConfig().init(this);
+
+        MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitions.Type.SLIDE_HORIZONTAL);
     }
 }

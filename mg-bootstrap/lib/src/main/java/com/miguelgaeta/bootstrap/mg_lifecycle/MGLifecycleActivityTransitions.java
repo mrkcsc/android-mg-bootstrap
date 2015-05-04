@@ -21,8 +21,10 @@ public class MGLifecycleActivityTransitions {
     private static final int TRANSITION_DELAY_BUFFER = 100;
 
     @Setter
-    // Type of transition.
-    private Type type = Type.SLIDE_POP_HORIZONTAL;
+    private static Type defaultType = Type.SLIDE_POP_HORIZONTAL;
+
+    @Setter
+    private Type type;
 
     @Setter
     // Transitions be played in reverse.
@@ -68,14 +70,14 @@ public class MGLifecycleActivityTransitions {
 
         if ((!goingBack && entering) || (goingBack && !entering)) {
 
-            if (type == Type.NONE) {
+            if (getType() == Type.NONE) {
 
                 // Don't animate anything.
                 activity.overridePendingTransition(0, 0);
 
             } else {
 
-                String animationResourcePrefix = "activity_" + type.name().toLowerCase();
+                String animationResourcePrefix = "activity_" + getType().name().toLowerCase();
 
                 if (reversed) {
 
@@ -94,5 +96,15 @@ public class MGLifecycleActivityTransitions {
                 activity.overridePendingTransition(enterAnimation, exitAnimation);
             }
         }
+    }
+
+    /**
+     * Fetch the animation type which is either the
+     * default type or the type set for this
+     * particular activity.
+     */
+    private Type getType() {
+
+        return type != null ? type : defaultType;
     }
 }
