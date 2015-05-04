@@ -11,7 +11,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.0.5'
+    PUBLISH_VERSION = '2.0.6'
 }
 
 // Disable javadoc lint errors.
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 205
-        versionName "2.0.5"
+        versionCode 206
+        versionName "2.0.6"
     }
 
     compileOptions {
@@ -92,6 +92,9 @@ dependencies {
 
     // ISO time format handler
     compile 'net.danlew:android.joda:2.7.1'
+
+    // Pretty format dates.
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
 
     // Logging library.
     compile 'com.jakewharton.timber:timber:3.0.1'
