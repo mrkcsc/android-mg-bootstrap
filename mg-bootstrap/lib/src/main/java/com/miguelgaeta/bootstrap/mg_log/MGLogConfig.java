@@ -49,7 +49,8 @@ public class MGLogConfig {
             this.error = error;
         }
 
-        @Override protected void log(int priority, String tag, String message, Throwable t) {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
 
             if (info != null && priority == Log.INFO) {
                 info.run(t, message);
