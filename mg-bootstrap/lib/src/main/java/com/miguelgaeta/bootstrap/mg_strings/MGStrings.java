@@ -53,4 +53,25 @@ public class MGStrings {
 
         return sb.toString();
     }
+
+    /**
+     * Capitalize the first letter of a string.  Accepts
+     * null strings and one letter strings.
+     */
+    public static String capitalizeFirstLetter(String targetString) {
+
+        if (targetString != null) {
+
+            Character firstLetter = Character.toUpperCase(targetString.charAt(0));
+
+            if (targetString.length() > 1) {
+
+                return firstLetter + targetString.substring(1);
+            }
+
+            return Character.toString(firstLetter);
+        }
+
+        return null;
+    }
 }
