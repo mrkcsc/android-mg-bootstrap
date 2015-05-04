@@ -1,12 +1,11 @@
 package com.miguelgaeta.bootstrap.mg_dates;
 
+import android.content.Context;
+
+import net.danlew.android.joda.DateUtils;
+
 import org.joda.time.DateTime;
-import org.ocpsoft.prettytime.PrettyTime;
 
-import java.util.Date;
-
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -14,34 +13,27 @@ import lombok.NonNull;
  */
 public class MGDates {
 
-    @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private static final PrettyTime prettyTime = new PrettyTime();
-
     /**
      * Format date tim using the "ago"
      * human readable type style.
      */
-    public static String format(@NonNull DateTime dateTime, boolean hasPostfix) {
+    public static String format(@NonNull Context context, @NonNull DateTime dateTime) {
 
-        return format(dateTime.toDate(), hasPostfix);
+        return format(context, dateTime, true);
     }
 
     /**
      * Format date tim using the "ago"
      * human readable type style.
      */
-    public static String format(@NonNull DateTime dateTime) {
+    public static String format(@NonNull Context context, @NonNull DateTime dateTime,  boolean hasPostfix) {
 
-        return format(dateTime, true);
-    }
+        String formattedDate = DateUtils.getRelativeTimeSpanString(context, dateTime).toString();
 
-    /**
-     * Format date tim using the "ago"
-     * human readable type style.
-     */
-    public static String format(@NonNull Date date, boolean hasPostfix) {
+        if (formattedDate.equals("0 seconds ago")) {
 
-        String formattedDate = getPrettyTime().format(date).replace("moments ago", "just now");
+            return "just now";
+        }
 
         if (!hasPostfix) {
 
@@ -49,14 +41,5 @@ public class MGDates {
         }
 
         return formattedDate;
-    }
-
-    /**
-     * Format date tim using the "ago"
-     * human readable type style.
-     */
-    public static String format(@NonNull Date date) {
-
-        return format(date, true);
     }
 }
