@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_recycler;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import lombok.AccessLevel;
@@ -23,6 +24,41 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
 
         // Set recycler view.
         this.recycler = recycler;
+    }
+
+    /**
+     * Configures a recycler view and creates an instance of the
+     * adapter.  Configuration is directly coupled to this
+     * particular application.
+     */
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, @NonNull RecyclerView.LayoutManager layoutManager) {
+
+        try {
+
+            Class[] adapterConstructorArgs = new Class[1];
+
+            adapterConstructorArgs[0] = RecyclerView.class;
+
+            // Use the dark magic of generics to make an instance of the adapter.
+            T adapter = adapterClass.getDeclaredConstructor(adapterConstructorArgs).newInstance(recyclerView);
+
+            // Configure recycler view with standard config.
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+            recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+
+            // Return adapter.
+            return adapter;
+
+        } catch (Exception e) {
+
+            throw new RuntimeException("Unable to instantiate adapter.");
+        }
+    }
+
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass) {
+
+        return configure(recyclerView, adapterClass, new LinearLayoutManager(recyclerView.getContext()));
     }
 
     /**
