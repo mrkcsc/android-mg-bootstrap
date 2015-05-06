@@ -72,6 +72,36 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
         holder.onConfigure(position);
     }
 
+    /**
+     * Scroll to a position in the list.  Optionally
+     * can specify if the scrolling should be animated.
+     */
+    public void scrollToPosition(int position, boolean smoothScroll) {
+
+        if (smoothScroll) {
+
+            // Smooth scroll baby.
+            getRecycler().smoothScrollToPosition(position);
+
+        } else {
+
+            // Normal scroll.
+            getRecycler().scrollToPosition(position);
+        }
+    }
+
+    /**
+     * Scroll to a position in the list.
+     */
+    public void scrollToPosition(int position) {
+
+        scrollToPosition(position, false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// NOTIFY SCROLLING OVERLOADS
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public void notifyItemRangeRemoved(int positionStart, int itemCount, int scrollToPosition, boolean smoothScroll) {
 
         notifyItemRangeRemoved(positionStart, itemCount);
@@ -118,31 +148,5 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
     public void notifyItemInserted(int position, int scrollToPosition) {
 
         notifyItemInserted(position, scrollToPosition, false);
-    }
-
-    /**
-     * Scroll to a position in the list.  Optionally
-     * can specify if the scrolling should be animated.
-     */
-    public void scrollToPosition(int position, boolean smoothScroll) {
-
-        if (smoothScroll) {
-
-            // Smooth scroll baby.
-            getRecycler().smoothScrollToPosition(position);
-
-        } else {
-
-            // Normal scroll.
-            getRecycler().scrollToPosition(position);
-        }
-    }
-
-    /**
-     * Scroll to a position in the list.
-     */
-    public void scrollToPosition(int position) {
-
-        scrollToPosition(position, false);
     }
 }
