@@ -37,6 +37,28 @@ public class MGRxBusMerge {
     }
 
     /**
+     * Merge new item into map.
+     */
+    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapMerge(K key, Func1<V, V> mergeFunction) {
+
+        return kvMap -> {
+
+            V mergedValue = mergeFunction.call(kvMap.get(key));
+
+            if (!kvMap.containsKey(key) || !kvMap.get(key).equals(mergedValue)) {
+
+                Map<K, V> kvMapCopy = copyMap(kvMap);
+
+                kvMapCopy.put(key, mergedValue);
+
+                return kvMapCopy;
+            }
+
+            return kvMap;
+        };
+    }
+
+    /**
      * Merge a new item into map.  Optionally, only merge
      * if a value for this key not already present.
      */
