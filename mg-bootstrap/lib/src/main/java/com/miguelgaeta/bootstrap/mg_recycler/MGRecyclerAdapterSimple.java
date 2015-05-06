@@ -37,6 +37,15 @@ public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
     }
 
     /**
+     * Add a callback action for when the
+     * underlying data is updated.
+     */
+    public void setUpdate(MGRecyclerData.DataUpdated<List<MGRecyclerDataPayload.Item>> updated) {
+
+        data.setUpdated(updated);
+    }
+
+    /**
      * Get data item object at specified position.
      */
     public Object getItem(int position) {
