@@ -26,6 +26,6 @@ public class TestActivityRecyclerViewHolder extends MGRecyclerViewHolder<TestAct
     protected void onConfigure(int position) {
         super.onConfigure(position);
 
-        itemText.setText("Position: " + position + " data: " + getAdapter().getData().getData().get(position));
+        itemText.setText("Position: " + position + " data: " + getAdapter().getData().get().get(position));
     }
 }

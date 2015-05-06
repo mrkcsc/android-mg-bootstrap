@@ -60,17 +60,17 @@ public class MGRecyclerAdapterDataList<T> {
      * changes and calls the associated
      * adapter functions.
      */
-    public void setData(List<T> data) {
+    public void set(List<T> data) {
 
-        this.data.setData(data);
+        this.data.set(data);
     }
 
     /**
      * Grab the current data list.
      */
-    public List<T> getData() {
+    public List<T> get() {
 
-        return data.getData();
+        return data.get();
     }
 
     /**

@@ -32,7 +32,7 @@ public class MGRecyclerAdapterData<T> {
         return data;
     }
 
-    public T getData() {
+    public T get() {
 
         return data;
     }
@@ -41,7 +41,7 @@ public class MGRecyclerAdapterData<T> {
      * If data changed, set new data, store
      * old data and emit callback.
      */
-    public void setData(T data) {
+    public void set(T data) {
 
         if (data == null ? this.data != null : !data.equals(this.data)) {
 

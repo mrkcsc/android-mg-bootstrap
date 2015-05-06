@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import com.miguelgaeta.R;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class TestActivityRecycler extends MGLifecycleActivity {
         dataInitial.add(7);
         dataInitial.add(8);
 
-        adapter.getData().setData(dataInitial);
+        adapter.getData().set(dataInitial);
     }
 
     @OnClick(R.id.recycler_reload)
@@ -76,7 +75,7 @@ public class TestActivityRecycler extends MGLifecycleActivity {
             dataNew.add(randValue);
         }
 
-        adapter.getData().setData(dataNew);
+        adapter.getData().set(dataNew);
     }
 
     public static int randInt(int min, int max) {

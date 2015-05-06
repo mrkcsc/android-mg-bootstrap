@@ -34,6 +34,6 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
     @Override
     public int getItemCount() {
 
-        return data.getData().size();
+        return data.get().size();
     }
 }
