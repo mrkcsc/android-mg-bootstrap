@@ -2,7 +2,6 @@ package com.miguelgaeta.bootstrap.mg_backgrounded;
 
 import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
@@ -48,8 +47,8 @@ class MGBackgroundedUtil {
         application.registerActivityLifecycleCallbacks(new MGLifecycleCallbacks() {
 
             @Override
-            public void onActivityCreated(Activity activity, Bundle bundle) {
-                super.onActivityCreated(activity, bundle);
+            public void onActivityResumed(Activity activity) {
+                super.onActivityResumed(activity);
 
                 if (getBackgroundedSubscription() != null) {
                     getBackgroundedSubscription().unsubscribe();

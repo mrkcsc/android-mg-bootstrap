@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_backgrounded;
 
+import java.util.concurrent.TimeUnit;
+
 import lombok.Getter;
 import rx.Observable;
 
@@ -27,6 +29,6 @@ public class MGBackgrounded {
      */
     public static Observable<Boolean> get() {
 
-        return getConfig().getBackgrounded().get(false).distinctUntilChanged();
+        return getConfig().getBackgrounded().get(false).distinctUntilChanged().throttleLast(100, TimeUnit.MILLISECONDS);
     }
 }
