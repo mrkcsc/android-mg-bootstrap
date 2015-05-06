@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.miguelgaeta.R;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
-import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapterDataList;
+import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataList;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import lombok.NonNull;
 public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
 
     @Getter
-    private MGRecyclerAdapterDataList<Integer> data = MGRecyclerAdapterDataList.create(this, new ArrayList<>(), integer -> Integer.toString(integer));
+    private MGRecyclerDataList<Integer> data = MGRecyclerDataList.create(this, new ArrayList<>(), integer -> Integer.toString(integer));
 
     public TestActivityRecyclerAdapter(@NonNull RecyclerView recycler) {
         super(recycler);

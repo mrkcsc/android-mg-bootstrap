@@ -5,7 +5,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 4/28/15.
  */
-public class MGRecyclerAdapterData<T> {
+public class MGRecyclerData<T> {
 
     private T data;
 
@@ -15,16 +15,16 @@ public class MGRecyclerAdapterData<T> {
     /**
      * Private constructor.
      */
-    private MGRecyclerAdapterData() {
+    private MGRecyclerData() {
 
     }
 
     /**
      * Static constructor.
      */
-    public static <T> MGRecyclerAdapterData<T> create(T initialData, DataUpdated<T> dataUpdated) {
+    public static <T> MGRecyclerData<T> create(T initialData, DataUpdated<T> dataUpdated) {
 
-        MGRecyclerAdapterData<T> data = new MGRecyclerAdapterData<>();
+        MGRecyclerData<T> data = new MGRecyclerData<>();
 
         data.data = initialData;
         data.dataUpdated = dataUpdated;

@@ -13,12 +13,12 @@ import rx.functions.Func1;
  *
  * TODO: int lastFirstVisiblePosition = ((LinearLayoutManager)getRecycler().getLayoutManager()).findFirstCompletelyVisibleItemPosition();
  */
-public class MGRecyclerAdapterDataList<T> {
+public class MGRecyclerDataList<T> {
 
-    private MGRecyclerAdapterData<List<T>> data;
+    private MGRecyclerData<List<T>> data;
 
     @Setter
-    private MGRecyclerAdapterData.DataUpdated<List<T>> updated;
+    private MGRecyclerData.DataUpdated<List<T>> updated;
 
     /**
      * Convenience class that represents an arbitrary object
@@ -33,11 +33,11 @@ public class MGRecyclerAdapterDataList<T> {
      * key can be generated for each object in the list.  There
      * should not be any duplicate keys in a given data list.
      */
-    public static <T> MGRecyclerAdapterDataList<T> create(@NonNull MGRecyclerAdapter adapter, List<T> initialData, Func1<T, String> keyGenerator) {
+    public static <T> MGRecyclerDataList<T> create(@NonNull MGRecyclerAdapter adapter, List<T> initialData, Func1<T, String> keyGenerator) {
 
-        MGRecyclerAdapterDataList<T> dataList = new MGRecyclerAdapterDataList<>();
+        MGRecyclerDataList<T> dataList = new MGRecyclerDataList<>();
 
-        dataList.data = MGRecyclerAdapterData.create(initialData, (oldData, newData) -> {
+        dataList.data = MGRecyclerData.create(initialData, (oldData, newData) -> {
 
             LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
             LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
