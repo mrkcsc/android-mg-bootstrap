@@ -31,7 +31,7 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
      * adapter.  Configuration is directly coupled to this
      * particular application.
      */
-    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, @NonNull RecyclerView.LayoutManager layoutManager) {
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, @NonNull RecyclerView.LayoutManager layoutManager, Long animationDuration) {
 
         try {
 
@@ -42,10 +42,22 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
             // Use the dark magic of generics to make an instance of the adapter.
             T adapter = adapterClass.getDeclaredConstructor(adapterConstructorArgs).newInstance(recyclerView);
 
+            if (layoutManager == null) {
+                layoutManager = new LinearLayoutManager(recyclerView.getContext());
+            }
+
             // Configure recycler view with standard config.
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
             recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+
+            if (animationDuration != null) {
+
+                recyclerView.getItemAnimator().setAddDuration    (animationDuration);
+                recyclerView.getItemAnimator().setRemoveDuration (animationDuration);
+                recyclerView.getItemAnimator().setChangeDuration (animationDuration);
+                recyclerView.getItemAnimator().setMoveDuration   (animationDuration);
+            }
 
             // Return adapter.
             return adapter;
@@ -56,9 +68,14 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
         }
     }
 
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, @NonNull RecyclerView.LayoutManager layoutManager) {
+
+        return configure(recyclerView, adapterClass, null, null);
+    }
+
     public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass) {
 
-        return configure(recyclerView, adapterClass, new LinearLayoutManager(recyclerView.getContext()));
+        return configure(recyclerView, adapterClass, null);
     }
 
     /**
