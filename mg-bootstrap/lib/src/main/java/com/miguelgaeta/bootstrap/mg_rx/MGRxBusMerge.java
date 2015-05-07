@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_rx;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import rx.functions.Func1;
 
@@ -102,24 +103,22 @@ public class MGRxBusMerge {
         };
     }
 
+    @SuppressWarnings("unchecked")
     private static <K, V> Map<K, V> copyMap(Map<K, V> source) {
 
         Map<K, V> sourceItemCopy;
 
         if (source instanceof HashMap) {
 
-            sourceItemCopy = new HashMap<>();
+            return (Map<K, V>) ((HashMap<K, V>) source).clone();
+
+        } else if (source instanceof TreeMap) {
+
+            return (Map<K, V>) ((TreeMap<K, V>) source).clone();
 
         } else {
 
             throw new RuntimeException("Unsupported map, cannot copy.");
         }
-
-        for (Map.Entry<K, V> entry : source.entrySet()) {
-
-            sourceItemCopy.put(entry.getKey(), entry.getValue());
-        }
-
-        return sourceItemCopy;
     }
 }
