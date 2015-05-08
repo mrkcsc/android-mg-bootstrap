@@ -21,7 +21,6 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
 import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
@@ -56,10 +55,10 @@ public class MGRestClient {
                 .setConverter(converter)
                 .setRequestInterceptor(this::addAuthorizationHeader);
 
-        if (getConfig().isLoggingEnabled()) {
+        if (getConfig().getLogging() != null) {
 
             // Emit complete log level with a REST tag.
-            builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("REST"));
+            builder = builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(getConfig().getLogging());
         }
 
         return builder.build();

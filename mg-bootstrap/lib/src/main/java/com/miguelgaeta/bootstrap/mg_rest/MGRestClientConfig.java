@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_rest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import retrofit.RestAdapter;
 
 /**
  * Created by mrkcsc on 2/10/15.
@@ -10,7 +11,7 @@ import lombok.Setter;
 public class MGRestClientConfig {
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
-    private boolean loggingEnabled;
+    private RestAdapter.Log logging;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private boolean cookieStorageEnabled;
