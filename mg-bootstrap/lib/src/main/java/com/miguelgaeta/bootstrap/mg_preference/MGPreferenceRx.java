@@ -36,12 +36,17 @@ public class MGPreferenceRx<T> {
      */
     public static <T> MGPreferenceRx<T> create(String key) {
 
-        return new MGPreferenceRx<>(key, null);
+        return new MGPreferenceRx<>(key, null, true);
     }
 
     public static <T> MGPreferenceRx<T> create(String key, T defaultValue) {
 
-        return new MGPreferenceRx<>(key, defaultValue);
+        return new MGPreferenceRx<>(key, defaultValue, true);
+    }
+
+    public static <T> MGPreferenceRx<T> create(String key, T defaultValue, boolean cacheBreaker) {
+
+        return new MGPreferenceRx<>(key, defaultValue, cacheBreaker);
     }
 
     /**
@@ -49,12 +54,12 @@ public class MGPreferenceRx<T> {
      * and uses that to initialize rest of the
      * data object.
      */
-    private MGPreferenceRx(String key, T defaultValue) {
+    private MGPreferenceRx(String key, T defaultValue, boolean cacheBreaker) {
 
         if (key != null) {
 
             // Initialize data cache.
-            dataCache = MGPreference.create(key, defaultValue);
+            dataCache = MGPreference.create(key, defaultValue, cacheBreaker);
         }
 
         init(defaultValue);

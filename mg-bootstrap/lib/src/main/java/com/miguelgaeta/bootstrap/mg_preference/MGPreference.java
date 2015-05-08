@@ -19,10 +19,10 @@ public class MGPreference<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    private MGPreference(String key, T defaultValue) {
+    private MGPreference(String key, T defaultValue, boolean cacheBreaker) {
 
         // Meta data does all the heavy lifting.
-        metaData = new MGPreferenceMetaData<>(key, defaultValue, getConfig());
+        metaData = new MGPreferenceMetaData<>(key, defaultValue, cacheBreaker);
     }
 
     /**
@@ -31,7 +31,7 @@ public class MGPreference<T> {
      */
     public static <T> MGPreference<T> create(@NonNull String key) {
 
-        return new MGPreference<>(key, null);
+        return new MGPreference<>(key, null, true);
     }
 
     /**
@@ -41,7 +41,18 @@ public class MGPreference<T> {
      */
     public static <T> MGPreference<T> create(@NonNull String key, T defaultValue) {
 
-        return new MGPreference<>(key, defaultValue);
+        return new MGPreference<>(key, defaultValue, true);
+    }
+
+    /**
+     * Create a new preference object backed by
+     * a concrete class object. Provide a default
+     * initial value.  Specify whether cache
+     * breaking behavior is desired.
+     */
+    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue, boolean cacheBreaker) {
+
+        return new MGPreference<>(key, defaultValue, cacheBreaker);
     }
 
     /**

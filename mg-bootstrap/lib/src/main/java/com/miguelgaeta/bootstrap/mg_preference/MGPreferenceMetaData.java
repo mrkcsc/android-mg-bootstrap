@@ -18,9 +18,6 @@ import rx.schedulers.Schedulers;
 @SuppressWarnings("unchecked")
 class MGPreferenceMetaData<T> {
 
-    // Standard configuration object.
-    private final MGPreferenceConfig config;
-
     // A memory cache of the preference value
     // so we do not have to go into the native
     // android preferences every fetch.
@@ -44,13 +41,13 @@ class MGPreferenceMetaData<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    MGPreferenceMetaData(String key, T defaultValue, MGPreferenceConfig config) {
+    MGPreferenceMetaData(String key, T defaultValue, boolean cacheBreaker) {
 
-        // Set config.
-        this.config = config;
+        if (cacheBreaker) {
 
-        // Append cache breaker.
-        key += "_" + config.getVersionCode();
+            // Append cache breaker.
+            key += "_" + MGPreference.getConfig().getVersionCode();
+        }
 
         // Set key.
         this.key = key;
@@ -66,7 +63,7 @@ class MGPreferenceMetaData<T> {
      */
     private SharedPreferences getSharedPreferences() {
 
-        return PreferenceManager.getDefaultSharedPreferences(config.getContext());
+        return PreferenceManager.getDefaultSharedPreferences(MGPreference.getConfig().getContext());
     }
 
     /**
