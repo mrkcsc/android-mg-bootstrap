@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
+import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
@@ -96,7 +98,8 @@ public class MGPreferenceRx<T> {
                     set(mergedSource);
                 }
             }
-        });
+
+        }, MGRxError.create());
     }
 
     /**
@@ -143,7 +146,8 @@ public class MGPreferenceRx<T> {
             if (getDataCache() != null) {
                 getDataCache().set(data);
             }
-        });
+
+        }, MGRxError.create());
 
         // Set initial value from data cache, or just use provided default.
         set(getDataCache() != null ? getDataCache().get() : defaultValue);
