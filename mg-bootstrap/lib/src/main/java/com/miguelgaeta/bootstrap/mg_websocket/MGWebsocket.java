@@ -29,7 +29,7 @@ public class MGWebsocket {
      */
     public void connect() {
 
-        client.connect(getConfig().getUrl(), getConfig().getReconnectDelay());
+        client.connect(getConfig().getUrl(), getConfig().getReconnectDelay(), getConfig().getSocketFactory());
     }
 
     /**

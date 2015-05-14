@@ -16,7 +16,6 @@ import java.net.CookiePolicy;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
 
 import lombok.Getter;
 import retrofit.RequestInterceptor;
@@ -132,8 +131,11 @@ public class MGRestClient {
         // Setup hostname verifier.
         setupHostnameVerifier(okHttpClient);
 
-        // Setup SSL.
-        setupSSL(okHttpClient);
+        if (getConfig().getSocketFactory() != null) {
+
+            // Assign it to the client.
+            okHttpClient.setSslSocketFactory(getConfig().getSocketFactory());
+        }
 
         okHttpClient.setConnectTimeout(getConfig().getTimeoutInSections(), TimeUnit.SECONDS);
 
@@ -159,23 +161,5 @@ public class MGRestClient {
 
         // Assign it to the client.
         okHttpClient.setHostnameVerifier(hostnameVerifier);
-    }
-
-    /**
-     * Setup a custom SSL that does not
-     * validate certificates.
-     *
-     * @param okHttpClient Target client.
-     */
-    private void setupSSL(OkHttpClient okHttpClient) {
-
-        // Create an ssl socket factory with our all-trusting manager.
-        SSLSocketFactory sslSocketFactory = MGRestClientSSL.createInsecureSSLSocketFactory();
-
-        if (sslSocketFactory != null) {
-
-            // Assign it to the client.
-            okHttpClient.setSslSocketFactory(sslSocketFactory);
-        }
     }
 }

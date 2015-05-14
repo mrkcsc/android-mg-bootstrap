@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_rest;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,4 +26,7 @@ public class MGRestClientConfig {
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private int timeoutInSections = 10;
+
+    @Setter @Getter(value = AccessLevel.PACKAGE)
+    private SSLSocketFactory socketFactory;
 }

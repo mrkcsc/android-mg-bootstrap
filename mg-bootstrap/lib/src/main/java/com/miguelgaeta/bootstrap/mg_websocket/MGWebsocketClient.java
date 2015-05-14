@@ -1,9 +1,9 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
-import com.miguelgaeta.bootstrap.mg_rest.MGRestClientSSL;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
@@ -53,6 +53,9 @@ class MGWebsocketClient {
     // Subscription to keep alive observable.
     private Subscription heartBeatSubscription;
 
+    // Optionally used for SSL.
+    private SSLSocketFactory socketFactory;
+
     /**
      * This is the state we want the client to be in. If
      * reconnecting, will always try to achieve this state.
@@ -74,15 +77,13 @@ class MGWebsocketClient {
      * specified url.  Optionally provide a
      * specified reconnection delay.=
      */
-    public void connect(@NonNull String url, Integer reconnectDelay) {
+    public void connect(@NonNull String url, Integer reconnectDelay, SSLSocketFactory socketFactory) {
 
-        // Update url.
         this.url = url;
-
-        // Update re-connect delay.
         this.reconnectDelay = reconnectDelay;
+        this.socketFactory = socketFactory;
 
-        client = createClient(url);
+        client = createClient();
         client.connect();
         clientDesiredState = MGWebsocketState.OPENED;
     }
@@ -185,7 +186,7 @@ class MGWebsocketClient {
      * client implementation used by
      * the wrapper.
      */
-    private WebSocketClient createClient(@NonNull String url) {
+    private WebSocketClient createClient() {
 
         WebSocketClient client = new WebSocketClient(createURI(url)) {
 
@@ -220,32 +221,20 @@ class MGWebsocketClient {
             }
         };
 
-        configureWSS(client, url);
-
-        return client;
-    }
-
-    /**
-     * Optionally enable insecure WSS for
-     * urls that contain a WSS prefix.
-     */
-    private void configureWSS(@NonNull WebSocketClient client, @NonNull String url) {
-
-        if (url.contains("wss")) {
-
-            // Create an ssl socket factory with our all-trusting manager.
-            SSLSocketFactory sslSocketFactory = MGRestClientSSL.createInsecureSSLSocketFactory();
+        if (socketFactory != null) {
 
             try {
 
-                if (sslSocketFactory != null) {
+                // Provide SSL socket to the client.
+                client.setSocket(socketFactory.createSocket());
 
-                    // Provide SSL socket to the client.
-                    client.setSocket(sslSocketFactory.createSocket());
-                }
+            } catch (IOException e) {
 
-            } catch (IOException ignored) { }
+                MGLog.e(e, "Unable to create socket with WSS.");
+            }
         }
+
+        return client;
     }
 
     /**
@@ -283,7 +272,7 @@ class MGWebsocketClient {
 
                     if (shouldReconnect()) {
 
-                        connect(url, reconnectDelay);
+                        connect(url, reconnectDelay, socketFactory);
                     }
                 });
             }
