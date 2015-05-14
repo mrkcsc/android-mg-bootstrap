@@ -29,25 +29,14 @@ public class MGLogConfig {
         boolean debug = (boolean)MGReflection.getBuildConfigValue(context, "DEBUG");
 
         // Plant the associated tree based on environment.
-        Timber.plant(debug ? new Timber.DebugTree() : new ProductionTree(info, error));
+        Timber.plant(debug ? new Timber.DebugTree() : new ProductionTree());
     }
 
     /**
      * Hollow logging tree that invokes configured
      * callbacks if provided by the user.
      */
-    private static class ProductionTree extends Timber.Tree {
-
-        private final MGLog.Callback.Info info;
-
-        private final MGLog.Callback.Error error;
-
-        ProductionTree(MGLog.Callback.Info info, MGLog.Callback.Error error) {
-
-            this.info = info;
-
-            this.error = error;
-        }
+    private class ProductionTree extends Timber.Tree {
 
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {

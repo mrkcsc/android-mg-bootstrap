@@ -19,12 +19,12 @@ public class MGLog {
 
         interface Info {
 
-            void run(Throwable t, String message, Object... args);
+            void run(Throwable throwable, String message);
         }
 
         interface Error {
 
-            void run(Throwable t, String message, Object... args);
+            void run(Throwable throwable, String message);
         }
     }
 
