@@ -50,7 +50,7 @@ public class MGRestClientSSL {
         try {
 
             // Install the all-trusting trust manager.
-            sslContext = SSLContext.getInstance("SSL");
+            sslContext = SSLContext.getInstance("TLS");
 
         } catch (NoSuchAlgorithmException ignored) { }
 
