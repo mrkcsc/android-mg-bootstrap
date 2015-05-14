@@ -104,7 +104,7 @@ public class MGRxBusMerge {
     }
 
     @SuppressWarnings("unchecked")
-    private static <K, V> Map<K, V> copyMap(Map<K, V> source) {
+    public static <K, V> Map<K, V> copyMap(Map<K, V> source) {
 
         Map<K, V> sourceItemCopy;
 
