@@ -17,14 +17,35 @@ public class MGRecyclerDataPayload {
     @Getter
     private List<Item> list = new ArrayList<>();
 
-    /**
-     * Add an item with an type for the adapter,
-     * a key to distinguish it from other items,
-     * and the item itself which can be any object.
-     */
     public void add(int type, String key, Object item) {
 
-        getList().add(Item.create(type, key, item));
+        list.add(Item.create(type, key, item));
+    }
+
+    public void add(Integer position, int type, String key, Object item) {
+
+        Item itemObject = Item.create(type, key, item);
+
+        if (position == null) {
+
+            // Insert at end,
+            list.add(itemObject);
+
+        } else {
+
+            // Insert at position.
+            list.add(position, itemObject);
+        }
+    }
+
+    public Item get(int position) {
+
+        return list.get(position);
+    }
+
+    public int size() {
+
+        return list.size();
     }
 
     @SuppressWarnings("UnusedDeclaration") @Getter @ToString @EqualsAndHashCode @AllArgsConstructor(staticName = "create")
