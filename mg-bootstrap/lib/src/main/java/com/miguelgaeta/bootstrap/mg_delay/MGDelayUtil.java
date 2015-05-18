@@ -26,11 +26,6 @@ class MGDelayUtil {
             observable = observable.startWith(0L);
         }
 
-        return observable.flatMap(aLong -> Observable.create(subscriber -> {
-
-            subscriber.onNext(null);
-            subscriber.onCompleted();
-
-        })).onBackpressureDrop().map(r -> null);
+        return observable.onBackpressureDrop().map(r -> null);
     }
 }
