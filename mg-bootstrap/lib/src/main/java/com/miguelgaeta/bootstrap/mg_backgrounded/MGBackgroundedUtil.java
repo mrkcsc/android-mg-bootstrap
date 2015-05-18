@@ -6,6 +6,7 @@ import android.app.Application;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
+import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.Getter;
 import rx.Subscription;
@@ -62,7 +63,8 @@ class MGBackgroundedUtil {
                 super.onActivityPaused(activity);
 
                 // On a delay, trigger backgrounded.
-                backgroundedSubscription = MGDelay.delay(MILLISECONDS_UNTIL_BACKGROUNDED).subscribe(timestamp -> getBackgrounded().set(true));
+                backgroundedSubscription = MGDelay.delay(MILLISECONDS_UNTIL_BACKGROUNDED)
+                    .subscribe(timestamp -> getBackgrounded().set(true), MGRxError.create());
             }
         });
     }
