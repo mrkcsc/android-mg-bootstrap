@@ -30,6 +30,7 @@ class MGDelayUtil {
 
             subscriber.onNext(null);
             subscriber.onCompleted();
-        }));
+
+        })).onBackpressureDrop().map(r -> null);
     }
 }
