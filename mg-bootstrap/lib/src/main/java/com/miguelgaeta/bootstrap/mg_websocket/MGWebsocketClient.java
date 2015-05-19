@@ -14,8 +14,6 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,10 +186,10 @@ class MGWebsocketClient {
      */
     private WebSocketClient createClient() {
 
-        WebSocketClient client = new WebSocketClient(createURI(url)) {
+        WebSocketClient client = new MGWebsocketClientBase(url) {
 
             @Override
-            public void onOpen(ServerHandshake handshakeData) {
+            public void onDidOpen(ServerHandshake handshakeData) {
 
                 getEventCls().set(null);
                 getEventErr().set(null);
@@ -199,13 +197,13 @@ class MGWebsocketClient {
             }
 
             @Override
-            public void onMessage(String message) {
+            public void onDidMessage(String message) {
 
                 getEventMsg().set(MGWebsocketEventMessage.create(message));
             }
 
             @Override
-            public void onClose(int code, String reason, boolean remote) {
+            public void onDidClose(int code, String reason, boolean remote) {
 
                 getEventOpn().set(null);
                 getEventErr().set(null);
@@ -213,11 +211,11 @@ class MGWebsocketClient {
             }
 
             @Override
-            public void onError(Exception ex) {
+            public void onDidError(Exception exception) {
 
                 getEventOpn().set(null);
                 getEventCls().set(null);
-                getEventErr().set(MGWebsocketEventError.create(ex));
+                getEventErr().set(MGWebsocketEventError.create(exception));
             }
         };
 
@@ -300,22 +298,6 @@ class MGWebsocketClient {
                     message(keepAliveMessage, false);
                 }
             });
-        }
-    }
-
-    /**
-     * Create a URI object from a
-     * provided string.  Throws a runtime
-     * exception if the url is invalid.
-     */
-    private static URI createURI(@android.support.annotation.NonNull String URL) {
-
-        try {
-            return new URI(URL);
-
-        } catch (URISyntaxException ignored) {
-
-            throw new RuntimeException("Unable to create URI from provided URL: " + URL);
         }
     }
 
