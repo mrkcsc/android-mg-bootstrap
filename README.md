@@ -1,6 +1,6 @@
 ## Android MG Bootstrap
 
-An opinionated bootstrap library for android projects that includes commonly used dependancies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
+An opinionated bootstrap library for android projects that includes commonly used dependencies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
 
 ### Installation
 
