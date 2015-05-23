@@ -4,6 +4,7 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
+import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
@@ -24,7 +25,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import rx.Observable;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 4/15/15.
@@ -132,9 +132,8 @@ class MGWebsocketClient {
 
             // Done with observable.
             subscriber.onCompleted();
-        })
-            .subscribeOn(Schedulers.computation())
-            .subscribe();
+
+        }).subscribe(r -> { }, MGRxError.create(null, "Unable to send message."));
     }
 
     /**
@@ -259,7 +258,8 @@ class MGWebsocketClient {
                 // Flush the message buffer.
                 messageBuffer.clear();
             }
-        });
+
+        }, MGRxError.create(null, "Unable to open."));
 
         // If we disconnect, reconnect if needed.
         getEventCls().get(false).subscribe(data -> {
@@ -272,9 +272,11 @@ class MGWebsocketClient {
 
                         connect(url, reconnectDelay, socketFactory);
                     }
-                });
+
+                }, MGRxError.create(null, "Unable to re-connect."));
             }
-        });
+
+        }, MGRxError.create(null, "Unable to close."));
     }
 
     /**
@@ -297,7 +299,8 @@ class MGWebsocketClient {
                     // Send keep alive message.
                     message(keepAliveMessage, false);
                 }
-            });
+
+            }, MGRxError.create(null, "Unable to send heartbeat."));
         }
     }
 
