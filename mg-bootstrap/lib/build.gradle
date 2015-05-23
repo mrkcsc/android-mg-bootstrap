@@ -11,7 +11,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.3.0'
+    PUBLISH_VERSION = '2.3.1'
 }
 
 // Disable javadoc lint errors.
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 230
-        versionName "2.3.0"
+        versionCode 231
+        versionName "2.3.1"
     }
 
     compileOptions {
@@ -72,10 +72,10 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
 
     // Used for push notifications.
-    compile 'com.google.android.gms:play-services-gcm:7.0.0'
+    compile 'com.google.android.gms:play-services-gcm:7.3.0'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.10'
+    compile 'io.reactivex:rxjava:1.0.11'
     compile 'io.reactivex:rxandroid:0.24.0'
 
     // Google json library.
