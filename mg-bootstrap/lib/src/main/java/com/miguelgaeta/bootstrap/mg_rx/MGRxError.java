@@ -2,43 +2,39 @@ package com.miguelgaeta.bootstrap.mg_rx;
 
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
+import lombok.AllArgsConstructor;
 import rx.functions.Action1;
 
 /**
  * Created by Miguel Gaeta on 5/4/15.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("unused") @AllArgsConstructor
 public class MGRxError implements Action1<Throwable> {
 
-    // Override debug flag.
-    private final boolean debug;
-
-    // Run additional code.
     private final Action1<Throwable> callback;
 
-    /**
-     * Creates an instance of the RxError class which automatically handles
-     * catching and logging errors that can happen in RxJava subscriptions.
-     */
-    private MGRxError(Action1<Throwable> callback, boolean debug) {
+    private final String message;
 
-        this.debug = debug;
-        this.callback = callback;
+    private final boolean debug;
+
+    public static MGRxError create(Action1<Throwable> callback, String message, boolean debug) {
+
+        return new MGRxError(callback, message, debug);
     }
 
-    public static MGRxError create(Action1<Throwable> callback, boolean debug) {
+    public static MGRxError create(Action1<Throwable> callback, String message) {
 
-        return new MGRxError(callback, debug);
+        return create(callback, message, true);
     }
 
     public static MGRxError create(Action1<Throwable> callback) {
 
-        return new MGRxError(callback, true);
+        return create(callback, "RxError");
     }
 
     public static MGRxError create() {
 
-        return new MGRxError(null, true);
+        return create(null);
     }
 
     /**
@@ -52,7 +48,7 @@ public class MGRxError implements Action1<Throwable> {
 
         if (debug) {
 
-            MGLog.e(throwable, "RxError");
+            MGLog.e(throwable, message);
         }
 
         if (callback != null) {
