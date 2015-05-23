@@ -1,26 +1,31 @@
 package com.miguelgaeta.bootstrap.mg_rx.bundle;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 5/20/15.
  */
-@Getter @AllArgsConstructor @SuppressWarnings("UnusedDeclaration")
+@AllArgsConstructor @SuppressWarnings("UnusedDeclaration")
 public class MGRxData9<A, B, C, D, E, F, G, H, I> {
 
-    private A d1;
-    private B d2;
-    private C d3;
-    private D d4;
-    private E d5;
-    private F d6;
-    private G d7;
-    private H d8;
-    private I d9;
+    public A d1;
+    public B d2;
+    public C d3;
+    public D d4;
+    public E d5;
+    public F d6;
+    public G d7;
+    public H d8;
+    public I d9;
 
     public static <A, B, C, D, E, F, G, H, I> MGRxData9<A, B, C, D, E, F, G, H, I> create(A a, B b, C c, D d, E e, F f, G g, H h, I i) {
 
         return new MGRxData9<>(a, b, c, d, e, f, g, h, i);
+    }
+
+    public static <A, B, C, D, E, F, G, H, I> Observable<MGRxData9<A, B, C, D, E, F, G, H, I>> combineLatest(Observable<A> a, Observable<B> b, Observable<C> c, Observable<D> d, Observable<E> e, Observable<F> f, Observable<G> g, Observable<H> h, Observable<I> i) {
+
+        return Observable.combineLatest(a, b, c, d, e, f, g, h, i, MGRxData9::create);
     }
 }
