@@ -14,7 +14,7 @@ public class MGEditText extends EditText {
 
     private final MGEditTextHasText hasText = new MGEditTextHasText(this);
 
-    private final MGEditTextMentions mentions = new MGEditTextMentions(this);
+    private final MGEditTextMention mention = new MGEditTextMention(this);
 
     public MGEditText(Context context) {
         super(context);
@@ -33,13 +33,13 @@ public class MGEditText extends EditText {
         hasText.setOnHasTextListener(onHasTextListener);
     }
 
-    public void setOnMentionsMatchedListener(MGEditTextMentions.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(MGEditTextMention.OnMentionsMatchedListener onMentionsMatchedListener) {
 
-        mentions.setOnMentionsMatchedListener(onMentionsMatchedListener);
+        mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
     }
 
     public void setMentionsData(Map<String, Object> mentionsData) {
 
-        mentions.setMentionsData(mentionsData);
+        mention.setMentionsData(mentionsData);
     }
 }

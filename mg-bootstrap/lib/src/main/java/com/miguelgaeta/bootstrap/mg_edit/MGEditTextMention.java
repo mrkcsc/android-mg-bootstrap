@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-public class MGEditTextMentions {
+public class MGEditTextMention {
 
     @NonNull
     private MGEditText editText;
@@ -25,16 +26,18 @@ public class MGEditTextMentions {
 
     private Map<String, Object> mentionsMatches;
 
+    private boolean processTextChanged = true;
+
     @NonNull
     private Map<String, Object> mentionsData = new HashMap<>();
 
-    public void setOnMentionsMatchedListener(MGEditTextMentions.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(MGEditTextMention.OnMentionsMatchedListener onMentionsMatchedListener) {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
 
         configureTextWatcher();
 
-        processMentions(editText.getText());
+        processMentions(editText.getText(), true);
     }
 
     public void setMentionsData(Map<String, Object> mentionsData) {
@@ -43,7 +46,7 @@ public class MGEditTextMentions {
 
         configureTextWatcher();
 
-        processMentions(editText.getText());
+        processMentions(editText.getText(), true);
     }
 
     private void configureTextWatcher() {
@@ -54,7 +57,12 @@ public class MGEditTextMentions {
                 @Override
                 public void afterTextChanged(Editable editable) {
 
-                    processMentions(editable);
+                    if (processTextChanged) {
+
+                        processMentions(editable, false);
+                    }
+
+                    processTextChanged = true;
                 }
             };
 
@@ -66,7 +74,7 @@ public class MGEditTextMentions {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    private void processMentions(Editable editable) {
+    private void processMentions(Editable editable, boolean force) {
 
         Map<String, Object> mentionsMatches = new LinkedHashMap<>();
 
@@ -83,11 +91,43 @@ public class MGEditTextMentions {
             }
         }
 
-        if (onMentionsMatchedListener != null && !mentionsMatches.equals(this.mentionsMatches)) {
-            onMentionsMatchedListener.mentionsMatched(mentionsMatches);
+        if (!mentionsMatches.equals(this.mentionsMatches) || force) {
+
+            if (onMentionsMatchedListener != null) {
+                onMentionsMatchedListener.mentionsMatched(mentionsMatches);
+            }
 
             this.mentionsMatches = mentionsMatches;
         }
+
+        // Apply visual spans.
+        applySpans(editable, mentionsData);
+    }
+
+    private void applySpans(Editable editable, Map<String, Object> mentionsData) {
+
+        SpannableString spannableString = new SpannableString(editable.toString());
+
+        processTextChanged = false;
+
+        String[] tokens =  editable.toString().split(" ");
+
+        int startIndex = 0;
+
+        for (String token : tokens) {
+
+            int endIndex = startIndex + token.length();
+
+            if (mentionsData.containsKey(token.replace("@", ""))) {
+
+                MGEditTextMentionUtils.applyBoldSpan(spannableString, startIndex, endIndex);
+            }
+
+            startIndex = endIndex + 1;
+        }
+
+        editText.setText(spannableString);
+        editText.setSelection(spannableString.length());
     }
 
     /**
