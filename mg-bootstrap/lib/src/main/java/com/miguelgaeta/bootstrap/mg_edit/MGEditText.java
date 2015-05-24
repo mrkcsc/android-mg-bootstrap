@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import java.util.Map;
+
 /**
  * Created by mrkcsc on 5/23/15.
  */
@@ -29,5 +31,15 @@ public class MGEditText extends EditText {
     public void setOnHasTextListener(MGEditTextHasText.OnHasTextListener onHasTextListener) {
 
         hasText.setOnHasTextListener(onHasTextListener);
+    }
+
+    public void setOnMentionsMatchedListener(MGEditTextMentions.OnMentionsMatchedListener onMentionsMatchedListener) {
+
+        mentions.setOnMentionsMatchedListener(onMentionsMatchedListener);
+    }
+
+    public void setMentionsData(Map<String, Object> mentionsData) {
+
+        mentions.setMentionsData(mentionsData);
     }
 }
