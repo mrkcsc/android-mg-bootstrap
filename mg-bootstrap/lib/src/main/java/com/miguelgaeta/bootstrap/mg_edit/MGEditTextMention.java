@@ -3,7 +3,9 @@ package com.miguelgaeta.bootstrap.mg_edit;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
+import android.widget.EditText;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class MGEditTextMention {
 
         configureTextWatcher();
 
-        processMentions(editText.getText(), true);
+        processMentions(editText, editText.getText().toString(), true);
     }
 
     public void setMentionsData(Map<String, Object> mentionsData) {
@@ -44,7 +46,7 @@ public class MGEditTextMention {
 
         configureTextWatcher();
 
-        processMentions(editText.getText(), true);
+        processMentions(editText, editText.getText().toString(), true);
     }
 
     private void configureTextWatcher() {
@@ -61,7 +63,7 @@ public class MGEditTextMention {
                 @Override
                 public void afterTextChanged(Editable editable) {
 
-                    processMentions(editable, false);
+                    processMentions(editText, editable.toString(), false);
                 }
             };
 
@@ -73,12 +75,11 @@ public class MGEditTextMention {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    private void processMentions(Editable editable, boolean force) {
+    private void processMentions(EditText editText, String string, boolean force) {
 
         Map<String, Object> mentionsMatches = new LinkedHashMap<>();
 
-        String partialMentionToken = MGEditTextMentionUtils
-            .getPartialMentionToken(editable.toString(), editText.getSelectionEnd());
+        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editText, string, Collections.singletonList('@'));
 
         if (partialMentionToken != null) {
 

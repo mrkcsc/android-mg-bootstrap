@@ -4,8 +4,11 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
+import android.widget.EditText;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import java.util.List;
+
+import lombok.NonNull;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -14,22 +17,30 @@ import com.miguelgaeta.bootstrap.mg_log.MGLog;
 class MGEditTextMentionUtils {
 
     /**
-     * Given an editable, check to see if the
-     * last token is a partial mention.
+     * Fetch token using end of string or edit text
+     * cursor position as the marker.
      */
-    public static String getPartialMentionToken(String string, int position) {
+    public static String getPartialMentionToken(EditText editText, @NonNull String string, @NonNull List<Character> identifiers) {
 
-        MGLog.e("Position: " + position);
+        int position = string.length() - 1;
 
-        if (string.length() > 0 && !Character.isWhitespace(string.charAt(string.length() - 1))) {
+        if (editText != null && editText.getSelectionEnd() >= 0) {
 
-            String[] tokens = string.split(" ");
+            position = editText.getSelectionEnd();
+        }
+
+        if (!string.isEmpty() && !Character.isWhitespace(string.charAt(position - 1))) {
+
+            String[] tokens = string.split("\\s+");
 
             String lastToken = tokens[tokens.length - 1];
 
-            if (lastToken.charAt(0) == '@') {
+            for (Character identifier : identifiers) {
 
-                return lastToken.substring(1, lastToken.length());
+                if (lastToken.charAt(0) == identifier) {
+
+                    return lastToken.substring(1, lastToken.length());
+                }
             }
         }
 
