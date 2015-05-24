@@ -1,7 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
 import android.text.Editable;
-import android.text.SpannableString;
+import android.text.Spannable;
 import android.text.TextWatcher;
 
 import java.util.HashMap;
@@ -25,8 +25,6 @@ public class MGEditTextMention {
     private OnMentionsMatchedListener onMentionsMatchedListener;
 
     private Map<String, Object> mentionsMatches;
-
-    private boolean processTextChanged = true;
 
     @NonNull
     private Map<String, Object> mentionsData = new HashMap<>();
@@ -55,14 +53,15 @@ public class MGEditTextMention {
             textWatcher = new MGEditTextWatcher() {
 
                 @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    applySpan((Spannable) charSequence);
+                }
+
+                @Override
                 public void afterTextChanged(Editable editable) {
 
-                    if (processTextChanged) {
-
-                        processMentions(editable, false);
-                    }
-
-                    processTextChanged = true;
+                    processMentions(editable, false);
                 }
             };
 
@@ -78,7 +77,8 @@ public class MGEditTextMention {
 
         Map<String, Object> mentionsMatches = new LinkedHashMap<>();
 
-        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editable.toString());
+        String partialMentionToken = MGEditTextMentionUtils
+            .getPartialMentionToken(editable.toString(), editText.getSelectionEnd());
 
         if (partialMentionToken != null) {
 
@@ -99,19 +99,14 @@ public class MGEditTextMention {
 
             this.mentionsMatches = mentionsMatches;
         }
-
-        // Apply visual spans.
-        //applySpans(editable, partialMentionToken, mentionsData);
     }
 
-    private void applySpans(Editable editable, String partialMentionToken, Map<String, Object> mentionsData) {
+    private void applySpan(Spannable spannable) {
 
-        // Take the raw editable string but also add a space if the last token is a complete match.
-        String rawString = editable.toString() + (mentionsData.containsKey(partialMentionToken) ? " " : "");
+        // Remove existing spans.
+        MGEditTextMentionUtils.removeSpans(spannable);
 
-        SpannableString spannableString = new SpannableString(rawString);
-
-        String[] tokens =  editable.toString().split(" ");
+        String[] tokens =  spannable.toString().split(" ");
 
         int startIndex = 0;
 
@@ -119,18 +114,15 @@ public class MGEditTextMention {
 
             int endIndex = startIndex + token.length();
 
-            if (mentionsData.containsKey(token.replace("@", ""))) {
+            token = token.replace("@", "");
 
-                MGEditTextMentionUtils.applyBoldSpan(spannableString, startIndex, endIndex);
+            if (!token.isEmpty() && mentionsData.containsKey(token)) {
+
+                MGEditTextMentionUtils.applyBoldSpan(spannable, startIndex, endIndex);
             }
 
             startIndex = endIndex + 1;
         }
-
-        processTextChanged = false;
-
-        editText.setText(spannableString);
-        editText.setSelection(spannableString.length());
     }
 
     public interface OnMentionsMatchedListener {
