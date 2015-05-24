@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -55,9 +56,9 @@ public class MGEditText extends EditText {
         mention.setMentionsData(mentionsData);
     }
 
-    public void setMentionsRecycler(RecyclerView recycler) {
+    public void setMentionsRecycler(RecyclerView recycler, @LayoutRes int layoutId) {
 
-        mention.setRecyclerView(recycler);
+        mention.setRecyclerView(recycler, layoutId);
     }
 
     public interface OnMentionsMatchedListener {

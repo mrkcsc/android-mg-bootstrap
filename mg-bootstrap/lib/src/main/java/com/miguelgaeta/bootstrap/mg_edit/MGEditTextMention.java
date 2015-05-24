@@ -1,12 +1,14 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
+import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ class MGEditTextMention {
 
     private Map<String, Object> mentionsMatches;
 
-    private RecyclerView recyclerView;
+    private MGEditTextMentionAdapter adapter;
 
     @NonNull
     private Map<String, Object> mentionsData = new HashMap<>();
@@ -40,25 +42,22 @@ class MGEditTextMention {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
 
-        configureTextWatcher();
-
-        processMentions(editText, editText.getText().toString(), true);
+        configure();
     }
 
     public void setMentionsData(Map<String, Object> mentionsData) {
 
         this.mentionsData = mentionsData;
 
-        configureTextWatcher();
-
-        processMentions(editText, editText.getText().toString(), true);
+        configure();
     }
 
-    public void setRecyclerView(RecyclerView recyclerView) {
+    public void setRecyclerView(RecyclerView recyclerView, @LayoutRes int layoutId) {
 
-        this.recyclerView = recyclerView;
+        adapter = MGRecyclerAdapter.configure(recyclerView, MGEditTextMentionAdapter.class);
+        adapter.setLayoutId(layoutId);
 
-        MGLog.e("Recycler: " + recyclerView);
+        configure();
     }
 
     private void configureTextWatcher() {
@@ -110,8 +109,33 @@ class MGEditTextMention {
                 onMentionsMatchedListener.mentionsMatched(mentionsMatches);
             }
 
+            setAdapterData(adapter, mentionsMatches);
+
             this.mentionsMatches = mentionsMatches;
         }
+    }
+
+    private void setAdapterData(MGEditTextMentionAdapter adapter, Map<String, Object> mentionsMatches) {
+
+        MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
+
+        for (String key : mentionsMatches.keySet()) {
+
+            payload.add(0, key, key);
+        }
+
+        adapter.setData(payload.getList());
+    }
+
+    /**
+     * Configure the mentions module by making sure the text
+     * watched is initialized and do a pass on processing mentions.
+     */
+    private void configure() {
+
+        configureTextWatcher();
+
+        processMentions(editText, editText.getText().toString(), true);
     }
 
     private void applySpan(Spannable spannable) {
