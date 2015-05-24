@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
 
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
@@ -119,29 +118,38 @@ class MGEditTextMention {
                 onMentionsMatchedListener.mentionsMatched(mentionsMatches);
             }
 
-            setAdapterData(adapter, mentionsMatches);
+            setAdapterData(adapter, this.mentionsMatches, mentionsMatches);
 
             this.mentionsMatches = mentionsMatches;
         }
     }
 
-    private void setAdapterData(MGEditTextMentionAdapter adapter, Map<String, Object> mentionsMatches) {
+    /**
+     * Set the adapter data and also make
+     * sure the recycler view height
+     * is correct.
+     */
+    private void setAdapterData(MGEditTextMentionAdapter adapter, Map<String, Object> dataOld, Map<String, Object> dataNew) {
+
+        if (dataOld == null) {
+            dataOld = new HashMap<>();
+        }
 
         MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
 
-        for (String key : mentionsMatches.keySet()) {
+        for (String key : dataNew.keySet()) {
 
             payload.add(0, key, key);
         }
 
-        int height = 36 * mentionsMatches.size();
+        int heightOld = MGReflection.dipToPixels(Math.min(36 * dataOld.size(), 144));
 
-        // Set the height.
-        recyclerView.getLayoutParams().height = MGReflection.dipToPixels(Math.min(height, 144));
+        int heightNew = MGReflection.dipToPixels(Math.min(36 * dataNew.size(), 144));
 
-        // Set the visibility.
-        recyclerView.setVisibility(mentionsMatches.size() > 0 ? View.VISIBLE : View.GONE);
+        // Run animation.
+        MGEditTextMentionAnimations.create(recyclerView, heightOld, heightNew);
 
+        // Update data source.
         adapter.setData(payload.getList());
     }
 
