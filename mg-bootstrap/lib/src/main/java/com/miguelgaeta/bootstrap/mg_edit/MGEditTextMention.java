@@ -1,9 +1,12 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,21 +20,23 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-public class MGEditTextMention {
+class MGEditTextMention {
 
     @NonNull
     private MGEditText editText;
 
     private TextWatcher textWatcher;
 
-    private OnMentionsMatchedListener onMentionsMatchedListener;
+    private MGEditText.OnMentionsMatchedListener onMentionsMatchedListener;
 
     private Map<String, Object> mentionsMatches;
+
+    private RecyclerView recyclerView;
 
     @NonNull
     private Map<String, Object> mentionsData = new HashMap<>();
 
-    public void setOnMentionsMatchedListener(MGEditTextMention.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(MGEditText.OnMentionsMatchedListener onMentionsMatchedListener) {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
 
@@ -47,6 +52,13 @@ public class MGEditTextMention {
         configureTextWatcher();
 
         processMentions(editText, editText.getText().toString(), true);
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+
+        this.recyclerView = recyclerView;
+
+        MGLog.e("Recycler: " + recyclerView);
     }
 
     private void configureTextWatcher() {
@@ -124,10 +136,5 @@ public class MGEditTextMention {
 
             startIndex = endIndex + 1;
         }
-    }
-
-    public interface OnMentionsMatchedListener {
-
-        void mentionsMatched(Map<String, Object> mentionsData);
     }
 }

@@ -10,18 +10,18 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-public class MGEditTextHasText {
+class MGEditTextHasText {
 
     @NonNull
     private MGEditText editText;
 
-    private OnHasTextListener onHasTextListener;
+    private MGEditText.OnHasTextListener onHasTextListener;
 
     private TextWatcher onHasTextWatcher;
 
     private boolean hasText;
 
-    public void setOnHasTextListener(OnHasTextListener onHasTextListener) {
+    public void setOnHasTextListener(MGEditText.OnHasTextListener onHasTextListener) {
 
         this.onHasTextListener = onHasTextListener;
 
@@ -68,13 +68,5 @@ public class MGEditTextHasText {
         }
 
         this.hasText = hasText;
-    }
-
-    /**
-     * Used to emit has text events.
-     */
-    public interface OnHasTextListener {
-
-        void hasText(boolean hasText);
     }
 }

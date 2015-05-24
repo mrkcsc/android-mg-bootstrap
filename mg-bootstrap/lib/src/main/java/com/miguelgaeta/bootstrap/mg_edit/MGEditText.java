@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -39,12 +40,12 @@ public class MGEditText extends EditText {
         insert(charSequence, Math.max(getSelectionStart(), 0), Math.max(getSelectionEnd(), 0));
     }
 
-    public void setOnHasTextListener(MGEditTextHasText.OnHasTextListener onHasTextListener) {
+    public void setOnHasTextListener(OnHasTextListener onHasTextListener) {
 
         hasText.setOnHasTextListener(onHasTextListener);
     }
 
-    public void setOnMentionsMatchedListener(MGEditTextMention.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
 
         mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
     }
@@ -52,5 +53,20 @@ public class MGEditText extends EditText {
     public void setMentionsData(Map<String, Object> mentionsData) {
 
         mention.setMentionsData(mentionsData);
+    }
+
+    public void setMentionsRecycler(RecyclerView recycler) {
+
+        mention.setRecyclerView(recycler);
+    }
+
+    public interface OnMentionsMatchedListener {
+
+        void mentionsMatched(Map<String, Object> mentionsData);
+    }
+
+    public interface OnHasTextListener {
+
+        void hasText(boolean hasText);
     }
 }
