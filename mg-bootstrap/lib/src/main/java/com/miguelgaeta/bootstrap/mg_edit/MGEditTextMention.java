@@ -78,7 +78,7 @@ public class MGEditTextMention {
 
         Map<String, Object> mentionsMatches = new LinkedHashMap<>();
 
-        String partialMentionToken = getPartialMentionToken(editable.toString());
+        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editable.toString());
 
         if (partialMentionToken != null) {
 
@@ -101,14 +101,15 @@ public class MGEditTextMention {
         }
 
         // Apply visual spans.
-        applySpans(editable, mentionsData);
+        //applySpans(editable, partialMentionToken, mentionsData);
     }
 
-    private void applySpans(Editable editable, Map<String, Object> mentionsData) {
+    private void applySpans(Editable editable, String partialMentionToken, Map<String, Object> mentionsData) {
 
-        SpannableString spannableString = new SpannableString(editable.toString());
+        // Take the raw editable string but also add a space if the last token is a complete match.
+        String rawString = editable.toString() + (mentionsData.containsKey(partialMentionToken) ? " " : "");
 
-        processTextChanged = false;
+        SpannableString spannableString = new SpannableString(rawString);
 
         String[] tokens =  editable.toString().split(" ");
 
@@ -126,26 +127,10 @@ public class MGEditTextMention {
             startIndex = endIndex + 1;
         }
 
+        processTextChanged = false;
+
         editText.setText(spannableString);
         editText.setSelection(spannableString.length());
-    }
-
-    /**
-     * Given an editable, check to see if the
-     * last token is a partial mention.
-     */
-    private String getPartialMentionToken(String editable) {
-
-        if (editable.length() == 0 || Character.isWhitespace(editable.charAt(editable.length() - 1))) {
-
-            return null;
-        }
-
-        String[] tokens = editable.split(" ");
-
-        String lastToken = tokens[tokens.length - 1];
-
-        return lastToken.charAt(0) == '@' ? lastToken.substring(1, lastToken.length()) : null;
     }
 
     public interface OnMentionsMatchedListener {
