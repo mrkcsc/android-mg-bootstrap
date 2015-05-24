@@ -28,6 +28,17 @@ public class MGEditText extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
+    public void insert(CharSequence charSequence, int start, int end) {
+
+        getText().replace(Math.min(start, end), Math.max(start, end), charSequence, 0, charSequence.length());
+    }
+
+    public void insert(CharSequence charSequence) {
+
+        // See: http://bit.ly/1ArIVnX
+        insert(charSequence, Math.max(getSelectionStart(), 0), Math.max(getSelectionEnd(), 0));
+    }
+
     public void setOnHasTextListener(MGEditTextHasText.OnHasTextListener onHasTextListener) {
 
         hasText.setOnHasTextListener(onHasTextListener);
