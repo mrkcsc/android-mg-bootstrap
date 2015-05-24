@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ class MGEditTextMention {
     private Map<String, Object> mentionsMatches;
 
     private MGEditTextMentionAdapter adapter;
+    private RecyclerView recyclerView;
 
     @NonNull
     private Map<String, Object> mentionsData = new HashMap<>();
@@ -52,10 +55,17 @@ class MGEditTextMention {
         configure();
     }
 
+    /**
+     * Configure the recycler view and standard
+     * adapter to handle the mentions list.
+     */
     public void setRecyclerView(RecyclerView recyclerView, @LayoutRes int layoutId) {
 
         adapter = MGRecyclerAdapter.configure(recyclerView, MGEditTextMentionAdapter.class);
         adapter.setLayoutId(layoutId);
+
+        this.recyclerView = recyclerView;
+        this.recyclerView.setItemAnimator(null);
 
         configure();
     }
@@ -123,6 +133,14 @@ class MGEditTextMention {
 
             payload.add(0, key, key);
         }
+
+        int height = 36 * mentionsMatches.size();
+
+        // Set the height.
+        recyclerView.getLayoutParams().height = MGReflection.dipToPixels(Math.min(height, 144));
+
+        // Set the visibility.
+        recyclerView.setVisibility(mentionsMatches.size() > 0 ? View.VISIBLE : View.GONE);
 
         adapter.setData(payload.getList());
     }
