@@ -11,10 +11,10 @@ import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventOpened;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
+import java.nio.channels.NotYetConnectedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +40,7 @@ class MGWebsocketClient {
     private final List<String> messageBuffer = new ArrayList<>();
 
     // Raw websocket object.
-    private WebSocketClient client;
+    private MGWebsocketClientBase client;
 
     // Optional reconnect delay.
     private Integer reconnectDelay;
@@ -110,13 +110,20 @@ class MGWebsocketClient {
      */
     public void message(@NonNull String message, boolean buffered) {
 
-        if (client != null && client.getReadyState() == WebSocket.READYSTATE.OPEN) {
-            client.send(message);
+        try {
 
-        } else if (buffered) {
+            if (client != null && client.getReadyState() == WebSocket.READYSTATE.OPEN) {
+                client.send(message);
 
-            // Send when connected.
-            messageBuffer.add(message);
+            } else if (buffered) {
+
+                // Send when connected.
+                messageBuffer.add(message);
+            }
+
+        } catch (NotYetConnectedException e) {
+
+            MGLog.e("Tried to send message when not connected.", e);
         }
     }
 
@@ -183,9 +190,9 @@ class MGWebsocketClient {
      * client implementation used by
      * the wrapper.
      */
-    private WebSocketClient createClient() {
+    private MGWebsocketClientBase createClient() {
 
-        WebSocketClient client = new MGWebsocketClientBase(url) {
+        MGWebsocketClientBase client = new MGWebsocketClientBase(url) {
 
             @Override
             public void onDidOpen(ServerHandshake handshakeData) {
