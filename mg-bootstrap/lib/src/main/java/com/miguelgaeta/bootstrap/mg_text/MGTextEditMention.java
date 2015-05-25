@@ -73,7 +73,7 @@ class MGTextEditMention {
 
         for (int index = 0; index < tags.size(); index++) {
 
-            String tag = tags.get(index);
+            String tag = "@" + tags.get(index);
 
             if (text.contains(tag) && stringify != null) {
 
@@ -113,7 +113,7 @@ class MGTextEditMention {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                    applySpan((Spannable) charSequence);
+                    applySpan((Spannable) charSequence, tags);
                 }
 
                 @Override
@@ -201,27 +201,29 @@ class MGTextEditMention {
         processMentions(editText, editText.getText().toString(), true);
     }
 
-    private void applySpan(Spannable spannable) {
+    /**
+     * Apply spans to spannable string.
+     */
+    private void applySpan(Spannable spannable, List<String> tags) {
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
 
-        String[] tokens =  spannable.toString().split(" ");
+        for (String tag : tags) {
 
-        int startIndex = 0;
+            tag = "@" + tag;
 
-        for (String token : tokens) {
+            int startIndex = 0;
 
-            int endIndex = startIndex + token.length();
+            while (spannable.toString().indexOf(tag, startIndex) != -1) {
 
-            token = token.replace("@", "");
+                int tagStartIndex = spannable.toString().indexOf(tag, startIndex);
 
-            if (!token.isEmpty() && tags.contains(token)) {
+                MGTextEditMentionUtils.applyBoldSpan(spannable, tagStartIndex, tagStartIndex + tag.length());
 
-                MGTextEditMentionUtils.applyBoldSpan(spannable, startIndex, endIndex);
+                // Update start index.
+                startIndex = tagStartIndex + 1;
             }
-
-            startIndex = endIndex + 1;
         }
     }
 }
