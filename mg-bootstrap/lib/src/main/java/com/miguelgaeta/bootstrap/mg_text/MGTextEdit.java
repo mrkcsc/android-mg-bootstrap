@@ -56,9 +56,9 @@ public class MGTextEdit extends EditText {
         mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
     }
 
-    public void setMentionsData(List<String> tags, OnMentionsStringify stringify) {
+    public void setMentionsData(List<String> tags, List tagsData, OnMentionsStringify stringify) {
 
-        mention.setMentionsData(tags, stringify);
+        mention.setMentionsData(tags, tagsData, stringify);
     }
 
     public void setMentionsRecycler(RecyclerView recycler, OnMentionsRecyclerItem onItem) {

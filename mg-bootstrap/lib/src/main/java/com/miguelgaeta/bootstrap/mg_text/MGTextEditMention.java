@@ -38,6 +38,7 @@ class MGTextEditMention {
     @NonNull
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
+    private List         tagsData;
 
     public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
 
@@ -46,11 +47,16 @@ class MGTextEditMention {
         configure();
     }
 
-    public void setMentionsData(List<String> tags, MGTextEdit.OnMentionsStringify stringify) {
+    public void setMentionsData(List<String> tags, List tagsData, MGTextEdit.OnMentionsStringify stringify) {
 
         this.stringify = stringify;
 
         this.tags = tags;
+        this.tagsData = tagsData;
+
+        if (adapter != null) {
+            adapter.setTagsData(tagsData);
+        }
 
         configure();
     }
@@ -89,6 +95,7 @@ class MGTextEditMention {
         adapter = MGRecyclerAdapter.configure(recyclerView, MGTextEditMentionAdapter.class);
         adapter.setOnItem(onItem);
         adapter.setEditText(editText);
+        adapter.setTagsData(tagsData);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);

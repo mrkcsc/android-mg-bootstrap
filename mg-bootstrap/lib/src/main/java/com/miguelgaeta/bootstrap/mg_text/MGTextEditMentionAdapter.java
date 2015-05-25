@@ -6,12 +6,16 @@ import android.view.ViewGroup;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapterSimple;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.NonNull;
 import lombok.Setter;
 
 /**
  * Created by mrkcsc on 5/24/15.
  */
+@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration"})
 public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     @Setter
@@ -19,6 +23,9 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     @Setter
     private MGTextEdit editText;
+
+    @Setter
+    private List tagsData = new ArrayList<>();
 
     public MGTextEditMentionAdapter(@NonNull RecyclerView recycler) {
         super(recycler);
@@ -41,6 +48,11 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     public String getTag(int position) {
 
         return (String)getItem(position);
+    }
+
+    public Object getTagData(int position) {
+
+        return tagsData.get(position);
     }
 
     public void mentionClicked(int position) {
