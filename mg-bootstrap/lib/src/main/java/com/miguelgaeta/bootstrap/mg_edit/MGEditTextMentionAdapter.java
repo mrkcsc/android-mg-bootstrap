@@ -17,12 +17,15 @@ public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
     @Setter
     private MGEditText.OnMentionsRecyclerItem onItem;
 
+    @Setter
+    private MGEditText editText;
+
     public MGEditTextMentionAdapter(@NonNull RecyclerView recycler) {
         super(recycler);
     }
 
     /**
-     * When we need to create a view holder delgate
+     * When we need to create a view holder delegate
      * the initialization and configuration
      * to the callee.
      */
@@ -30,5 +33,20 @@ public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
     public MGRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         return onItem.onItem(this);
+    }
+
+    /**
+     * Fetch data item at position.
+     */
+    public String getData(int position) {
+
+        return (String)getItem(position);
+    }
+
+    public void mentionClicked(int position) {
+
+        String data = getData(position);
+
+        editText.insert(data);
     }
 }

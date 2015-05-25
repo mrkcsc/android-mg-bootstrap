@@ -61,6 +61,7 @@ class MGEditTextMention {
 
         adapter = MGRecyclerAdapter.configure(recyclerView, MGEditTextMentionAdapter.class);
         adapter.setOnItem(onItem);
+        adapter.setEditText(editText);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
