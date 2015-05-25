@@ -33,6 +33,8 @@ class MGTextEditMention {
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
 
+    private MGTextEdit.OnMentionsStringify stringify;
+
     @NonNull
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
@@ -44,11 +46,38 @@ class MGTextEditMention {
         configure();
     }
 
-    public void setMentionsData(List<String> tags) {
+    public void setMentionsData(List<String> tags, MGTextEdit.OnMentionsStringify stringify) {
+
+        this.stringify = stringify;
 
         this.tags = tags;
 
         configure();
+    }
+
+    /**
+     * Converts edit text contents into
+     * a processed string if a stringify
+     * function is provided.
+     */
+    public String toString() {
+
+        if (stringify != null) {
+
+            String finalString = "";
+
+            for (String token : editText.getText().toString().split(" ")) {
+
+                String tokenStripped = token.replace("@", "");
+
+                finalString += tags.contains(tokenStripped) ? stringify.stringify(tags.indexOf(tokenStripped)) : token;
+                finalString += " ";
+            }
+
+            return finalString.trim();
+        }
+
+        return editText.getText().toString();
     }
 
     /**

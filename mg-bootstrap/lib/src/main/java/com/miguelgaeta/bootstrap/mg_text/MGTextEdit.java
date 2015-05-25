@@ -29,6 +29,12 @@ public class MGTextEdit extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    public String toString() {
+
+        return mention.toString();
+    }
+
     public void insert(CharSequence charSequence, int start, int end) {
 
         getText().replace(Math.min(start, end), Math.max(start, end), charSequence, 0, charSequence.length());
@@ -52,7 +58,7 @@ public class MGTextEdit extends EditText {
 
     public void setMentionsData(List<String> tags, OnMentionsStringify stringify) {
 
-        mention.setMentionsData(tags);
+        mention.setMentionsData(tags, stringify);
     }
 
     public void setMentionsRecycler(RecyclerView recycler, OnMentionsRecyclerItem onItem) {
