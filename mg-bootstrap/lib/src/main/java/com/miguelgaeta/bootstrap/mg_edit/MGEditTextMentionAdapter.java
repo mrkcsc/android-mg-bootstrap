@@ -45,8 +45,20 @@ public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
 
     public void mentionClicked(int position) {
 
-        String data = getData(position);
+        insertMention(editText, getData(position));
+    }
 
-        editText.insert(data);
+    private void insertMention(MGEditText editText, String tag) {
+
+        // Fetch position of cursor.
+        int position = MGEditTextMentionUtils.getPosition(editText, editText.getText().toString());
+
+        String lastToken = MGEditTextMentionUtils.getPartialMentionToken(editText, editText.getText().toString());
+
+        if (lastToken != null) {
+
+            // Insert tag, replacing any partial tag already in place.
+            editText.insert(tag + " ", position - lastToken.length(), position);
+        }
     }
 }

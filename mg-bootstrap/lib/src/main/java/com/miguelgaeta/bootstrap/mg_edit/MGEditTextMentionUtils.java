@@ -6,6 +6,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.widget.EditText;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.NonNull;
@@ -16,11 +17,9 @@ import lombok.NonNull;
 @SuppressWarnings("unused")
 class MGEditTextMentionUtils {
 
-    /**
-     * Fetch token using end of string or edit text
-     * cursor position as the marker.
-     */
-    public static String getPartialMentionToken(EditText editText, @NonNull String string, @NonNull List<Character> identifiers) {
+    private static final List<Character> identifiers = Collections.singletonList('@');
+
+    public static int getPosition(EditText editText, @NonNull String string) {
 
         int position = string.length() - 1;
 
@@ -28,6 +27,17 @@ class MGEditTextMentionUtils {
 
             position = editText.getSelectionEnd();
         }
+
+        return position;
+    }
+
+    /**
+     * Fetch token using end of string or edit text
+     * cursor position as the marker.
+     */
+    public static String getPartialMentionToken(EditText editText, @NonNull String string, @NonNull List<Character> identifiers) {
+
+        int position = getPosition(editText, string);
 
         if (!string.isEmpty() && !Character.isWhitespace(string.charAt(position - 1))) {
 
@@ -45,6 +55,11 @@ class MGEditTextMentionUtils {
         }
 
         return null;
+    }
+
+    public static String getPartialMentionToken(EditText editText, @NonNull String string) {
+
+        return getPartialMentionToken(editText, string, identifiers);
     }
 
     /**

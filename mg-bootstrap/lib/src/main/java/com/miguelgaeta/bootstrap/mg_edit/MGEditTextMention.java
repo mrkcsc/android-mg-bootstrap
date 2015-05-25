@@ -10,7 +10,6 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -99,7 +98,7 @@ class MGEditTextMention {
 
         Map<String, Object> mentionsMatches = new LinkedHashMap<>();
 
-        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editText, string, Collections.singletonList('@'));
+        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editText, string);
 
         if (partialMentionToken != null) {
 
