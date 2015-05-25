@@ -61,9 +61,31 @@ class MGTextEditMention {
         configure();
     }
 
-    public List<String> getMentionTags() {
+    /**
+     * Get a list of entered mentions run
+     * through the stringify function.
+     */
+    public List<String> getMentions() {
 
-        return new ArrayList<>();
+        List<String> mentions = new ArrayList<>();
+
+        String text = editText.toString();
+
+        for (int index = 0; index < tags.size(); index++) {
+
+            String tag = tags.get(index);
+
+            if (text.contains(tag) && stringify != null) {
+
+                String tagStringified = stringify.stringify(index);
+
+                if (!mentions.contains(tagStringified)) {
+                     mentions.add(tagStringified);
+                }
+            }
+        }
+
+        return mentions;
     }
 
     /**

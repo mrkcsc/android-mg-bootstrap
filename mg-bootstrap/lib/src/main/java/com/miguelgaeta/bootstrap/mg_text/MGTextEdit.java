@@ -35,6 +35,15 @@ public class MGTextEdit extends EditText {
         return getText().toString().trim();
     }
 
+    /**
+     * Fetch a list of currently entered mention
+     * tags run through the stringify function.
+     */
+    public List<String> getMentions() {
+
+        return mention.getMentions();
+    }
+
     public void insert(CharSequence charSequence, int start, int end) {
 
         getText().replace(Math.min(start, end), Math.max(start, end), charSequence, 0, charSequence.length());
