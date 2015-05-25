@@ -32,7 +32,7 @@ public class MGTextEdit extends EditText {
     @Override
     public String toString() {
 
-        return mention.toString();
+        return getText().toString().trim();
     }
 
     public void insert(CharSequence charSequence, int start, int end) {

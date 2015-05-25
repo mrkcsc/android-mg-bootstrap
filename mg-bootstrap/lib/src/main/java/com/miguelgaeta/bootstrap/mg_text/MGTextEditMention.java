@@ -61,29 +61,9 @@ class MGTextEditMention {
         configure();
     }
 
-    /**
-     * Converts edit text contents into
-     * a processed string if a stringify
-     * function is provided.
-     */
-    public String toString() {
+    public List<String> getMentionTags() {
 
-        if (stringify != null) {
-
-            String finalString = "";
-
-            for (String token : editText.getText().toString().split(" ")) {
-
-                String tokenStripped = token.replace("@", "");
-
-                finalString += tags.contains(tokenStripped) ? stringify.stringify(tags.indexOf(tokenStripped)) : token;
-                finalString += " ";
-            }
-
-            return finalString.trim();
-        }
-
-        return editText.getText().toString();
+        return new ArrayList<>();
     }
 
     /**
