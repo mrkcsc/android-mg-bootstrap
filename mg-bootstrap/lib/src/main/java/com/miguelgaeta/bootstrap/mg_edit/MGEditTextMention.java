@@ -1,6 +1,5 @@
 package com.miguelgaeta.bootstrap.mg_edit;
 
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
@@ -58,10 +57,10 @@ class MGEditTextMention {
      * Configure the recycler view and standard
      * adapter to handle the mentions list.
      */
-    public void setRecyclerView(RecyclerView recyclerView, @LayoutRes int layoutId) {
+    public void setRecyclerView(RecyclerView recyclerView, MGEditText.OnMentionsRecyclerItem onItem) {
 
         adapter = MGRecyclerAdapter.configure(recyclerView, MGEditTextMentionAdapter.class);
-        adapter.setLayoutId(layoutId);
+        adapter.setOnItem(onItem);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
