@@ -22,17 +22,20 @@ class MGTextEditMentionUtils {
      * Fetch token using end of string or edit text
      * cursor position as the marker.
      */
-    public static String getPartialMentionToken(MGTextEdit editText, @NonNull String string, @NonNull List<Character> identifiers) {
+    public static String getPartialMentionToken(MGTextEdit editText, @NonNull List<Character> identifiers) {
+
+        // Content string.
+        String content = editText.toString();
 
         int position = editText.getCursorPosition();
 
         // Look for last identifier token before the cursor position.
-        int lastIdentifier = string.substring(0, position).lastIndexOf("@");
+        int lastIdentifier = content.substring(0, position).lastIndexOf("@");
 
         if (lastIdentifier != -1) {
 
             // Return up to the current cursor position.
-            return string.substring(lastIdentifier + 1, position);
+            return content.substring(lastIdentifier + 1, position);
         }
 
         return null;
@@ -42,9 +45,9 @@ class MGTextEditMentionUtils {
      * Fetch token using end of string or edit text
      * cursor position as the marker.
      */
-    public static String getPartialMentionToken(MGTextEdit editText, @NonNull String string) {
+    public static String getPartialMentionToken(MGTextEdit editText) {
 
-        return getPartialMentionToken(editText, string, identifiers);
+        return getPartialMentionToken(editText, identifiers);
     }
 
     /**

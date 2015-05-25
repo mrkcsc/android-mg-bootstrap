@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
-
 import java.util.List;
 
 /**
@@ -34,14 +32,16 @@ public class MGTextEdit extends EditText {
     @Override
     public String toString() {
 
-        return getText().toString().trim();
+        return getText().toString();
     }
 
     @Override
     protected void onSelectionChanged(int start, int end) {
         super.onSelectionChanged(start, end);
 
-        MGLog.e("Changed");
+        if (mention != null) {
+            mention.processMentions(this, false);
+        }
     }
 
     /**

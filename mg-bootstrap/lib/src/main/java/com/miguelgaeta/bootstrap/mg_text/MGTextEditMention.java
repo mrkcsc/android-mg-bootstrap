@@ -1,10 +1,8 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
-import android.widget.EditText;
 
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
@@ -115,12 +113,6 @@ class MGTextEditMention {
 
                     applySpan((Spannable) charSequence, tags);
                 }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                    processMentions(editText, editable.toString(), false);
-                }
             };
 
             editText.addTextChangedListener(textWatcher);
@@ -131,11 +123,11 @@ class MGTextEditMention {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    private void processMentions(EditText editText, String string, boolean force) {
+    public void processMentions(MGTextEdit editText, boolean force) {
 
         List<String> tagsMatched = new ArrayList<>();
 
-        String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText, string);
+        String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
         if (partialMentionToken != null) {
 
@@ -198,7 +190,7 @@ class MGTextEditMention {
 
         configureTextWatcher();
 
-        processMentions(editText, editText.getText().toString(), true);
+        processMentions(editText, true);
     }
 
     /**
