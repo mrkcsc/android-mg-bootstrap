@@ -133,7 +133,7 @@ class MGTextEditMention {
 
             for (String tag : tags) {
 
-                if (tag.contains(partialMentionToken)) {
+                if (tag.toLowerCase().contains(partialMentionToken.toLowerCase())) {
 
                     tagsMatched.add(tag);
                 }
