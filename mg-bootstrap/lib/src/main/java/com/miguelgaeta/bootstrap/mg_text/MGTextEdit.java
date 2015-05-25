@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
 import java.util.List;
 
 /**
@@ -33,6 +35,29 @@ public class MGTextEdit extends EditText {
     public String toString() {
 
         return getText().toString().trim();
+    }
+
+    @Override
+    protected void onSelectionChanged(int start, int end) {
+        super.onSelectionChanged(start, end);
+
+        MGLog.e("Changed");
+    }
+
+    /**
+     * Fetch cursor position.  If no position
+     * is available, assume end of content.
+     */
+    public int getCursorPosition() {
+
+        int position = toString().length() - 1;
+
+        if (getSelectionEnd() >= 0) {
+
+            position = getSelectionEnd();
+        }
+
+        return position;
     }
 
     /**

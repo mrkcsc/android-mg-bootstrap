@@ -63,7 +63,7 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     private void insertMention(MGTextEdit editText, String tag) {
 
         // Fetch position of cursor.
-        int position = MGTextEditMentionUtils.getPosition(editText, editText.getText().toString());
+        int position = editText.getCursorPosition();
 
         String lastToken = MGTextEditMentionUtils.getPartialMentionToken(editText, editText.getText().toString());
 

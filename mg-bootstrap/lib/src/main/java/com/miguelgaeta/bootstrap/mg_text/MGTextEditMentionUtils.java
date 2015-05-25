@@ -4,7 +4,6 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
-import android.widget.EditText;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,45 +18,31 @@ class MGTextEditMentionUtils {
 
     private static final List<Character> identifiers = Collections.singletonList('@');
 
-    public static int getPosition(EditText editText, @NonNull String string) {
+    /**
+     * Fetch token using end of string or edit text
+     * cursor position as the marker.
+     */
+    public static String getPartialMentionToken(MGTextEdit editText, @NonNull String string, @NonNull List<Character> identifiers) {
 
-        int position = string.length() - 1;
+        int position = editText.getCursorPosition();
 
-        if (editText != null && editText.getSelectionEnd() >= 0) {
+        // Look for last identifier token before the cursor position.
+        int lastIdentifier = string.substring(0, position).lastIndexOf("@");
 
-            position = editText.getSelectionEnd();
+        if (lastIdentifier != -1) {
+
+            // Return up to the current cursor position.
+            return string.substring(lastIdentifier + 1, position);
         }
 
-        return position;
+        return null;
     }
 
     /**
      * Fetch token using end of string or edit text
      * cursor position as the marker.
      */
-    public static String getPartialMentionToken(EditText editText, @NonNull String string, @NonNull List<Character> identifiers) {
-
-        int position = getPosition(editText, string);
-
-        if (!string.isEmpty() && !Character.isWhitespace(string.charAt(position - 1))) {
-
-            String[] tokens = string.split("\\s+");
-
-            String lastToken = tokens[tokens.length - 1];
-
-            for (Character identifier : identifiers) {
-
-                if (lastToken.charAt(0) == identifier) {
-
-                    return lastToken.substring(1, lastToken.length());
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static String getPartialMentionToken(EditText editText, @NonNull String string) {
+    public static String getPartialMentionToken(MGTextEdit editText, @NonNull String string) {
 
         return getPartialMentionToken(editText, string, identifiers);
     }
