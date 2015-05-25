@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -50,9 +50,9 @@ public class MGEditText extends EditText {
         mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
     }
 
-    public void setMentionsData(Map<String, Object> mentionsData) {
+    public void setMentionsData(List<String> tags, OnMentionsStringify stringify) {
 
-        mention.setMentionsData(mentionsData);
+        mention.setMentionsData(tags);
     }
 
     public void setMentionsRecycler(RecyclerView recycler, OnMentionsRecyclerItem onItem) {
@@ -62,7 +62,7 @@ public class MGEditText extends EditText {
 
     public interface OnMentionsMatchedListener {
 
-        void mentionsMatched(Map<String, Object> mentionsData);
+        void mentionsMatched(List<String> tags);
     }
 
     public interface OnHasTextListener {
@@ -73,5 +73,10 @@ public class MGEditText extends EditText {
     public interface OnMentionsRecyclerItem {
 
         MGEditTextMentionItem onItem(MGEditTextMentionAdapter adapter);
+    }
+
+    public interface OnMentionsStringify {
+
+        String stringify(int position);
     }
 }

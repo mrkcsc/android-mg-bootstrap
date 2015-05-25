@@ -38,14 +38,14 @@ public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
     /**
      * Fetch data item at position.
      */
-    public String getData(int position) {
+    public String getTag(int position) {
 
         return (String)getItem(position);
     }
 
     public void mentionClicked(int position) {
 
-        insertMention(editText, getData(position));
+        insertMention(editText, getTag(position));
     }
 
     private void insertMention(MGEditText editText, String tag) {

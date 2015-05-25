@@ -10,9 +10,9 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,12 @@ class MGEditTextMention {
 
     private MGEditText.OnMentionsMatchedListener onMentionsMatchedListener;
 
-    private Map<String, Object> mentionsMatches;
-
     private MGEditTextMentionAdapter adapter;
     private RecyclerView recyclerView;
 
     @NonNull
-    private Map<String, Object> mentionsData = new HashMap<>();
+    private List<String> tags = new ArrayList<>();
+    private List<String> tagsMatchedCache;
 
     public void setOnMentionsMatchedListener(MGEditText.OnMentionsMatchedListener onMentionsMatchedListener) {
 
@@ -45,9 +44,9 @@ class MGEditTextMention {
         configure();
     }
 
-    public void setMentionsData(Map<String, Object> mentionsData) {
+    public void setMentionsData(List<String> tags) {
 
-        this.mentionsData = mentionsData;
+        this.tags = tags;
 
         configure();
     }
@@ -96,30 +95,31 @@ class MGEditTextMention {
      */
     private void processMentions(EditText editText, String string, boolean force) {
 
-        Map<String, Object> mentionsMatches = new LinkedHashMap<>();
+        List<String> tagsMatched = new ArrayList<>();
 
         String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editText, string);
 
         if (partialMentionToken != null) {
 
-            for (String key : mentionsData.keySet()) {
+            for (String tag : tags) {
 
-                if (key.contains(partialMentionToken)) {
+                if (tag.contains(partialMentionToken)) {
 
-                    mentionsMatches.put(key, mentionsData.get(key));
+                    tagsMatched.add(tag);
                 }
             }
         }
 
-        if (!mentionsMatches.equals(this.mentionsMatches) || force) {
+        if (!tagsMatched.equals(tagsMatchedCache) || force) {
 
             if (onMentionsMatchedListener != null) {
-                onMentionsMatchedListener.mentionsMatched(mentionsMatches);
+                onMentionsMatchedListener.mentionsMatched(tagsMatched);
             }
 
-            setAdapterData(adapter, this.mentionsMatches, mentionsMatches);
+            setAdapterData(adapter, tagsMatchedCache, tagsMatched);
 
-            this.mentionsMatches = mentionsMatches;
+            // Update cached value.
+            tagsMatchedCache = tagsMatched;
         }
     }
 
@@ -128,17 +128,17 @@ class MGEditTextMention {
      * sure the recycler view height
      * is correct.
      */
-    private void setAdapterData(MGEditTextMentionAdapter adapter, Map<String, Object> dataOld, Map<String, Object> dataNew) {
+    private void setAdapterData(MGEditTextMentionAdapter adapter, List<String> dataOld, List<String> dataNew) {
 
         if (dataOld == null) {
-            dataOld = new HashMap<>();
+            dataOld = new LinkedList<>();
         }
 
         MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
 
-        for (String key : dataNew.keySet()) {
+        for (String tag : dataNew) {
 
-            payload.add(0, key, key);
+            payload.add(0, tag, tag);
         }
 
         int heightOld = MGReflection.dipToPixels(Math.min(36 * dataOld.size(), 144));
@@ -178,7 +178,7 @@ class MGEditTextMention {
 
             token = token.replace("@", "");
 
-            if (!token.isEmpty() && mentionsData.containsKey(token)) {
+            if (!token.isEmpty() && tags.contains(token)) {
 
                 MGEditTextMentionUtils.applyBoldSpan(spannable, startIndex, endIndex);
             }
