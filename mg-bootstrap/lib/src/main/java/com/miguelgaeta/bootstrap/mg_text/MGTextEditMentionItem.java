@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.annotation.LayoutRes;
 
@@ -7,9 +7,9 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 /**
  * Created by mrkcsc on 5/24/15.
  */
-public class MGEditTextMentionItem extends MGRecyclerViewHolder<MGEditTextMentionAdapter> {
+public class MGTextEditMentionItem extends MGRecyclerViewHolder<MGTextEditMentionAdapter> {
 
-    public MGEditTextMentionItem(@LayoutRes int layout, MGEditTextMentionAdapter adapter) {
+    public MGTextEditMentionItem(@LayoutRes int layout, MGTextEditMentionAdapter adapter) {
         super(layout, adapter);
 
         // Handle clicks.

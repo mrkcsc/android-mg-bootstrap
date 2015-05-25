@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -6,7 +6,7 @@ import android.text.TextWatcher;
 /**
  * Created by mrkcsc on 5/23/15.
  */
-public class MGEditTextWatcher implements TextWatcher {
+public class MGTextEditWatcher implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {  }

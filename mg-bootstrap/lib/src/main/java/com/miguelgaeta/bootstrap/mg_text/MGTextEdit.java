@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,21 +11,21 @@ import java.util.List;
  * Created by mrkcsc on 5/23/15.
  */
 @SuppressWarnings("unused")
-public class MGEditText extends EditText {
+public class MGTextEdit extends EditText {
 
-    private final MGEditTextHasText hasText = new MGEditTextHasText(this);
+    private final MGTextEditHasText hasText = new MGTextEditHasText(this);
 
-    private final MGEditTextMention mention = new MGEditTextMention(this);
+    private final MGTextEditMention mention = new MGTextEditMention(this);
 
-    public MGEditText(Context context) {
+    public MGTextEdit(Context context) {
         super(context);
     }
 
-    public MGEditText(Context context, AttributeSet attrs) {
+    public MGTextEdit(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MGEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MGTextEdit(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -72,7 +72,7 @@ public class MGEditText extends EditText {
 
     public interface OnMentionsRecyclerItem {
 
-        MGEditTextMentionItem onItem(MGEditTextMentionAdapter adapter);
+        MGTextEditMentionItem onItem(MGTextEditMentionAdapter adapter);
     }
 
     public interface OnMentionsStringify {

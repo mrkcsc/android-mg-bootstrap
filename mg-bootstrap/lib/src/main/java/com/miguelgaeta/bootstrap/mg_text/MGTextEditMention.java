@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,23 +21,23 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-class MGEditTextMention {
+class MGTextEditMention {
 
     @NonNull
-    private MGEditText editText;
+    private MGTextEdit editText;
 
     private TextWatcher textWatcher;
 
-    private MGEditText.OnMentionsMatchedListener onMentionsMatchedListener;
+    private MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener;
 
-    private MGEditTextMentionAdapter adapter;
+    private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
 
     @NonNull
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 
-    public void setOnMentionsMatchedListener(MGEditText.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
 
@@ -55,9 +55,9 @@ class MGEditTextMention {
      * Configure the recycler view and standard
      * adapter to handle the mentions list.
      */
-    public void setRecyclerView(RecyclerView recyclerView, MGEditText.OnMentionsRecyclerItem onItem) {
+    public void setRecyclerView(RecyclerView recyclerView, MGTextEdit.OnMentionsRecyclerItem onItem) {
 
-        adapter = MGRecyclerAdapter.configure(recyclerView, MGEditTextMentionAdapter.class);
+        adapter = MGRecyclerAdapter.configure(recyclerView, MGTextEditMentionAdapter.class);
         adapter.setOnItem(onItem);
         adapter.setEditText(editText);
 
@@ -70,7 +70,7 @@ class MGEditTextMention {
     private void configureTextWatcher() {
 
         if (textWatcher == null) {
-            textWatcher = new MGEditTextWatcher() {
+            textWatcher = new MGTextEditWatcher() {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -97,7 +97,7 @@ class MGEditTextMention {
 
         List<String> tagsMatched = new ArrayList<>();
 
-        String partialMentionToken = MGEditTextMentionUtils.getPartialMentionToken(editText, string);
+        String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText, string);
 
         if (partialMentionToken != null) {
 
@@ -128,7 +128,7 @@ class MGEditTextMention {
      * sure the recycler view height
      * is correct.
      */
-    private void setAdapterData(MGEditTextMentionAdapter adapter, List<String> dataOld, List<String> dataNew) {
+    private void setAdapterData(MGTextEditMentionAdapter adapter, List<String> dataOld, List<String> dataNew) {
 
         if (dataOld == null) {
             dataOld = new LinkedList<>();
@@ -146,7 +146,7 @@ class MGEditTextMention {
         int heightNew = MGReflection.dipToPixels(Math.min(36 * dataNew.size(), 144));
 
         // Run animation.
-        MGEditTextMentionAnimations.create(recyclerView, heightOld, heightNew);
+        MGTextEditMentionAnimations.create(recyclerView, heightOld, heightNew);
 
         // Update data source.
         adapter.setData(payload.getList());
@@ -166,7 +166,7 @@ class MGEditTextMention {
     private void applySpan(Spannable spannable) {
 
         // Remove existing spans.
-        MGEditTextMentionUtils.removeSpans(spannable);
+        MGTextEditMentionUtils.removeSpans(spannable);
 
         String[] tokens =  spannable.toString().split(" ");
 
@@ -180,7 +180,7 @@ class MGEditTextMention {
 
             if (!token.isEmpty() && tags.contains(token)) {
 
-                MGEditTextMentionUtils.applyBoldSpan(spannable, startIndex, endIndex);
+                MGTextEditMentionUtils.applyBoldSpan(spannable, startIndex, endIndex);
             }
 
             startIndex = endIndex + 1;

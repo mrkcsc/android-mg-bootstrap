@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.text.Spannable;
 import android.text.Spanned;
@@ -15,7 +15,7 @@ import lombok.NonNull;
  * Created by mrkcsc on 5/23/15.
  */
 @SuppressWarnings("unused")
-class MGEditTextMentionUtils {
+class MGTextEditMentionUtils {
 
     private static final List<Character> identifiers = Collections.singletonList('@');
 

@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -12,15 +12,15 @@ import lombok.Setter;
 /**
  * Created by mrkcsc on 5/24/15.
  */
-public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
+public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     @Setter
-    private MGEditText.OnMentionsRecyclerItem onItem;
+    private MGTextEdit.OnMentionsRecyclerItem onItem;
 
     @Setter
-    private MGEditText editText;
+    private MGTextEdit editText;
 
-    public MGEditTextMentionAdapter(@NonNull RecyclerView recycler) {
+    public MGTextEditMentionAdapter(@NonNull RecyclerView recycler) {
         super(recycler);
     }
 
@@ -48,12 +48,12 @@ public class MGEditTextMentionAdapter extends MGRecyclerAdapterSimple {
         insertMention(editText, getTag(position));
     }
 
-    private void insertMention(MGEditText editText, String tag) {
+    private void insertMention(MGTextEdit editText, String tag) {
 
         // Fetch position of cursor.
-        int position = MGEditTextMentionUtils.getPosition(editText, editText.getText().toString());
+        int position = MGTextEditMentionUtils.getPosition(editText, editText.getText().toString());
 
-        String lastToken = MGEditTextMentionUtils.getPartialMentionToken(editText, editText.getText().toString());
+        String lastToken = MGTextEditMentionUtils.getPartialMentionToken(editText, editText.getText().toString());
 
         if (lastToken != null) {
 

@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,18 +10,18 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-class MGEditTextHasText {
+class MGTextEditHasText {
 
     @NonNull
-    private MGEditText editText;
+    private MGTextEdit editText;
 
-    private MGEditText.OnHasTextListener onHasTextListener;
+    private MGTextEdit.OnHasTextListener onHasTextListener;
 
     private TextWatcher onHasTextWatcher;
 
     private boolean hasText;
 
-    public void setOnHasTextListener(MGEditText.OnHasTextListener onHasTextListener) {
+    public void setOnHasTextListener(MGTextEdit.OnHasTextListener onHasTextListener) {
 
         this.onHasTextListener = onHasTextListener;
 
@@ -42,7 +42,7 @@ class MGEditTextHasText {
 
         onHasText(editText.length(), true);
 
-        onHasTextWatcher = new MGEditTextWatcher() {
+        onHasTextWatcher = new MGTextEditWatcher() {
 
             @Override
             public void afterTextChanged(Editable editable) {

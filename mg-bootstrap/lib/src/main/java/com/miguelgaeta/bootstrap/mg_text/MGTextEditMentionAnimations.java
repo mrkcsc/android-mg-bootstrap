@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_edit;
+package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,13 +8,13 @@ import android.view.animation.Transformation;
 /**
  * Created by mrkcsc on 5/24/15.
  */
-class MGEditTextMentionAnimations extends Animation {
+class MGTextEditMentionAnimations extends Animation {
 
     protected final int originalHeight;
     protected final View view;
     protected float perValue;
 
-    private MGEditTextMentionAnimations(View view, int fromHeight, int toHeight) {
+    private MGTextEditMentionAnimations(View view, int fromHeight, int toHeight) {
         this.view = view;
         this.originalHeight = fromHeight;
         this.perValue = (toHeight - fromHeight);
@@ -40,7 +40,7 @@ class MGEditTextMentionAnimations extends Animation {
         recyclerView.setVisibility(heightNew > 0 ? View.VISIBLE : View.GONE);
 
         // Create the animation.
-        Animation animation = new MGEditTextMentionAnimations(recyclerView, heightOld, heightNew);
+        Animation animation = new MGTextEditMentionAnimations(recyclerView, heightOld, heightNew);
 
         // Set a modest duration.
         animation.setDuration(100);
