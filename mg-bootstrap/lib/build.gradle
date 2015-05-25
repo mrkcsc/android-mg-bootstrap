@@ -11,7 +11,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.3.3'
+    PUBLISH_VERSION = '2.3.4'
 }
 
 // Disable javadoc lint errors.
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 233
-        versionName "2.3.3"
+        versionCode 234
+        versionName "2.3.4"
     }
 
     compileOptions {
