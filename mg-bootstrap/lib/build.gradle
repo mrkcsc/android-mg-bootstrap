@@ -59,14 +59,14 @@ android {
 dependencies {
 
     // Support libraries.
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.0.0'
 
     // Provides support for annotated get/set.
     compile 'org.projectlombok:lombok:1.16.4'
 
     // Custom fonts library.
-    compile 'uk.co.chrisjenx:calligraphy:2.0.2'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 
     // XML view injections.
     compile 'com.jakewharton:butterknife:6.1.0'
@@ -85,7 +85,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
     // Custom HTTP client that is better than the default.
-    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
 
     // Library for network image loading.
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -94,7 +94,7 @@ dependencies {
     compile 'net.danlew:android.joda:2.7.1'
 
     // Logging library.
-    compile 'com.jakewharton.timber:timber:3.0.1'
+    compile 'com.jakewharton.timber:timber:3.1.0'
 
     // Web socket client.
     compile files('libs/java-web-socket-7c3b223.jar')

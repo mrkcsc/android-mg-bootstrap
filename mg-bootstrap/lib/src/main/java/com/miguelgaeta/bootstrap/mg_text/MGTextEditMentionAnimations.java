@@ -26,6 +26,8 @@ class MGTextEditMentionAnimations extends Animation {
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         view.getLayoutParams().height = (int) (originalHeight + perValue * interpolatedTime);
         view.requestLayout();
+
+
     }
 
     @Override
