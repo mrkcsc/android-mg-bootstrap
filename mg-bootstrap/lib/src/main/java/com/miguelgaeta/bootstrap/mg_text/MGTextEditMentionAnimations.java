@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
+import lombok.NonNull;
+
 /**
  * Created by mrkcsc on 5/24/15.
  */
@@ -34,7 +36,7 @@ class MGTextEditMentionAnimations extends Animation {
     /**
      * Create and run animation.
      */
-    public static void create(RecyclerView recyclerView, int heightOld, int heightNew) {
+    public static void create(@NonNull RecyclerView recyclerView, int heightOld, int heightNew) {
 
         // Set the visibility.
         recyclerView.setVisibility(heightNew > 0 ? View.VISIBLE : View.GONE);

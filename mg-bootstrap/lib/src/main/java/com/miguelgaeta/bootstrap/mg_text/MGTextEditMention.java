@@ -38,6 +38,8 @@ class MGTextEditMention {
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 
+    private Map<String, Object> rawTags;
+
     public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
@@ -50,6 +52,8 @@ class MGTextEditMention {
         this.stringify = stringify;
 
         this.tags = new ArrayList<>(tags.keySet());
+
+        this.rawTags = tags;
 
         if (adapter != null) {
             adapter.setTags(tags);
@@ -92,6 +96,7 @@ class MGTextEditMention {
         adapter = MGRecyclerAdapter.configure(recyclerView, MGTextEditMentionAdapter.class);
         adapter.setOnItem(onItem);
         adapter.setEditText(editText);
+        adapter.setTags(rawTags);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
@@ -145,7 +150,10 @@ class MGTextEditMention {
                 onMentionsMatchedListener.mentionsMatched(tagsMatched);
             }
 
-            setAdapterData(adapter, tagsMatchedCache, tagsMatched);
+            if (adapter != null) {
+
+                setAdapterData(adapter, tagsMatchedCache, tagsMatched);
+            }
 
             // Update cached value.
             tagsMatchedCache = tagsMatched;
