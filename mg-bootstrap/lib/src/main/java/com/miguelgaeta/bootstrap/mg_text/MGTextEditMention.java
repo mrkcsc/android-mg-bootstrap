@@ -126,10 +126,13 @@ class MGTextEditMention {
         String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
         if (partialMentionToken != null) {
+            partialMentionToken = partialMentionToken.toLowerCase();
 
             for (String tag : tags) {
 
-                if (tag.toLowerCase().contains(partialMentionToken.toLowerCase())) {
+                String tagLower = tag.toLowerCase();
+
+                if (tagLower.contains(partialMentionToken) && !tagLower.equals(partialMentionToken)) {
 
                     tagsMatched.add(tag);
                 }
