@@ -29,10 +29,16 @@ class MGTextEditMentionUtils {
 
         int position = editText.getCursorPosition();
 
+        // If not at end of input and next character is not whitespace, no match.
+        if (position != content.length() && content.charAt(position) != ' ') {
+
+            return null;
+        }
+
         // Look for last identifier token before the cursor position.
         int lastIdentifier = content.substring(0, position).lastIndexOf("@");
 
-        if (lastIdentifier != -1) {
+        if (lastIdentifier != -1 && (lastIdentifier == 0 || content.charAt(lastIdentifier - 1) == ' ')) {
 
             // Return up to the current cursor position.
             return content.substring(lastIdentifier + 1, position);
