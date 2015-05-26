@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
+import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,8 @@ public class MGRestClientError implements Action1<Throwable> {
 
         } catch (Exception e) {
 
-            // Crash on any unexpected exceptions.
-            throw new RuntimeException(context.getResources()
-                    .getString(R.string.shared_rest_unknown_error));
+            // Call standard error class.
+            MGRxError.create().call(throwable);
         }
 
         if (callback != null) {
@@ -90,6 +90,8 @@ public class MGRestClientError implements Action1<Throwable> {
 
         List<String> errorMessages = new ArrayList<>();
 
+        boolean seriousError = false;
+
         switch (retrofitError.getKind()) {
 
             case NETWORK:
@@ -98,28 +100,32 @@ public class MGRestClientError implements Action1<Throwable> {
                 errorMessages.add(context.getResources().getString(R.string.shared_rest_network_error));
                 break;
 
-            case CONVERSION:
-
-                // Present a friendly serialization error message.
-                errorMessages.add(context.getResources().getString(R.string.shared_rest_serialize_error));
-                break;
-
             case HTTP:
 
                 // Try to extract error message from HTTP result.
                 errorMessages.addAll(tryHandleErrorResult(retrofitError));
                 break;
 
+            case CONVERSION:
             case UNEXPECTED:
 
-                // Pass along runtime exception.
-                throw new RuntimeException();
+                // Show friendly message to the user.
+                errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+
+                // Serious error.
+                seriousError = true;
         }
 
         for (String errorMessage : errorMessages) {
 
             // Print out any attached string messages.
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+
+        if (seriousError) {
+
+            // Pass along runtime exception.
+            throw new RuntimeException();
         }
     }
 

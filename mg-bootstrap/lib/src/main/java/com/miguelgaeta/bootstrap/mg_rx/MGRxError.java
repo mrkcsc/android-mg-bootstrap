@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_rx;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import lombok.AllArgsConstructor;
+import retrofit.RetrofitError;
 import rx.functions.Action1;
 
 /**
@@ -29,7 +30,7 @@ public class MGRxError implements Action1<Throwable> {
 
     public static MGRxError create(Action1<Throwable> callback) {
 
-        return create(callback, "RxError");
+        return create(callback, "[Rx Error]");
     }
 
     public static MGRxError create() {
@@ -48,7 +49,14 @@ public class MGRxError implements Action1<Throwable> {
 
         if (debug) {
 
-            MGLog.e(throwable, message);
+            String prefixMessage = "";
+
+            if (throwable instanceof RetrofitError) {
+
+                prefixMessage = "[Retrofit URL: " + ((RetrofitError)throwable).getUrl() + "] ";
+            }
+
+            MGLog.e(throwable, prefixMessage + message);
         }
 
         if (callback != null) {

@@ -7,7 +7,6 @@
     <string name="shared_percent_0">0%</string>
     <string name="shared_percent_100">100%</string>
 
-    <string name="shared_rest_serialize_error">A serialization error has occurred</string>
     <string name="shared_rest_network_error">A network error has occurred.</string>
     <string name="shared_rest_unknown_error">An unknown network error has occurred.</string>
     <string name="shared_rest_exception_error">An unknown error has occurred.</string>
