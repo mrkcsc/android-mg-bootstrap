@@ -73,8 +73,14 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
         if (lastToken != null) {
 
-            // Insert tag, replacing any partial tag already in place.
-            editText.insert(tag + " ", position - lastToken.length(), position);
+            int positionStart = position - lastToken.length();
+
+            // Insert tag, replacing any partial tag.
+            editText.insert(tag + "  ", positionStart, position);
+
+            // Selection hack to prevent next user inputted key
+            // press from overwriting what just got input.
+            editText.setSelection(positionStart + tag.length() + 1);
         }
     }
 }
