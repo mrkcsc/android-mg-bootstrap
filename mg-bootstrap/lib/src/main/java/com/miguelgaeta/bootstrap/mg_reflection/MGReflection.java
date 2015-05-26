@@ -51,7 +51,7 @@ public class MGReflection {
      * Convert density independent pixels to the associated
      * pixel value based on the screen size and density.
      */
-    public static int dipToPixels(int densityPixels) {
+    public static int dipToPixels(float densityPixels) {
 
         Resources resources = getConfig().getContext().getResources();
 
