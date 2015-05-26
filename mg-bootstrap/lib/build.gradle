@@ -6,12 +6,10 @@ plugins {
 
 // This is a library module.
 apply plugin: 'com.android.library'
-
-// Repo publish parameters.
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.3.7'
+    PUBLISH_VERSION = '2.4.0'
 }
 
 // Disable javadoc lint errors.
@@ -31,8 +29,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 237
-        versionName "2.3.7"
+        versionCode 240
+        versionName "2.4.0"
     }
 
     compileOptions {
