@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ class MGTextEditMention {
     private MGTextEdit.OnMentionsStringify stringify;
 
     @NonNull
-    private Map<String, Object> tags = new TreeMap<>();
+    private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 
     public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
@@ -50,7 +49,7 @@ class MGTextEditMention {
 
         this.stringify = stringify;
 
-        this.tags = tags;
+        this.tags = new ArrayList<>(tags.keySet());
 
         if (adapter != null) {
             adapter.setTags(tags);
@@ -69,7 +68,7 @@ class MGTextEditMention {
 
         String text = editText.toString();
 
-        for (String tag : tags.keySet()) {
+        for (String tag : tags) {
 
             if (text.contains("@" + tag) && stringify != null) {
 
@@ -128,7 +127,7 @@ class MGTextEditMention {
 
         if (partialMentionToken != null) {
 
-            for (String tag : tags.keySet()) {
+            for (String tag : tags) {
 
                 if (tag.toLowerCase().contains(partialMentionToken.toLowerCase())) {
 
@@ -193,12 +192,12 @@ class MGTextEditMention {
     /**
      * Apply spans to spannable string.
      */
-    private void applySpan(Spannable spannable, Map<String, Object> tags) {
+    private void applySpan(Spannable spannable, List<String> tags) {
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
 
-        for (String tag : tags.keySet()) {
+        for (String tag : tags) {
 
             tag = "@" + tag;
 
