@@ -11,6 +11,8 @@ import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +36,8 @@ class MGTextEditMention {
     private MGTextEdit.OnMentionsStringify stringify;
 
     @NonNull
-    private List<String> tags = new ArrayList<>();
+    private Map<String, Object> tags = new TreeMap<>();
     private List<String> tagsMatchedCache;
-    private List         tagsData;
 
     public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
 
@@ -45,15 +46,14 @@ class MGTextEditMention {
         configure();
     }
 
-    public void setMentionsData(List<String> tags, List tagsData, MGTextEdit.OnMentionsStringify stringify) {
+    public void setMentionsData(Map<String, Object> tags, MGTextEdit.OnMentionsStringify stringify) {
 
         this.stringify = stringify;
 
         this.tags = tags;
-        this.tagsData = tagsData;
 
         if (adapter != null) {
-            adapter.setTagsData(tagsData);
+            adapter.setTags(tags);
         }
 
         configure();
@@ -69,13 +69,11 @@ class MGTextEditMention {
 
         String text = editText.toString();
 
-        for (int index = 0; index < tags.size(); index++) {
+        for (String tag : tags.keySet()) {
 
-            String tag = "@" + tags.get(index);
+            if (text.contains("@" + tag) && stringify != null) {
 
-            if (text.contains(tag) && stringify != null) {
-
-                String tagStringified = stringify.stringify(index);
+                String tagStringified = stringify.stringify(tag);
 
                 if (!mentions.contains(tagStringified)) {
                      mentions.add(tagStringified);
@@ -95,7 +93,6 @@ class MGTextEditMention {
         adapter = MGRecyclerAdapter.configure(recyclerView, MGTextEditMentionAdapter.class);
         adapter.setOnItem(onItem);
         adapter.setEditText(editText);
-        adapter.setTagsData(tagsData);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
@@ -131,7 +128,7 @@ class MGTextEditMention {
 
         if (partialMentionToken != null) {
 
-            for (String tag : tags) {
+            for (String tag : tags.keySet()) {
 
                 if (tag.toLowerCase().contains(partialMentionToken.toLowerCase())) {
 
@@ -196,12 +193,12 @@ class MGTextEditMention {
     /**
      * Apply spans to spannable string.
      */
-    private void applySpan(Spannable spannable, List<String> tags) {
+    private void applySpan(Spannable spannable, Map<String, Object> tags) {
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
 
-        for (String tag : tags) {
+        for (String tag : tags.keySet()) {
 
             tag = "@" + tag;
 

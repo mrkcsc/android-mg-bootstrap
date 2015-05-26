@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -90,9 +91,10 @@ public class MGTextEdit extends EditText {
         mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
     }
 
-    public void setMentionsData(List<String> tags, List tagsData, OnMentionsStringify stringify) {
+    @SuppressWarnings("unchecked")
+    public <T> void setMentionsData(Map<String, T> tags, OnMentionsStringify stringify) {
 
-        mention.setMentionsData(tags, tagsData, stringify);
+        mention.setMentionsData((Map<String, Object>) tags, stringify);
     }
 
     public void setMentionsRecycler(RecyclerView recycler, OnMentionsRecyclerItem onItem) {
@@ -117,6 +119,6 @@ public class MGTextEdit extends EditText {
 
     public interface OnMentionsStringify {
 
-        String stringify(int position);
+        String stringify(String tag);
     }
 }
