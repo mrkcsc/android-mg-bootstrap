@@ -14,7 +14,6 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
-import java.nio.channels.NotYetConnectedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +120,7 @@ class MGWebsocketClient {
                 messageBuffer.add(message);
             }
 
-        } catch (NotYetConnectedException e) {
+        } catch (Exception e) {
 
             MGLog.e("Tried to send message when not connected.", e);
         }
