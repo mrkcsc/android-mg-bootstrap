@@ -122,7 +122,7 @@ class MGWebsocketClient {
 
         } catch (Exception e) {
 
-            MGLog.e("Tried to send message when not connected.", e);
+            MGLog.e(e, "Tried to send message when not connected.");
         }
     }
 
