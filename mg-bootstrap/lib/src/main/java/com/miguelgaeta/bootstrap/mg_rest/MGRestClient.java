@@ -33,14 +33,14 @@ public class MGRestClient {
     @Getter(lazy = true)
     private final MGRestClientConfig config = new MGRestClientConfig();
 
+    @Getter(lazy = true)
+    private final OkHttpClient okHttpClient = getHttpClient();
+
     /**
      * Return standard rest adapter configured for
      * the platform project.
      */
     public RestAdapter getRestAdapter() {
-
-        // Custom (better) http client.
-        OkClient client = getHttpClient();
 
         // Configured endpoint.
         String endpoint = getConfig().getBaseAPIURL();
@@ -49,7 +49,7 @@ public class MGRestClient {
         Converter converter = getGsonConverter();
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setClient(client)
+                .setClient(new OkClient(getOkHttpClient()))
                 .setEndpoint(endpoint)
                 .setConverter(converter)
                 .setRequestInterceptor(this::addAuthorizationHeader);
@@ -124,28 +124,28 @@ public class MGRestClient {
      * Fetch custom HTTP client (configure it
      * to use a specified timeout).
      */
-    private OkClient getHttpClient() {
+    private OkHttpClient getHttpClient() {
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient();
 
         // Setup hostname verifier.
-        setupHostnameVerifier(okHttpClient);
+        setupHostnameVerifier(client);
 
         if (getConfig().getSocketFactory() != null) {
 
             // Assign it to the client.
-            okHttpClient.setSslSocketFactory(getConfig().getSocketFactory());
+            client.setSslSocketFactory(getConfig().getSocketFactory());
         }
 
-        okHttpClient.setConnectTimeout(getConfig().getTimeoutInSections(), TimeUnit.SECONDS);
+        client.setConnectTimeout(getConfig().getTimeoutInSections(), TimeUnit.SECONDS);
 
         if (getConfig().isCookieStorageEnabled()) {
 
             // Set a custom cookie handler that persists cookies onto the device.
-            okHttpClient.setCookieHandler(new CookieManager(new MGRestClientCookieStore(), CookiePolicy.ACCEPT_ALL));
+            client.setCookieHandler(new CookieManager(new MGRestClientCookieStore(), CookiePolicy.ACCEPT_ALL));
         }
 
-        return new OkClient(okHttpClient);
+        return client;
     }
 
     /**
