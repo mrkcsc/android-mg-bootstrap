@@ -70,7 +70,7 @@ class MGTextEditMention {
 
         List<String> mentions = new ArrayList<>();
 
-        String text = editText.toString();
+        String text = editText.toStringSafe();
 
         for (String tag : tags) {
 

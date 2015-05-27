@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +32,19 @@ public class MGTextEdit extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public String toString() {
+    public String toStringSafe() {
 
-        return getText().toString();
+        try {
+
+            return getText().toString();
+
+        } catch (Exception e) {
+
+            // Should not happen but log if it does.
+            MGLog.e(e, "Unable to get edit text string");
+
+            return "";
+        }
     }
 
     @Override
@@ -51,7 +62,7 @@ public class MGTextEdit extends EditText {
      */
     public int getCursorPosition() {
 
-        int position = toString().length() - 1;
+        int position = toStringSafe().length();
 
         if (getSelectionEnd() >= 0) {
 

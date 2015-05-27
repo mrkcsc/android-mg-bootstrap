@@ -25,7 +25,7 @@ class MGTextEditMentionUtils {
     public static String getPartialMentionToken(MGTextEdit editText, @NonNull List<Character> identifiers) {
 
         // Content string.
-        String content = editText.toString();
+        String content = editText.toStringSafe();
 
         int position = editText.getCursorPosition();
 
