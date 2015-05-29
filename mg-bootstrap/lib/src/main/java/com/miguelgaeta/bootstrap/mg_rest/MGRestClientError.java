@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class MGRestClientError implements Action1<Throwable> {
             case NETWORK:
 
                 // Generic network error message.
-                errorMessages.add(context.getResources().getString(R.string.shared_rest_network_error));
+                errorMessages.add(MGReflection.getString(R.string.shared_rest_network_error));
                 break;
 
             case HTTP:
@@ -110,16 +111,19 @@ public class MGRestClientError implements Action1<Throwable> {
             case UNEXPECTED:
 
                 // Show friendly message to the user.
-                errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+                errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
 
                 // Serious error.
                 seriousError = true;
         }
 
-        for (String errorMessage : errorMessages) {
+        if (context != null) {
 
-            // Print out any attached string messages.
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+            for (String errorMessage : errorMessages) {
+
+                // Print out any attached string messages.
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+            }
         }
 
         if (seriousError) {
@@ -172,7 +176,7 @@ public class MGRestClientError implements Action1<Throwable> {
                 } else {
 
                     // If we cannot serialize the result, emit a generic error message.
-                    errorMessages.add(context.getResources().getString(R.string.shared_rest_unknown_error));
+                    errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
                 }
             }
         }

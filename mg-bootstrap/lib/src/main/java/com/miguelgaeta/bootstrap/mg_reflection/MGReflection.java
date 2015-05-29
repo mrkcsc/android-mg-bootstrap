@@ -3,8 +3,11 @@ package com.miguelgaeta.bootstrap.mg_reflection;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.support.annotation.StringRes;
 import android.util.TypedValue;
 import android.view.WindowManager;
+
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,6 +20,14 @@ public class MGReflection {
 
     @Getter(lazy = true)
     private static final MGReflectionConfig config = new MGReflectionConfig();
+
+    /**
+     * Fetch string resource.
+     */
+    public static String getString(@StringRes int resId) {
+
+        return MGLifecycleApplication.getContext().getResources().getString(resId);
+    }
 
     /**
      * Given a resource name as a string, fetch the associated
