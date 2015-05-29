@@ -5,6 +5,7 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 /**
@@ -22,7 +23,7 @@ public class MGRestClientConfig {
     private String baseAPIURL;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
-    private String authorizationToken;
+    private RequestInterceptor interceptor;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private int timeoutInSections = 10;

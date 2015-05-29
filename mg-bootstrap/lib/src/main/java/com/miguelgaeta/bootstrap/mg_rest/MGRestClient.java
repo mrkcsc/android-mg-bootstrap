@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HostnameVerifier;
 
 import lombok.Getter;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.Converter;
@@ -51,8 +50,13 @@ public class MGRestClient {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setClient(new OkClient(getOkHttpClient()))
                 .setEndpoint(endpoint)
-                .setConverter(converter)
-                .setRequestInterceptor(this::addAuthorizationHeader);
+                .setConverter(converter);
+
+        if (getConfig().getInterceptor() != null) {
+
+            // Add a request interceptor.
+            builder = builder.setRequestInterceptor(getConfig().getInterceptor());
+        }
 
         if (getConfig().getLogging() != null) {
 
@@ -88,13 +92,6 @@ public class MGRestClient {
         gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterDeserialization);
 
         return gsonBuilder.create();
-    }
-
-    private void addAuthorizationHeader(RequestInterceptor.RequestFacade request) {
-
-        if (getConfig().getAuthorizationToken() != null) {
-            request.addHeader("Authorization", getConfig().getAuthorizationToken());
-        }
     }
 
     /**
