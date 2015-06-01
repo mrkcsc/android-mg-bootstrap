@@ -3,7 +3,7 @@ package com.miguelgaeta.bootstrap.mg_lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * convention and custom activity transitions.
  */
 @SuppressWarnings("UnusedDeclaration")
-public class MGLifecycleActivity extends ActionBarActivity {
+public class MGLifecycleActivity extends AppCompatActivity {
 
     @Getter
     // Configuration object for the activity.

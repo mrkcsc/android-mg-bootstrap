@@ -2,7 +2,7 @@ package com.miguelgaeta.bootstrap.mg_lifecycle;
 
 import android.os.Build;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -16,7 +16,7 @@ import lombok.Setter;
 @SuppressWarnings("UnusedDeclaration")
 public class MGLifecycleActivityConfig {
 
-    private ActionBarActivity activity;
+    private AppCompatActivity activity;
 
     // Track if we are going back
     // to another activity.
@@ -47,7 +47,7 @@ public class MGLifecycleActivityConfig {
      * Pass along associated activity into
      * the configuration object.
      */
-    MGLifecycleActivityConfig(ActionBarActivity activity) {
+    MGLifecycleActivityConfig(AppCompatActivity activity) {
         this.activity = activity;
     }
 
