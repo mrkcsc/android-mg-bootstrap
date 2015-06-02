@@ -52,11 +52,12 @@ public class MGRestClient {
                 .setEndpoint(endpoint)
                 .setConverter(converter);
 
-        if (getConfig().getInterceptor() != null) {
+        builder = builder.setRequestInterceptor(request -> {
 
-            // Add a request interceptor.
-            builder = builder.setRequestInterceptor(getConfig().getInterceptor());
-        }
+            if (getConfig().getInterceptor() != null) {
+                getConfig().getInterceptor().intercept(request);
+            }
+        });
 
         if (getConfig().getLogging() != null) {
 
@@ -81,7 +82,6 @@ public class MGRestClient {
 
         JsonSerializer<DateTime> typeAdapterSerialization = (sourceDate, typeOf, context) ->
                 sourceDate == null ? null : new JsonPrimitive(dateTimeFormatter.print(sourceDate));
-
         JsonDeserializer<DateTime> typeAdapterDeserialization = (jsonDate, typeOf, context) ->
                 jsonDate == null ? null : new DateTime(jsonDate.getAsString());
 
