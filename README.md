@@ -8,7 +8,7 @@ An opinionated bootstrap library for android projects that includes commonly use
 
 ```groovy
 
-compile 'com.miguelgaeta.bootstrap:mg-bootstrap:2.2.7'
+compile 'com.miguelgaeta.bootstrap:mg-bootstrap:2.4.6'
     
 ```
 
