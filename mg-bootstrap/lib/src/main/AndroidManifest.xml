@@ -1,5 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.miguelgaeta.bootstrap">
-
-    <application android:allowBackup="true" />
-
-</manifest>
+<manifest package="com.miguelgaeta.bootstrap" />
