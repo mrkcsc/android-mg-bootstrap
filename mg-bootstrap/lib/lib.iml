@@ -101,7 +101,7 @@
     <orderEntry type="library" exported="" name="play-services-gcm-7.5.0" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.0.11" level="project" />
     <orderEntry type="library" exported="" name="timber-3.1.0" level="project" />
-    <orderEntry type="library" exported="" name="drawee-0.5.0" level="project" />
+    <orderEntry type="library" exported="" name="drawee-0.5.1" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.7-no-tzdb" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="calligraphy-2.1.0" level="project" />
@@ -110,17 +110,17 @@
     <orderEntry type="library" exported="" name="lombok-1.16.4" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
-    <orderEntry type="library" exported="" name="imagepipeline-0.5.0" level="project" />
     <orderEntry type="library" exported="" name="butterknife-6.1.0" level="project" />
+    <orderEntry type="library" exported="" name="imagepipeline-0.5.1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="android.joda-2.7.1" level="project" />
-    <orderEntry type="library" exported="" name="fresco-0.5.0" level="project" />
-    <orderEntry type="library" exported="" name="fbcore-0.5.0" level="project" />
+    <orderEntry type="library" exported="" name="fresco-0.5.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="fbcore-0.5.1" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="imagepipeline-okhttp-0.5.0" level="project" />
+    <orderEntry type="library" exported="" name="imagepipeline-okhttp-0.5.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.4.0" level="project" />
   </component>
 </module>
