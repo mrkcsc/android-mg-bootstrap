@@ -14,8 +14,6 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import rx.subjects.PublishSubject;
 
 /**
  * Created by mrkcsc on 3/27/15.
@@ -27,12 +25,6 @@ class MGKeyboardMetrics {
 
     @Getter(AccessLevel.PACKAGE)
     private int windowHeight;
-
-    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
-    private boolean keyboardOpen;
-
-    @Getter(lazy = true, value = AccessLevel.PACKAGE)
-    private final PublishSubject<Boolean> opened = PublishSubject.create();
 
     // Used for size computations.
     private Rect windowVisibleDisplayFrame = new Rect();

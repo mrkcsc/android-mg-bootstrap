@@ -9,9 +9,7 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
-import rx.Observable;
 
 /**
  * Created by mrkcsc on 3/27/15.
@@ -50,40 +48,37 @@ public class MGKeyboardConfig {
         return rootView;
     }
 
-    private void setGlobalLayoutListener(@NonNull final Activity activity, @NonNull Observable<Void> paused) {
-
-        // Fetch root view.
-        View rootView = getRootView(activity);
-
-        // Create instance of keyboard layout listener.
-        MGKeyboardLayoutListener listener = new MGKeyboardLayoutListener
-                (rootView, MGKeyboard.getMetrics().isFullscreen(activity), paused);
-
-        // Set the listener.
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
-
-        // Until paused.
-        paused.subscribe(result -> {
-
-            // Close keyboard when activity paused.
-            MGKeyboard.getMetrics().setKeyboardOpen(false);
-
-            // Remove the listener.
-            rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
-        });
-    }
-
     private void registerLifecycleCallbacks(Application application) {
 
-        // Register the callbacks.
         application.registerActivityLifecycleCallbacks(new MGLifecycleCallbacks() {
 
-            @Override
-            public void onActivityStarted(Activity activity) {
-                super.onActivityStarted(activity);
+            private View rootView;
 
-                // Set layout listener.
-                setGlobalLayoutListener(activity, getPaused());
+            MGKeyboardLayoutListener listener;
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                super.onActivityResumed(activity);
+
+                // Fetch root.
+                rootView = getRootView(activity);
+
+                // Assign the layout listener.
+                listener = new MGKeyboardLayoutListener(rootView, MGKeyboard.getMetrics().isFullscreen(activity), getPaused());
+
+                // Set the listener.
+                rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                super.onActivityPaused(activity);
+
+                // Close keyboard when activity paused.
+                MGKeyboardState._state.set(MGKeyboardState.CLOSED);
+
+                // Remove the listener.
+                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
             }
         });
     }
