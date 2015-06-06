@@ -11,7 +11,7 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 /**
  * Created by Miguel Gaeta on 6/5/15.
  */
-class MGKeyboardLifecycl2 extends MGLifecycleCallbacks {
+class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
     private View rootView;
 
@@ -30,7 +30,7 @@ class MGKeyboardLifecycl2 extends MGLifecycleCallbacks {
         // Set the listener.
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
 
-        initEditTexts((ViewGroup)rootView);
+        initializeEditTexts((ViewGroup) rootView);
     }
 
     @Override
@@ -38,13 +38,13 @@ class MGKeyboardLifecycl2 extends MGLifecycleCallbacks {
         super.onActivityPaused(activity);
 
         // Close keyboard when activity paused.
-        MGKeyboardState._state.set(MGKeyboardState.CLOSED);
+        MGKeyboardState.setState(MGKeyboardState.CLOSED);
 
         // Remove the listener.
         rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
     }
 
-    private void initEditTexts(ViewGroup viewGroup) {
+    private void initializeEditTexts(ViewGroup viewGroup) {
 
         for (int i = 0; i <= viewGroup.getChildCount() - 1; i++) {
 
@@ -52,30 +52,16 @@ class MGKeyboardLifecycl2 extends MGLifecycleCallbacks {
 
             if (view instanceof ViewGroup) {
 
-                initEditTexts((ViewGroup) view);
+                initializeEditTexts((ViewGroup) view);
             }
 
             if (view instanceof EditText) {
 
                 EditText editText = (EditText) view;
 
-                editText.setOnFocusChangeListener((v, focused) ->{
+                editText.setOnFocusChangeListener((r1, r2) -> MGKeyboardState.setState(MGKeyboardState.OPENING));
 
-                    // If not closed, trigger opening.
-                    if (MGKeyboardState.getState().equals(MGKeyboardState.CLOSED)) {
-
-                        MGKeyboardState._state.set(MGKeyboardState.OPENING);
-                    }
-                });
-
-                editText.setOnClickListener(v -> {
-
-                    // If not closed, trigger opening.
-                    if (MGKeyboardState.getState().equals(MGKeyboardState.CLOSED)) {
-
-                        MGKeyboardState._state.set(MGKeyboardState.OPENING);
-                    }
-                });
+                editText.setOnClickListener(r1 -> MGKeyboardState.setState(MGKeyboardState.OPENING));
             }
         }
     }
