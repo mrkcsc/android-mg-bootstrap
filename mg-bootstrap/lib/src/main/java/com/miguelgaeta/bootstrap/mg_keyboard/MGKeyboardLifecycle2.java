@@ -11,7 +11,7 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 /**
  * Created by Miguel Gaeta on 6/5/15.
  */
-class MGKeyboardLifecycle extends MGLifecycleCallbacks {
+class MGKeyboardLifecycle2 extends MGLifecycleCallbacks {
 
     private View rootView;
 
