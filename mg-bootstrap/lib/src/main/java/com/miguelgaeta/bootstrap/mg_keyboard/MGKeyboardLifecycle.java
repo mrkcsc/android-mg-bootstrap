@@ -59,7 +59,13 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
                 EditText editText = (EditText) view;
 
-                editText.setOnFocusChangeListener((r1, r2) -> MGKeyboardState.set(MGKeyboardState.OPENING));
+                editText.setOnFocusChangeListener((r1, focused) -> {
+
+                    if (focused) {
+
+                        MGKeyboardState.set(MGKeyboardState.OPENING);
+                    }
+                });
 
                 editText.setOnClickListener(r1 -> MGKeyboardState.set(MGKeyboardState.OPENING));
             }
