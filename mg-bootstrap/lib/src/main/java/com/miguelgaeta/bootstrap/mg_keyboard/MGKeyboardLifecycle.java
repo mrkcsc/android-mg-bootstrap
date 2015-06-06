@@ -11,7 +11,7 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 /**
  * Created by Miguel Gaeta on 6/5/15.
  */
-class MGKeyboardLifecycle2 extends MGLifecycleCallbacks {
+class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
     private View rootView;
 
@@ -38,7 +38,7 @@ class MGKeyboardLifecycle2 extends MGLifecycleCallbacks {
         super.onActivityPaused(activity);
 
         // Close keyboard when activity paused.
-        MGKeyboardState.setState(MGKeyboardState.CLOSED);
+        MGKeyboardState.set(MGKeyboardState.CLOSED);
 
         // Remove the listener.
         rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
@@ -59,9 +59,9 @@ class MGKeyboardLifecycle2 extends MGLifecycleCallbacks {
 
                 EditText editText = (EditText) view;
 
-                editText.setOnFocusChangeListener((r1, r2) -> MGKeyboardState.setState(MGKeyboardState.OPENING));
+                editText.setOnFocusChangeListener((r1, r2) -> MGKeyboardState.set(MGKeyboardState.OPENING));
 
-                editText.setOnClickListener(r1 -> MGKeyboardState.setState(MGKeyboardState.OPENING));
+                editText.setOnClickListener(r1 -> MGKeyboardState.set(MGKeyboardState.OPENING));
             }
         }
     }

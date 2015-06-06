@@ -21,6 +21,6 @@ public class MGKeyboardConfig {
     public void init(Application application) {
 
         // Register the activity callbacks.
-        application.registerActivityLifecycleCallbacks(new MGKeyboardLifecycle2());
+        application.registerActivityLifecycleCallbacks(new MGKeyboardLifecycle());
     }
 }

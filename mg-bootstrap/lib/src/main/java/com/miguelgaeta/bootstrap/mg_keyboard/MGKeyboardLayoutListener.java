@@ -125,7 +125,7 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
      */
     private void resizeRootView(@NonNull MGKeyboardState state) {
 
-        MGKeyboardState.setState(state);
+        MGKeyboardState.set(state);
 
         if (fullscreen && MGKeyboard.getConfig().isRootViewResize()) {
 

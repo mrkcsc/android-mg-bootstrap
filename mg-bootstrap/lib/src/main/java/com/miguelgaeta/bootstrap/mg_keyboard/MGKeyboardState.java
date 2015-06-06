@@ -14,24 +14,24 @@ public enum  MGKeyboardState {
 
     private static final MGPreferenceRx<MGKeyboardState> _state = MGPreferenceRx.create(null, CLOSED);
 
-    public static Observable<MGKeyboardState> getStateObservable() {
+    public static Observable<MGKeyboardState> getObservable() {
 
         return _state.get().distinctUntilChanged();
     }
 
-    public static MGKeyboardState getState() {
+    public static MGKeyboardState get() {
 
         return _state.getBlocking();
     }
 
-    public static void setState(MGKeyboardState state) {
+    static void set(MGKeyboardState state) {
 
-        if (getState() == CLOSED && state == OPENED) {
+        if (get() == CLOSED && state == OPENED) {
 
             _state.set(OPENING);
         }
 
-        if (state == OPENING && getState() == OPENED) {
+        if (state == OPENING && get() == OPENED) {
 
             return;
         }
@@ -41,6 +41,6 @@ public enum  MGKeyboardState {
 
     public static boolean isOpened() {
 
-        return getState().equals(OPENED);
+        return get().equals(OPENED);
     }
 }

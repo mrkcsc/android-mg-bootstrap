@@ -29,7 +29,7 @@ public class MGKeyboard {
         InputMethodManager inputMethodManager = (InputMethodManager)activity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        IBinder windowToken = MGKeyboardLifecycle2.getRootView(activity).getApplicationWindowToken();
+        IBinder windowToken = MGKeyboardLifecycle.getRootView(activity).getApplicationWindowToken();
 
         if (keyboardOpen) {
 
