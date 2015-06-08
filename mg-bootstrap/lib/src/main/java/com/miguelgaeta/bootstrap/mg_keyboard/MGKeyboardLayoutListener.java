@@ -12,18 +12,17 @@ import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import java.util.List;
 
 import lombok.NonNull;
-import rx.Observable;
+import lombok.RequiredArgsConstructor;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by mrkcsc on 3/27/15.
- *
- * TODO: Investigate using getHeight() on root view.
  */
+@RequiredArgsConstructor(staticName = "create")
 class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
-    // Root view associated.
+    @NonNull
     private View keyboardRootView;
 
     // Current keyboard height.
@@ -31,24 +30,6 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
     // Subscription.
     private Subscription subscription;
-
-    // Paused observable.
-    private Observable<Void> paused;
-
-    // Is full screen.
-    private boolean fullscreen;
-
-    MGKeyboardLayoutListener(@NonNull View rootView, @NonNull Boolean fullscreen, @NonNull Observable<Void> paused) {
-
-        // Set the root view.
-        this.keyboardRootView = rootView;
-
-        // Save paused.
-        this.paused = paused;
-
-        // Save fullscreen state.
-        this.fullscreen = fullscreen;
-    }
 
     /**
      * Use the global layout listener as a way to
@@ -64,25 +45,23 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
         int keyboardHeightPrevious = keyboardHeightCurrent;
 
         // Current root view height.
-        int keyboardRootViewHeight = metrics.getCurrentRootViewHeight(keyboardRootView);
+        int keyboardRootViewHeight = MGKeyboardMetrics.getCurrentRootViewHeight(keyboardRootView);
 
         // Calculate the current keyboard height.
-        keyboardHeightCurrent = metrics.getWindowHeight() - keyboardRootViewHeight;
+        keyboardHeightCurrent = MGKeyboardMetrics.getWindowHeight() - keyboardRootViewHeight;
 
         // The keyboard is closed but the root view is resized, restore it - this
         // can happen if user pauses an activity while a keyboard is open.
-        if (fullscreen && !MGKeyboardState.isOpened() && keyboardRootViewHeight != metrics.getWindowHeight()) {
+        if (MGKeyboardMetrics.isFullscreen() && !MGKeyboardState.isOpened() && keyboardRootViewHeight != MGKeyboardMetrics.getWindowHeight()) {
 
-            keyboardRootView.getLayoutParams().height = metrics.getWindowHeight();
+            keyboardRootView.getLayoutParams().height = MGKeyboardMetrics.getWindowHeight();
             keyboardRootView.requestLayout();
         }
 
         // If the height has changed in some way.
         if (keyboardHeightPrevious != keyboardHeightCurrent) {
 
-            if (subscription != null) {
-                subscription.unsubscribe();
-            }
+            unsubscribe();
 
             // Fetch stored keyboard height.
             List<Integer> keyboardHeights = metrics.getKeyboardHeights(keyboardRootView.getContext());
@@ -99,22 +78,18 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
             } else {
 
-                subscription = MGDelay
-                        .delay(MGReflection.getInteger(R.integer.animation_time_standard))
-                        .takeUntil(paused)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> {
+                subscription = MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard)).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
 
-                            if (!MGKeyboardState.isOpened()) {
+                    if (!MGKeyboardState.isOpened()) {
 
-                                // Otherwise assume keyboard is open if no additional layouts
-                                // happen within a 300 millisecond window. If triggered, add
-                                // this height to list of recognized keyboard heights.
-                                metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
+                        // Otherwise assume keyboard is open if no additional layouts
+                        // happen within a 300 millisecond window. If triggered, add
+                        // this height to list of recognized keyboard heights.
+                        metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
 
-                                resizeRootView(MGKeyboardState.OPENED);
-                            }
-                        });
+                        resizeRootView(MGKeyboardState.OPENED);
+                    }
+                });
             }
         }
     }
@@ -127,15 +102,22 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
         MGKeyboardState.set(state);
 
-        if (fullscreen && MGKeyboard.getConfig().isRootViewResize()) {
+        if (MGKeyboardMetrics.isFullscreen() && MGKeyboard.getConfig().isRootViewResize()) {
 
             Animation animation = new MGKeyboardAnimation(keyboardRootView, keyboardRootView.getHeight(),
-                    MGKeyboard.getMetrics().getWindowHeight() - keyboardHeightCurrent);
+                    MGKeyboardMetrics.getWindowHeight() - keyboardHeightCurrent);
 
             animation.setDuration(MGReflection.getInteger(R.integer.animation_time_standard));
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
             keyboardRootView.startAnimation(animation);
+        }
+    }
+
+    public void unsubscribe() {
+
+        if (subscription != null) {
+            subscription.unsubscribe();
         }
     }
 }

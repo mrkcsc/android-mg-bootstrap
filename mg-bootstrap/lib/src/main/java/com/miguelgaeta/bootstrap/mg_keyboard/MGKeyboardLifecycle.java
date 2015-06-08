@@ -24,8 +24,10 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
         // Fetch root.
         rootView = getRootView(activity);
 
+        MGKeyboardMetrics.setActivityMetrics(activity);
+
         // Assign the layout listener.
-        listener = new MGKeyboardLayoutListener(rootView, MGKeyboard.getMetrics().isFullscreen(activity), getPaused());
+        listener = MGKeyboardLayoutListener.create(rootView);
 
         // Set the listener.
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
@@ -39,6 +41,10 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
         // Close keyboard when activity paused.
         MGKeyboardState.set(MGKeyboardState.CLOSED);
+
+        if (listener != null) {
+            listener.unsubscribe();
+        }
 
         // Remove the listener.
         rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
