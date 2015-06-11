@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -66,5 +67,5 @@ public class MGWebsocketConfig {
      * their own gson object.
      */
     @Setter @Getter(value = AccessLevel.PACKAGE)
-    private Gson gson;
+    private Gson gson = new GsonBuilder().create();
 }
