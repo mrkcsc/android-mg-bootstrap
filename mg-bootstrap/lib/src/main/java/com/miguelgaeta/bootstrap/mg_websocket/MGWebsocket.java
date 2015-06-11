@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
@@ -53,9 +54,18 @@ public class MGWebsocket {
      * Send a message but serializes the object
      * before sending it.
      */
-    public void message(@NonNull Object message) {
+    public void messageJson(@NonNull Object message) {
 
-        client.message(message, getConfig().isBuffered());
+        client.messageJson(message, MGRestClient.getGson(), getConfig().isBuffered());
+    }
+
+    /**
+     * Send a message but serializes the object
+     * before sending it.
+     */
+    public void messageJson(@NonNull Object message, @NonNull Gson gson) {
+
+        client.messageJson(message, gson, getConfig().isBuffered());
     }
 
     /**

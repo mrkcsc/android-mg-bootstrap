@@ -1,9 +1,9 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
+import com.google.gson.Gson;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
-import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
@@ -129,12 +129,12 @@ class MGWebsocketClient {
     /**
      * Send an arbitrary object as a json string.
      */
-    public void message(@NonNull Object message, boolean buffered) {
+    public void messageJson(@NonNull Object message, @NonNull Gson gson, boolean buffered) {
 
         Observable.create(subscriber -> {
 
             // Send serialized message.
-            message(MGRestClient.getGson().toJson(message), buffered);
+            message(gson.toJson(message), buffered);
 
             // Done with observable.
             subscriber.onCompleted();
