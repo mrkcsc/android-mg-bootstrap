@@ -56,7 +56,7 @@ public class MGWebsocket {
      */
     public void messageJson(@NonNull Object message) {
 
-        client.messageJson(message, MGRestClient.getGson(), getConfig().isBuffered());
+        client.messageJson(message, getConfig().getGson(), getConfig().isBuffered());
     }
 
     /**

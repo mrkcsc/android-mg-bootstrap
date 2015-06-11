@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
+import com.google.gson.Gson;
+
 import javax.net.ssl.SSLSocketFactory;
 
 import lombok.AccessLevel;
@@ -57,4 +59,12 @@ public class MGWebsocketConfig {
      */
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private SSLSocketFactory socketFactory;
+
+    /**
+     * Used for serializing messages. Not
+     * required as user can pass in
+     * their own gson object.
+     */
+    @Setter @Getter(value = AccessLevel.PACKAGE)
+    private Gson gson;
 }
