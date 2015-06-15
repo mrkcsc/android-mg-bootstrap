@@ -1,5 +1,9 @@
 package com.miguelgaeta.bootstrap.mg_log;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import timber.log.Timber;
 
@@ -54,5 +58,35 @@ public class MGLog {
      */
     public static void e(Throwable t, String message, Object... args) {
         Timber.e(t, message, args);
+    }
+
+    private static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, String exclusionTag) {
+
+        return getStackTrace(stackTrace, Collections.singletonList(exclusionTag));
+    }
+
+    private static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, List<String> exclusionTags) {
+
+        ArrayList<StackTraceElement> modifiedStackTrace = new ArrayList<>();
+
+        for (StackTraceElement element : stackTrace) {
+
+            boolean includeElement = true;
+
+            for (String exclusionTag : exclusionTags) {
+
+                if (element.getClassName().contains(exclusionTag)) {
+
+                    includeElement = false;
+                }
+            }
+
+            if (includeElement) {
+
+                modifiedStackTrace.add(element);
+            }
+        }
+
+        return modifiedStackTrace.toArray(new StackTraceElement[modifiedStackTrace.size()]);
     }
 }
