@@ -60,12 +60,12 @@ public class MGLog {
         Timber.e(t, message, args);
     }
 
-    private static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, String exclusionTag) {
+    public static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, String exclusionTag) {
 
         return getStackTrace(stackTrace, Collections.singletonList(exclusionTag));
     }
 
-    private static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, List<String> exclusionTags) {
+    public static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, List<String> exclusionTags) {
 
         ArrayList<StackTraceElement> modifiedStackTrace = new ArrayList<>();
 
