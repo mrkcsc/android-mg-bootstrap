@@ -86,8 +86,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
 
     // Library for network image loading.
-    compile 'com.facebook.fresco:fresco:0.5.1'
-    compile "com.facebook.fresco:imagepipeline-okhttp:0.5.1"
+    compile 'com.facebook.fresco:fresco:0.5.2'
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.5.2'
 
     // ISO time format handler
     compile 'net.danlew:android.joda:2.7.1'
