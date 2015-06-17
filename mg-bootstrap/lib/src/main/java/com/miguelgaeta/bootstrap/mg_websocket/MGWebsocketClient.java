@@ -81,6 +81,10 @@ class MGWebsocketClient {
         this.reconnectDelay = reconnectDelay;
         this.socketFactory = socketFactory;
 
+        if (client != null) {
+            client.close();
+        }
+
         client = createClient();
         client.connect();
         clientDesiredState = MGWebsocketState.OPENED;
