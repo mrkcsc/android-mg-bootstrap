@@ -6,10 +6,16 @@ plugins {
 
 // This is a library module.
 apply plugin: 'com.android.library'
+
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
     PUBLISH_VERSION = '2.5.6'
+}
+
+repositories {
+
+    jcenter()
 }
 
 // Disable javadoc lint errors.
