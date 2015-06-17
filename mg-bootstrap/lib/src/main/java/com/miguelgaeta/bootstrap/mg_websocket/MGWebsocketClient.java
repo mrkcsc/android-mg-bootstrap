@@ -11,6 +11,7 @@ import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventOpened;
 
 import org.java_websocket.WebSocket;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
@@ -116,13 +117,15 @@ class MGWebsocketClient {
 
             } else if (buffered) {
 
-                // Send when connected.
                 messageBuffer.add(message);
             }
 
-        } catch (Exception e) {
+        } catch (WebsocketNotConnectedException e) {
 
-            MGLog.e(e, "Tried to send message when not connected.");
+            if (buffered) {
+
+                messageBuffer.add(message);
+            }
         }
     }
 
