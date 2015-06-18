@@ -76,7 +76,8 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
                 resizeRootView(MGKeyboardState.OPENED);
 
-            } else {
+            // If some height detected.
+            } else if (keyboardHeightCurrent > 0) {
 
                 subscription = MGDelay.delay(MGKeyboardMetrics.getOpenDelay()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
 
