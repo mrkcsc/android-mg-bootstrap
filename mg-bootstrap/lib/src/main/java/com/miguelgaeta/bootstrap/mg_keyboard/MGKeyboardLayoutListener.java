@@ -78,7 +78,7 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
 
             } else {
 
-                subscription = MGDelay.delay(MGReflection.getInteger(R.integer.animation_time_standard)).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
+                subscription = MGDelay.delay(MGKeyboardMetrics.getOpenDelay()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
 
                     if (!MGKeyboardState.isOpened()) {
 

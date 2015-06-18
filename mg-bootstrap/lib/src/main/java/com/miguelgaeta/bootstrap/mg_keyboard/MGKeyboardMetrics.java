@@ -9,7 +9,9 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,9 @@ class MGKeyboardMetrics {
 
     @Getter
     private static boolean fullscreen;
+
+    @Getter
+    private static final int openDelay = MGReflection.getInteger(R.integer.animation_time_standard);
 
     /**
      * Gets a list of recognized keyboard heights for
