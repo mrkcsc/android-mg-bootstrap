@@ -64,7 +64,7 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
 
         } catch (Exception e) {
 
-            throw new RuntimeException("Unable to instantiate adapter.");
+            throw new RuntimeException(e);
         }
     }
 
