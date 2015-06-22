@@ -13,11 +13,6 @@ ext {
     PUBLISH_VERSION = '2.6.0'
 }
 
-repositories {
-
-    jcenter()
-}
-
 // Disable javadoc lint errors.
 if (JavaVersion.current().isJava8Compatible()) {
 
