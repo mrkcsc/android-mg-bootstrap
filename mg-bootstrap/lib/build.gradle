@@ -74,7 +74,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:7.5.0'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.11'
+    compile 'io.reactivex:rxjava:1.0.12'
     compile 'io.reactivex:rxandroid:0.24.0'
 
     // Google json library.
@@ -91,7 +91,7 @@ dependencies {
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.5.2'
 
     // ISO time format handler
-    compile 'net.danlew:android.joda:2.7.1'
+    compile 'net.danlew:android.joda:2.8.1'
 
     // Logging library.
     compile 'com.jakewharton.timber:timber:3.1.0'
