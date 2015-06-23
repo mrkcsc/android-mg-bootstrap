@@ -21,14 +21,14 @@ public class MGLog {
      */
     public interface Callback {
 
-        interface Info {
+        void run(Throwable throwable, String message);
 
-            void run(Throwable throwable, String message);
+        interface Info extends Callback {
+
         }
 
-        interface Error {
+        interface Error extends Callback {
 
-            void run(Throwable throwable, String message);
         }
     }
 

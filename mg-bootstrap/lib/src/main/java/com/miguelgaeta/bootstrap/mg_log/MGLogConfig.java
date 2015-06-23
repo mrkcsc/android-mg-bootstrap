@@ -1,7 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_log;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
@@ -32,21 +31,47 @@ public class MGLogConfig {
         Timber.plant(debug ? new Timber.DebugTree() : new ProductionTree());
     }
 
-    /**
-     * Hollow logging tree that invokes configured
-     * callbacks if provided by the user.
-     */
     private class ProductionTree extends Timber.Tree {
+
+        @Override
+        public void i(String message, Object... args) {
+
+            log(info, null, message, args);
+        }
+
+        @Override
+        public void i(Throwable t, String message, Object... args) {
+
+            log(info, t, message, args);
+        }
+
+        @Override
+        public void e(String message, Object... args) {
+
+            log(error, null, message, args);
+        }
+
+        @Override
+        public void e(Throwable t, String message, Object... args) {
+
+            log(error, t, message, args);
+        }
 
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
 
-            if (info != null && priority == Log.INFO) {
-                info.run(t, message);
+            // Timber has weird behavior for constructing the message string
+            // so in production bypass this entirely and use custom logic.
+        }
+
+        private void log(MGLog.Callback callback, Throwable throwable, String message, Object... args) {
+
+            if (message == null) {
+                message = "";
             }
 
-            if (error != null && priority == Log.ERROR) {
-                error.run(t, message);
+            if (callback != null) {
+                callback.run(throwable, args.length > 0 ? String.format(message, args) : message);
             }
         }
     }
