@@ -10,16 +10,18 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.6.2'
+    PUBLISH_VERSION = '2.6.3'
 }
 
-// Disable javadoc lint errors.
-if (JavaVersion.current().isJava8Compatible()) {
+allprojects {
 
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
+    tasks.withType(Javadoc) {
+
+        // Disable javadoc lint errors.
+        options.addStringOption('Xdoclint:none', '-quiet')
+
+        // Don't generate at all.
+        exclude '**/*.java'
     }
 }
 
@@ -30,8 +32,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 262
-        versionName "2.6.2"
+        versionCode 263
+        versionName "2.6.3"
     }
 
     compileOptions {
