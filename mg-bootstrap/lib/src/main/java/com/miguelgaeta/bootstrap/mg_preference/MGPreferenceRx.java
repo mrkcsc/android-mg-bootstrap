@@ -99,7 +99,7 @@ public class MGPreferenceRx<T> {
                 }
             }
 
-        }, MGRxError.create());
+        }, MGRxError.create(null, "Unable to merge in new preference data."));
     }
 
     /**
@@ -147,7 +147,7 @@ public class MGPreferenceRx<T> {
                 getDataCache().set(data);
             }
 
-        }, MGRxError.create());
+        }, MGRxError.create(null, "Unable to fetch initial preference data."));
 
         // Set initial value from data cache, or just use provided default.
         set(getDataCache() != null ? getDataCache().get() : defaultValue);
