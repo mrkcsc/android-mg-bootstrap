@@ -26,9 +26,8 @@ import com.facebook.common.logging.FLog;
 import com.facebook.drawee.controller.AbstractDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.DraweeView;
+import com.facebook.drawee.view.GenericDraweeView;
 
 /**
  * DraweeView that has zoomable capabilities.
@@ -36,7 +35,7 @@ import com.facebook.drawee.view.DraweeView;
  * Once the image loads, pinch-to-zoom and translation gestures are enabled.
  *
  */
-public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
+public class ZoomableDraweeView extends GenericDraweeView
     implements ZoomableController.Listener {
 
   private static final Class<?> TAG = ZoomableDraweeView.class;
