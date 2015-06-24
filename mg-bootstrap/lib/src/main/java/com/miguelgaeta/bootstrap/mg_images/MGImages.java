@@ -34,6 +34,11 @@ import com.miguelgaeta.bootstrap.mg_log.MGLog;
 @SuppressWarnings({"UnusedDeclaration", "unchecked"})
 public class MGImages {
 
+    public static void setPlaceholderImage(ImageView view, int resourceId) {
+
+        getHierarchy(view).setPlaceholderImage(resourceId);
+    }
+
     public static void setScaleType(ImageView view, MGImagesScaleType scaleType) {
 
         getHierarchy(view).setActualImageScaleType(MGImagesScaleType.from(scaleType));
