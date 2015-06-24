@@ -15,8 +15,9 @@ import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.drawee.view.DraweeView;
 import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.DefaultExecutorSupplier;
@@ -30,7 +31,7 @@ import com.miguelgaeta.bootstrap.mg_log.MGLog;
 /**
  * Created by Miguel Gaeta on 6/23/15.
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "unchecked"})
 public class MGImages {
 
     public static void setScaleType(ImageView view, MGImagesScaleType scaleType) {
@@ -149,9 +150,9 @@ public class MGImages {
      * Fetch fresco simple drawee object of a normal
      * image view - will crash if it is not.
      */
-    private static SimpleDraweeView getDrawee(ImageView imageView) {
+    private static DraweeView getDrawee(ImageView imageView) {
 
-        return (SimpleDraweeView)imageView;
+        return (DraweeView)imageView;
     }
 
     /**
@@ -160,7 +161,11 @@ public class MGImages {
      */
     private static GenericDraweeHierarchy getHierarchy(ImageView imageView) {
 
-        return getDrawee(imageView).getHierarchy();
+        if (!getDrawee(imageView).hasHierarchy()) {
+             getDrawee(imageView).setHierarchy(new GenericDraweeHierarchyBuilder(imageView.getResources()).build());
+        }
+
+        return (GenericDraweeHierarchy)getDrawee(imageView).getHierarchy();
     }
 
     public interface OnBitmap {
