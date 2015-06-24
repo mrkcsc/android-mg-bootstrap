@@ -3,6 +3,7 @@ package com.miguelgaeta;
 import android.app.Application;
 
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
+import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
@@ -33,6 +34,8 @@ public class TestApplication extends Application {
 
         MGKeyboard.getConfig().init(this);
         MGKeyboard.getConfig().setRootViewResize(true);
+
+        MGImagesConfig.init(this);
 
         MGBackgrounded.getConfig().init(this);
 

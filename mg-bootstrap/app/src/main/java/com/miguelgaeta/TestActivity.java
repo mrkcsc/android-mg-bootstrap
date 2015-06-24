@@ -78,6 +78,23 @@ public class TestActivity extends MGLifecycleActivity {
 
         MGLog.e("BLOCKING: " + pref1.getBlocking());
 
+
+        /*
+        MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(bitmap -> {
+
+                Toast.makeText(this, bitmap == null ? R.string.shared_lorum_ipsum_tiny : R.string.shared_number_9999, Toast.LENGTH_SHORT).show();
+
+                if (bitmap != null) {
+
+                    // Download image to gallery.
+                    MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "test");
+                }
+
+            }, MGRxError.create(null, "lol what"));
+            */
+
         //getPref1().get().subscribe(testPref -> {
 
         //    MGLog.e("Pref: " + testPref);
