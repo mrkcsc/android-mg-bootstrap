@@ -26,7 +26,8 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
+import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 6/23/15.
@@ -77,9 +78,14 @@ public class MGImages {
         getDrawee(view).setController(builder.setImageRequest(request.build()).build());
     }
 
-    public static void getBitmap(OnBitmap onBitmap, String url, int width, int height) {
+    public static Observable<Bitmap> getBitmap(String url) {
 
-        getBitmap(onBitmap, url, width, height, false);
+        return getBitmap(url, 0, 0);
+    }
+
+    public static Observable<Bitmap> getBitmap(String url, int width, int height) {
+
+        return getBitmap(url, width, height, false);
     }
 
     /**
@@ -93,38 +99,38 @@ public class MGImages {
      *
      * http://bit.ly/1FbwdFy
      */
-    public static void getBitmap(OnBitmap onBitmap, String url, int width, int height, boolean circle) {
+    public static Observable<Bitmap> getBitmap(String url, int width, int height, boolean circle) {
 
-        // Get image request.
-        ImageRequestBuilder request = getImageRequest(url, width, height);
+        return Observable.create(subscriber -> {
 
-        if (circle) {
+            // Get image request.
+            ImageRequestBuilder request = getImageRequest(url, width, height);
 
-            request.setPostprocessor(new CirclePostProcessor(width, height));
-        }
+            if (circle) {
 
-        // Create a data source to decode the target image.
-        DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline().fetchDecodedImage(request.build(), null);
-
-        // Guaranteed to return a bitmap or null.
-        dataSource.subscribe(new BaseBitmapDataSubscriber() {
-
-            @Override
-            public void onNewResultImpl(@Nullable Bitmap bitmap) {
-
-                // Return the bitmap.
-                onBitmap.onBitmap(bitmap);
+                request.setPostprocessor(new CirclePostProcessor(width, height));
             }
 
-            @Override
-            public void onFailureImpl(DataSource dataSource) {
+            // Create a data source to decode the target image.
+            DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline().fetchDecodedImage(request.build(), null);
 
-                // No bitmap loaded.
-                onBitmap.onBitmap(null);
+            // Guaranteed to return a bitmap or null.
+            dataSource.subscribe(new BaseBitmapDataSubscriber() {
 
-                MGLog.e(dataSource.getFailureCause(), "Failed to load bitmap.");
-            }
-        }, new DefaultExecutorSupplier().forDecode());
+                @Override
+                public void onNewResultImpl(@Nullable Bitmap bitmap) {
+
+                    subscriber.onNext(bitmap);
+                }
+
+                @Override
+                public void onFailureImpl(DataSource dataSource) {
+
+                    subscriber.onNext(null);
+                }
+
+            }, new DefaultExecutorSupplier().forDecode());
+        });
     }
 
     /**
@@ -171,11 +177,6 @@ public class MGImages {
         }
 
         return (GenericDraweeHierarchy)getDrawee(imageView).getHierarchy();
-    }
-
-    public interface OnBitmap {
-
-        void onBitmap(Bitmap bitmap);
     }
 
     /**
