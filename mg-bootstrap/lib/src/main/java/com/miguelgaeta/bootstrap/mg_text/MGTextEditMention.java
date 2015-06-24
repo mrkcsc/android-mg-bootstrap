@@ -93,7 +93,7 @@ class MGTextEditMention {
      */
     public void setRecyclerView(RecyclerView recyclerView, MGTextEdit.OnMentionsRecyclerItem onItem) {
 
-        adapter = MGRecyclerAdapter.configure(recyclerView, MGTextEditMentionAdapter.class);
+        adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         adapter.setOnItem(onItem);
         adapter.setEditText(editText);
         adapter.setTags(rawTags);

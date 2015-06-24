@@ -27,20 +27,13 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
     }
 
     /**
-     * Configures a recycler view and creates an instance of the
-     * adapter.  Configuration is directly coupled to this
-     * particular application.
+     * Configures a recycler view and creates an instance of the adapter.
      */
-    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, RecyclerView.LayoutManager layoutManager, Integer animationDuration) {
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull T adapter, RecyclerView.LayoutManager layoutManager, Integer animationDuration) {
+
+        RecyclerView recyclerView = adapter.getRecycler();
 
         try {
-
-            Class[] adapterConstructorArgs = new Class[1];
-
-            adapterConstructorArgs[0] = RecyclerView.class;
-
-            // Use the dark magic of generics to make an instance of the adapter.
-            T adapter = adapterClass.getDeclaredConstructor(adapterConstructorArgs).newInstance(recyclerView);
 
             if (layoutManager == null) {
                 layoutManager = new LinearLayoutManager(recyclerView.getContext());
@@ -59,7 +52,6 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
                 recyclerView.getItemAnimator().setMoveDuration(animationDuration);
             }
 
-            // Return adapter.
             return adapter;
 
         } catch (Exception e) {
@@ -68,14 +60,14 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
         }
     }
 
-    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass, RecyclerView.LayoutManager layoutManager) {
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull T adapter, RecyclerView.LayoutManager layoutManager) {
 
-        return configure(recyclerView, adapterClass, layoutManager, null);
+        return configure(adapter, layoutManager, null);
     }
 
-    public static <T extends MGRecyclerAdapter> T configure(@NonNull RecyclerView recyclerView, @NonNull Class<T> adapterClass) {
+    public static <T extends MGRecyclerAdapter> T configure(@NonNull T adapter) {
 
-        return configure(recyclerView, adapterClass, null);
+        return configure(adapter, null);
     }
 
     /**
