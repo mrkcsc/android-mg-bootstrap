@@ -83,7 +83,7 @@ public class MGImagesConfig {
                     .build()
             )
 
-                // Set big images cache.
+            // Set big images cache.
             .setMainDiskCacheConfig(
 
                 DiskCacheConfig.newBuilder()

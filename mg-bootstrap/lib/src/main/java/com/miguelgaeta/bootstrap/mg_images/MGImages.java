@@ -145,7 +145,7 @@ public class MGImages {
         ImageRequestBuilder request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
             .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH);
 
-        boolean smallImage = width <= SMALL_IMAGE_MAX_SIZE && height <= SMALL_IMAGE_MAX_SIZE;
+        boolean smallImage = !url.contains("gif") && width <= SMALL_IMAGE_MAX_SIZE && height <= SMALL_IMAGE_MAX_SIZE;
 
         // Use a smaller cache for everything else.
         request = request.setImageType(smallImage ? ImageRequest.ImageType.SMALL : ImageRequest.ImageType.DEFAULT);
