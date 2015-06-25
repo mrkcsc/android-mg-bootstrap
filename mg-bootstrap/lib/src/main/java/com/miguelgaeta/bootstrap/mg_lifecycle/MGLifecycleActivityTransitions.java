@@ -21,10 +21,10 @@ public class MGLifecycleActivityTransitions {
     private static final int TRANSITION_DELAY_BUFFER = 100;
 
     @Setter
-    private static Type defaultType = Type.SLIDE_POP_HORIZONTAL;
+    private static MGLifecycleActivityTransitionsType defaultType = MGLifecycleActivityTransitionsType.SLIDE_POP_HORIZONTAL;
 
     @Setter
-    private Type type;
+    private MGLifecycleActivityTransitionsType type;
 
     @Setter
     // Transitions be played in reverse.
@@ -32,19 +32,6 @@ public class MGLifecycleActivityTransitions {
 
     // Associated activity.
     private Activity activity;
-
-    /**
-     * Supported transition types.
-     */
-    public enum Type {
-        NONE,
-        FADE,
-        STANDARD,
-        SLIDE_HORIZONTAL,
-        SLIDE_VERTICAL,
-        SLIDE_POP_VERTICAL,
-        SLIDE_POP_HORIZONTAL
-    }
 
     /**
      * Hold reference to current activity.
@@ -70,31 +57,16 @@ public class MGLifecycleActivityTransitions {
 
         if ((!goingBack && entering) || (goingBack && !entering)) {
 
-            if (getType() == Type.NONE) {
+            MGLifecycleActivityTransitionsType.Anim anim = MGLifecycleActivityTransitionsType.getAnimationForType(getType());
 
-                // Don't animate anything.
-                activity.overridePendingTransition(0, 0);
+            if (reversed) {
 
-            } else {
-
-                String animationResourcePrefix = "activity_" + getType().name().toLowerCase();
-
-                if (reversed) {
-
-                    entering = !entering;
-                }
-
-                int enterAnimation = entering ?
-                        MGReflection.getResourceId(animationResourcePrefix + "_open_in", R.anim.class) :
-                        MGReflection.getResourceId(animationResourcePrefix + "_close_in", R.anim.class);
-
-                int exitAnimation = entering ?
-                        MGReflection.getResourceId(animationResourcePrefix + "_open_out", R.anim.class) :
-                        MGReflection.getResourceId(animationResourcePrefix + "_close_out", R.anim.class);
-
-                // Override the default animation activity animations.
-                activity.overridePendingTransition(enterAnimation, exitAnimation);
+                entering = !entering;
             }
+
+            activity.overridePendingTransition(
+                entering ? anim.getOpenIn()  : anim.getCloseIn(),
+                entering ? anim.getOpenOut() : anim.getCloseOut());
         }
     }
 
@@ -103,7 +75,7 @@ public class MGLifecycleActivityTransitions {
      * default type or the type set for this
      * particular activity.
      */
-    private Type getType() {
+    private MGLifecycleActivityTransitionsType getType() {
 
         return type != null ? type : defaultType;
     }
