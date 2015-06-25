@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.miguelgaeta.R;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
-import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class TestActivityRecycler extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getTransitions().setType(MGLifecycleActivityTransitions.Type.SLIDE_HORIZONTAL);
+        getTransitions().setType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
 
         getSupportActionBar().setTitle("Recycler");
 

@@ -6,6 +6,7 @@ import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
@@ -39,6 +40,6 @@ public class TestApplication extends Application {
 
         MGBackgrounded.getConfig().init(this);
 
-        MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitions.Type.SLIDE_HORIZONTAL);
+        MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
     }
 }
