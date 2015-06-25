@@ -35,6 +35,8 @@ import rx.Observable;
 @SuppressWarnings({"UnusedDeclaration", "unchecked"})
 public class MGImages {
 
+    private static final int SMALL_IMAGE_MAX_SIZE = 200;
+
     public static void setPlaceholderImage(ImageView view, int resourceId) {
 
         getHierarchy(view).setPlaceholderImage(resourceId);
@@ -143,8 +145,7 @@ public class MGImages {
         ImageRequestBuilder request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
             .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH);
 
-        // Small images and gifs don't get resized.
-        boolean smallImage = !url.contains(".gif") && (width == 0 && height == 0);
+        boolean smallImage = width <= SMALL_IMAGE_MAX_SIZE && height <= SMALL_IMAGE_MAX_SIZE;
 
         // Use a smaller cache for everything else.
         request = request.setImageType(smallImage ? ImageRequest.ImageType.SMALL : ImageRequest.ImageType.DEFAULT);
