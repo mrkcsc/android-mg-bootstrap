@@ -49,13 +49,13 @@ public class MGRxError implements Action1<Throwable> {
 
         if (debug) {
 
-            String prefixMessage;
+            String prefixMessage = "";
 
             if (throwable instanceof RetrofitError) {
 
                 prefixMessage = "[Retrofit URL: " + ((RetrofitError)throwable).getUrl() + "] ";
 
-            } else {
+            } else if (throwable.getMessage() != null) {
 
                 prefixMessage = throwable.getMessage();
             }
