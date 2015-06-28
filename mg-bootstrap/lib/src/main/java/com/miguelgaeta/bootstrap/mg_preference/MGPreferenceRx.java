@@ -128,14 +128,6 @@ public class MGPreferenceRx<T> {
     }
 
     /**
-     * Get blocking version of the data observable.
-     */
-    public T getBlocking() {
-
-        return get().toBlocking().mostRecent(null).iterator().next();
-    }
-
-    /**
      * Initialize the observable data stream
      * and if caching is enabled, set up
      * future value emissions.

@@ -20,7 +20,7 @@ public class MGBackgrounded {
      */
     public static boolean isBackgrounded() {
 
-        return getConfig().getBackgrounded().getBlocking();
+        return getConfig().getBackgrounded().get().toBlocking().mostRecent(true).iterator().next();
     }
 
     /**

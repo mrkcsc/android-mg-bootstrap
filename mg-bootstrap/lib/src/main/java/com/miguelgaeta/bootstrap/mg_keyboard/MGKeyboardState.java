@@ -26,7 +26,7 @@ public enum  MGKeyboardState {
 
     public static MGKeyboardState get() {
 
-        return _state.getBlocking();
+        return _state.get().toBlocking().mostRecent(CLOSED).iterator().next();
     }
 
     static void set(MGKeyboardState state) {

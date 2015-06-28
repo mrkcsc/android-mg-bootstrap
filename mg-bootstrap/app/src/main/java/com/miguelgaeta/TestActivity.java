@@ -76,9 +76,6 @@ public class TestActivity extends MGLifecycleActivity {
             MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
         }
 
-        MGLog.e("BLOCKING: " + pref1.getBlocking());
-
-
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
             .observeOn(AndroidSchedulers.mainThread())
