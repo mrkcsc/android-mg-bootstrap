@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
+import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import rx.Observable;
 import rx.Subscription;
@@ -164,7 +165,8 @@ class MGPreferenceMetaData<T> {
                     editor.putString(key, keyTypeTokenPair.first);
                     editor.putString(keyTypeToken, keyTypeTokenPair.second);
                     editor.apply();
-                });
+
+                }, MGRxError.create(null, "Unable to serialize preference."));
         }
     }
 }
