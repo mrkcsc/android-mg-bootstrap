@@ -10,7 +10,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '2.7.2'
+    PUBLISH_VERSION = '2.7.3'
 }
 
 allprojects {
@@ -32,8 +32,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 272
-        versionName "2.7.2"
+        versionCode 273
+        versionName "2.7.3"
     }
 
     compileOptions {
@@ -77,7 +77,7 @@ dependencies {
 
     // Rx Java (reactive programming)
     compile 'io.reactivex:rxjava:1.0.12'
-    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'io.reactivex:rxandroid:0.25.0'
 
     // Google json library.
     compile 'com.google.code.gson:gson:2.3.1'
