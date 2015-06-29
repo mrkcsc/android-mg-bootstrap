@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_rest;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 
 import java.net.CookieManager;
@@ -21,7 +22,7 @@ import lombok.Getter;
 class MGRestClientCookieStore implements CookieStore {
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new HashMap<>());
+    private static final MGPreference<Map<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new TypeToken<Map<String, HttpCookie>>() {}, new HashMap<>());
 
     @Getter(lazy = true)
     private final CookieStore cookieStore = new CookieManager().getCookieStore();

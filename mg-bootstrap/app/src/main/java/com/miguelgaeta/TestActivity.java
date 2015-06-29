@@ -3,12 +3,12 @@ package com.miguelgaeta;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
-import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -41,16 +41,18 @@ public class TestActivity extends MGLifecycleActivity {
     }
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10");
-
-    //@Getter(lazy = true)
-    private static final MGPreferenceRx<List<String>> pref1 = MGPreferenceRx.create(null, new ArrayList<>());
+    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new TypeToken<Map<Integer, List<TestData>>>() {}, new HashMap<>());
 
     @InjectView(R.id.fade_test_view) View fadeTestView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        for (Integer integer: getPref().get().keySet()) {
+
+            MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
+        }
 
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 

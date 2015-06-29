@@ -2,12 +2,13 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Pair;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
+import lombok.NonNull;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,7 +31,6 @@ class MGPreferenceMetaData<T> {
     // The key used by the android preferences
     // underlying system (should be unique).
     private final String key;
-    private final String keyTypeToken;
 
     // Gson serializer.
     private final Gson gson = MGRestClient.getGson();
@@ -38,11 +38,13 @@ class MGPreferenceMetaData<T> {
     // Holds any active serialization subscription.
     private Subscription serializationSubscription;
 
+    private TypeToken<?> typeToken;
+
     /**
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    MGPreferenceMetaData(String key, T defaultValue, boolean cacheBreaker) {
+    MGPreferenceMetaData(String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
         if (cacheBreaker) {
 
@@ -50,11 +52,8 @@ class MGPreferenceMetaData<T> {
             key += "_" + MGPreference.getConfig().getVersionCode();
         }
 
-        // Set key.
         this.key = key;
-        this.keyTypeToken = key + "_TYPE_TOKEN";
-
-        // Set default value.
+        this.typeToken = typeToken;
         this.defaultValue = defaultValue;
     }
 
@@ -96,22 +95,11 @@ class MGPreferenceMetaData<T> {
 
         if (locallyCachedValue == null) {
 
-            // First fetch complex type token for preference.
-            String typeTokenJson = getSharedPreferences().getString(keyTypeToken, null);
+            String valueJson = getSharedPreferences().getString(key, null);
 
-            if (typeTokenJson != null) {
+            if (valueJson != null) {
 
-                // Serialize type token into object.
-                MGPreferenceTypeToken typeToken = MGPreferenceTypeToken.createFromJson(gson, typeTokenJson);
-
-                // Fetch raw json associated with this preference key.
-                String keyJson = getSharedPreferences().getString(key, null);
-
-                if (keyJson != null) {
-
-                    // Deserialize with type token and update local cache.
-                    locallyCachedValue = (T)typeToken.fromJson(gson, keyJson);
-                }
+                locallyCachedValue = gson.fromJson(valueJson, typeToken.getType());
             }
         }
 
@@ -142,12 +130,11 @@ class MGPreferenceMetaData<T> {
             }
 
             // Create an observable that serializes the value and generates its type token.
-            Observable<Pair<String, String>> serializationObservable = Observable.create(subscriber -> {
+            Observable<String> serializationObservable = Observable.create(subscriber -> {
 
-                String key = gson.toJson(value);
-                String keyTypeToken = gson.toJson(MGPreferenceTypeToken.create(value));
+                String valueJson = gson.toJson(value, typeToken.getType());
 
-                subscriber.onNext(new Pair<>(key, keyTypeToken));
+                subscriber.onNext(valueJson);
                 subscriber.onCompleted();
             });
 
@@ -158,12 +145,11 @@ class MGPreferenceMetaData<T> {
 
                 // Update shared preferences on main thread.
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(keyTypeTokenPair -> {
+                .subscribe(valueJson -> {
 
                     SharedPreferences.Editor editor = getSharedPreferencesEditor();
 
-                    editor.putString(key, keyTypeTokenPair.first);
-                    editor.putString(keyTypeToken, keyTypeTokenPair.second);
+                    editor.putString(key, valueJson);
                     editor.apply();
 
                 }, MGRxError.create(null, "Unable to serialize preference."));

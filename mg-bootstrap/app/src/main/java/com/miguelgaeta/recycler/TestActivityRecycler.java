@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.R;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
@@ -25,7 +26,7 @@ public class TestActivityRecycler extends MGLifecycleActivity {
     @InjectView(R.id.recycler_view) RecyclerView recyclerView;
 
     @Getter
-    public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(null, new ArrayList<>());
+    public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(null, new TypeToken<List<Integer>>() {}, new ArrayList<>());
 
     private TestActivityRecyclerAdapter adapter;
 
@@ -35,7 +36,9 @@ public class TestActivityRecycler extends MGLifecycleActivity {
 
         getTransitions().setType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
 
-        getSupportActionBar().setTitle("Recycler");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Recycler");
+        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TestActivityRecyclerAdapter(recyclerView);

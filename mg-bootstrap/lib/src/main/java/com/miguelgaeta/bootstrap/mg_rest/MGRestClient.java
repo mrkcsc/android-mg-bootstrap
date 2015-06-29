@@ -85,9 +85,6 @@ public class MGRestClient {
         JsonDeserializer<DateTime> typeAdapterDeserialization = (jsonDate, typeOf, context) ->
                 jsonDate == null ? null : new DateTime(jsonDate.getAsString());
 
-        // Support complex map keys.
-        gsonBuilder.enableComplexMapKeySerialization();
-
         gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterSerialization);
         gsonBuilder.registerTypeAdapter(DateTime.class, typeAdapterDeserialization);
 

@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_keyboard;
 
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
@@ -15,7 +16,7 @@ public enum  MGKeyboardState {
 
     OPENED, OPENING, CLOSED;
 
-    private static final MGPreferenceRx<MGKeyboardState> _state = MGPreferenceRx.create(null, CLOSED);
+    private static final MGPreferenceRx<MGKeyboardState> _state = MGPreferenceRx.create(null, new TypeToken<MGKeyboardState>() {}, CLOSED);
 
     private static Subscription subscription;
 

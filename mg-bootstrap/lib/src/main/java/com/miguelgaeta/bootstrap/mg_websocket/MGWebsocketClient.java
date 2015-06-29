@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
@@ -31,10 +32,10 @@ import rx.Subscription;
  */
 class MGWebsocketClient {
 
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create(null);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create(null);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create(null);
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create(null, new TypeToken<MGWebsocketEventOpened>() {});
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create(null, new TypeToken<MGWebsocketEventClosed>() {});
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create(null, new TypeToken<MGWebsocketEventMessage>() {});
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create(null, new TypeToken<MGWebsocketEventError>() {});
 
     @Getter(AccessLevel.PACKAGE)
     private final List<String> messageBuffer = new ArrayList<>();

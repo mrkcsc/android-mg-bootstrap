@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
+import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.AccessLevel;
@@ -34,22 +35,19 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
 
-    /**
-     * Static initializer.
-     */
-    public static <T> MGPreferenceRx<T> create(String key) {
+    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
-        return new MGPreferenceRx<>(key, null, true);
+        return new MGPreferenceRx<>(key, typeToken, defaultValue, cacheBreaker);
     }
 
-    public static <T> MGPreferenceRx<T> create(String key, T defaultValue) {
+    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue) {
 
-        return new MGPreferenceRx<>(key, defaultValue, true);
+        return create(key, typeToken, defaultValue, true);
     }
 
-    public static <T> MGPreferenceRx<T> create(String key, T defaultValue, boolean cacheBreaker) {
+    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken) {
 
-        return new MGPreferenceRx<>(key, defaultValue, cacheBreaker);
+        return create(key, typeToken, null);
     }
 
     /**
@@ -57,12 +55,12 @@ public class MGPreferenceRx<T> {
      * and uses that to initialize rest of the
      * data object.
      */
-    private MGPreferenceRx(String key, T defaultValue, boolean cacheBreaker) {
+    private MGPreferenceRx(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
         if (key != null) {
 
             // Initialize data cache.
-            dataCache = MGPreference.create(key, defaultValue, cacheBreaker);
+            dataCache = new MGPreference<>(key, typeToken, defaultValue, cacheBreaker);
         }
 
         init(defaultValue);

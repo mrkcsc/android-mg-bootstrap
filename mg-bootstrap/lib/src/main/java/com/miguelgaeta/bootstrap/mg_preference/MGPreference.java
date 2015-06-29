@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
+import com.google.gson.reflect.TypeToken;
+
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -19,40 +21,24 @@ public class MGPreference<T> {
      * Creates a new preference object that is backed
      * by the android shared preferences object.
      */
-    private MGPreference(String key, T defaultValue, boolean cacheBreaker) {
+    MGPreference(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
-        // Meta data does all the heavy lifting.
-        metaData = new MGPreferenceMetaData<>(key, defaultValue, cacheBreaker);
+        metaData = new MGPreferenceMetaData<>(key, typeToken, defaultValue, cacheBreaker);
     }
 
-    /**
-     * Create a new preference object backed by
-     * a concrete class object.
-     */
-    public static <T> MGPreference<T> create(@NonNull String key) {
+    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
-        return new MGPreference<>(key, null, true);
+        return new MGPreference<>(key, typeToken, defaultValue, cacheBreaker);
     }
 
-    /**
-     * Create a new preference object backed by
-     * a concrete class object. Provide a default
-     * initial value.
-     */
-    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue) {
+    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue) {
 
-        return new MGPreference<>(key, defaultValue, true);
+        return create(key, typeToken, defaultValue, true);
     }
 
-    /**
-     * Create a new preference object backed by
-     * a concrete class object. Provide a default
-     * initial value.  Specify whether cache
-     * breaking behavior is desired.
-     */
-    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue, boolean cacheBreaker) {
+    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken) {
 
-        return new MGPreference<>(key, defaultValue, cacheBreaker);
+        return create(key, typeToken, null);
     }
 
     /**
