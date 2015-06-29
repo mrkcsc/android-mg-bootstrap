@@ -118,7 +118,7 @@ public class MGRxBusMerge {
 
         } else {
 
-            throw new RuntimeException("Unsupported map, cannot copy.");
+            throw new RuntimeException("Unsupported map, cannot copy: " + source.getClass());
         }
     }
 }
