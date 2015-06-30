@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.SerializedSubject;
 
@@ -145,7 +144,7 @@ public class MGPreferenceRx<T> {
             // Cache lookup might take time, so do not block.
             set(getDataCache() != null ? getDataCache().get() : defaultValue);
 
-        }).subscribeOn(Schedulers.computation()).subscribe(o -> {
+        }).subscribeOn(MGPreferenceConfig.getScheduler()).subscribe(o -> {
 
         }, MGRxError.create(null, "Unable to set initial preference data."));
     }

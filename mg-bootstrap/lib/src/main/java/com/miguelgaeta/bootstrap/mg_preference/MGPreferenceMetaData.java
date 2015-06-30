@@ -12,7 +12,6 @@ import lombok.NonNull;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -140,8 +139,7 @@ class MGPreferenceMetaData<T> {
 
             serializationSubscription = serializationObservable
 
-                // Perform serialization on worker thread.
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(MGPreferenceConfig.getScheduler())
 
                 // Update shared preferences on main thread.
                 .observeOn(AndroidSchedulers.mainThread())

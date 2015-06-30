@@ -4,14 +4,23 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import java.util.concurrent.Executors;
+
 import lombok.AccessLevel;
 import lombok.Getter;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 3/9/15.
  */
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceConfig {
+
+    // Custom scheduler to keep preferences from
+    // overloading the device.
+    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    private static final Scheduler scheduler = Schedulers.from(Executors.newSingleThreadExecutor());
 
     // For any libraries within core, store a context
     // to make the calling API easier but make sure
