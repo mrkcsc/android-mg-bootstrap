@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_websocket.events;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,14 +17,9 @@ import rx.Observable;
 @AllArgsConstructor(staticName = "create") @Getter @ToString @EqualsAndHashCode
 public class MGWebsocketEventMessage {
 
-    // Raw message.
     private String message;
 
-    /**
-     * Fetch the message string
-     * as a json element.
-     */
-    public Observable<JsonElement> getMessageJson() {
+    public Observable<JsonElement> fromJson() {
 
         return Observable.create(subscriber -> {
 
@@ -32,15 +28,24 @@ public class MGWebsocketEventMessage {
         });
     }
 
-    /**
-     * Fetch the message string
-     * as a serialized JSON object.
-     */
-    public <T> Observable<T> getMessageJson(Class<T> classOfT) {
+    public <T> Observable<T> fromJson(TypeToken typeToken) {
 
         return Observable.create(subscriber -> {
 
-            subscriber.onNext(new Gson().fromJson(message, classOfT));
+            T json = new Gson().fromJson(message, typeToken.getType());
+
+            subscriber.onNext(json);
+            subscriber.onCompleted();
+        });
+    }
+
+    public <T> Observable<T> fromJson(Class<T> clazz) {
+
+        return Observable.create(subscriber -> {
+
+            T json = new Gson().fromJson(message, clazz);
+
+            subscriber.onNext(json);
             subscriber.onCompleted();
         });
     }
