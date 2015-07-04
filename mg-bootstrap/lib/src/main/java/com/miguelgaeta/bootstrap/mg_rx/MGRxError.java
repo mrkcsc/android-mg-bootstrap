@@ -51,20 +51,18 @@ public class MGRxError implements Action1<Throwable> {
 
         if (debug) {
 
-            String prefixMessage = "";
-
             if (throwable instanceof SocketTimeoutException) {
 
-                MGLog.i(throwable, "Connection timeout: " + throwable.getMessage() + " ");
+                MGLog.i(throwable, "Connection timeout: " + throwable.getMessage());
             }
 
             else if (throwable instanceof RetrofitError) {
 
-                MGLog.e(throwable, "Retrofit url: " + ((RetrofitError)throwable).getUrl() + " ");
+                MGLog.e(throwable, "Retrofit url: " + ((RetrofitError)throwable).getUrl());
 
             } else {
 
-                MGLog.e(throwable, prefixMessage + message);
+                MGLog.e(throwable, message + " " + throwable.getMessage());
             }
         }
 
