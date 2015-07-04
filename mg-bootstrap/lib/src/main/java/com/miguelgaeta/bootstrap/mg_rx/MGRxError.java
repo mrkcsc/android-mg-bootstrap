@@ -2,6 +2,8 @@ package com.miguelgaeta.bootstrap.mg_rx;
 
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
+import java.net.SocketTimeoutException;
+
 import lombok.AllArgsConstructor;
 import retrofit.RetrofitError;
 import rx.functions.Action1;
@@ -51,16 +53,19 @@ public class MGRxError implements Action1<Throwable> {
 
             String prefixMessage = "";
 
-            if (throwable instanceof RetrofitError) {
+            if (throwable instanceof SocketTimeoutException) {
 
-                prefixMessage = "[Retrofit URL: " + ((RetrofitError)throwable).getUrl() + "] ";
-
-            } else if (throwable.getMessage() != null) {
-
-                prefixMessage = throwable.getMessage();
+                MGLog.i(throwable, "Connection timeout: " + throwable.getMessage() + " ");
             }
 
-            MGLog.e(throwable, prefixMessage + message);
+            else if (throwable instanceof RetrofitError) {
+
+                MGLog.e(throwable, "Retrofit url: " + ((RetrofitError)throwable).getUrl() + " ");
+
+            } else {
+
+                MGLog.e(throwable, prefixMessage + message);
+            }
         }
 
         if (callback != null) {
