@@ -62,7 +62,7 @@ public class MGRxError implements Action1<Throwable> {
 
             } else {
 
-                MGLog.e(throwable, message + " " + throwable.getMessage());
+                MGLog.e(throwable, message + (throwable.getMessage() != null ? " " + throwable.getMessage() : ""));
             }
         }
 
