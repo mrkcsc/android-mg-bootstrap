@@ -139,13 +139,24 @@ public class MGPreferenceRx<T> {
 
         }, MGRxError.create(null, "Unable to fetch initial preference data."));
 
+        if (getDataCache() != null) {
+
+            initFromCache(getDataCache());
+
+        } else {
+
+            set(defaultValue);
+        }
+    }
+
+    private void initFromCache(MGPreference<T> dataCache) {
+
         Observable.create(subscriber -> {
 
-            // Cache lookup might take time, so do not block.
-            set(getDataCache() != null ? getDataCache().get() : defaultValue);
+            set(dataCache.get());
 
-        }).subscribeOn(MGPreferenceConfig.getScheduler()).subscribe(o -> {
+            subscriber.onCompleted();
 
-        }, MGRxError.create(null, "Unable to set initial preference data."));
+        }).subscribeOn(MGPreferenceConfig.getScheduler()).subscribe();
     }
 }
