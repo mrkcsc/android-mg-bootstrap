@@ -1,132 +1,61 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import rx.Observable;
 
 /**
  * Created by mrkcsc on 3/9/15.
  */
-@SuppressWarnings("unchecked")
+@RequiredArgsConstructor(staticName = "create")
 class MGPreferenceMetaData<T> {
 
-    // A memory cache of the preference value
-    // so we do not have to go into the native
-    // android preferences every fetch.
-    private T locallyCachedValue;
-
-    // Default value of this item.
-    private T defaultValue;
-
-    // The key used by the android preferences
-    // underlying system (should be unique).
     private final String key;
 
-    // Gson serializer.
+    private final TypeToken<?> typeToken;
+
+    private final T defaultValue;
+
+    private T value;
+
+    private final boolean global;
+
     private final Gson gson = MGRestClient.getGson();
 
-    private TypeToken<?> typeToken;
+    public T get() {
 
-    /**
-     * Creates a new preference object that is backed
-     * by the android shared preferences object.
-     */
-    MGPreferenceMetaData(String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
+        if (value == null) {
 
-        if (cacheBreaker) {
-
-            // Append cache breaker.
-            key += "_" + MGPreference.getConfig().getVersionCode();
-        }
-
-        this.key = key;
-        this.typeToken = typeToken;
-        this.defaultValue = defaultValue;
-    }
-
-    /**
-     * Fetch the native android shared
-     * preferences object.
-     */
-    private SharedPreferences getSharedPreferences() {
-
-        return PreferenceManager.getDefaultSharedPreferences(MGPreference.getConfig().getContext());
-    }
-
-    /**
-     * Fetch and open the native android
-     * shared preferences editor.
-     */
-    private SharedPreferences.Editor getSharedPreferencesEditor() {
-
-        return getSharedPreferences().edit();
-    }
-
-    /**
-     * Clear out any value stored.
-     */
-    void clear() {
-
-        SharedPreferences.Editor editor = getSharedPreferencesEditor();
-
-        editor.remove(key);
-        editor.apply();
-
-        locallyCachedValue = null;
-    }
-
-    /**
-     * Get the preference value.
-     */
-    T get() {
-
-        if (locallyCachedValue == null) {
-
-            String valueJson = getSharedPreferences().getString(key, null);
+            String valueJson = MGPreference.getDataStore().get(key, global);
 
             if (valueJson != null) {
 
-                locallyCachedValue = gson.fromJson(valueJson, typeToken.getType());
+                value = gson.fromJson(valueJson, typeToken.getType());
             }
         }
 
-        if (locallyCachedValue == null && defaultValue != null) {
+        if (value == null && defaultValue != null) {
 
             return defaultValue;
         }
 
-        return locallyCachedValue;
+        return value;
     }
 
-    /**
-     * Set the preference value.
-     */
-    void set(T value) {
+    public void set(T value) {
 
-        if (value == null) {
+        this.value = value;
 
-            clear();
+        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> MGPreference.getDataStore().set(key, serializeValue(), global),
+            MGRxError.create(null, "Unable to serialize preference."));
+    }
 
-        } else {
+    private String serializeValue() {
 
-            // Locally cache value.
-            locallyCachedValue = value;
-
-            Observable.just(null).observeOn(MGPreferenceConfig.getScheduler()).subscribe(r -> {
-
-                SharedPreferences.Editor editor = getSharedPreferencesEditor();
-
-                editor.putString(key, gson.toJson(value, typeToken.getType()));
-                editor.apply();
-
-            }, MGRxError.create(null, "Unable to serialize preference."));
-        }
+        return value == null ? null : gson.toJson(value, typeToken.getType());
     }
 }

@@ -1,9 +1,15 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.google.gson.reflect.TypeToken;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 12/5/14.
@@ -11,24 +17,41 @@ import lombok.NonNull;
 @SuppressWarnings("unchecked, unused")
 public class MGPreference<T> {
 
-    @Getter(lazy = true)
-    private static final MGPreferenceConfig config = new MGPreferenceConfig();
+    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    private static final MGPreferenceDataStore dataStore = new MGPreferenceDataStore();
+
+    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    private static final Scheduler scheduler = Schedulers.computation();
 
     // Meta data object to do the persisting.
     private MGPreferenceMetaData<T> metaData;
 
-    /**
-     * Creates a new preference object that is backed
-     * by the android shared preferences object.
-     */
-    MGPreference(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
+    MGPreference(String key, TypeToken<?> typeToken, T defaultValue, boolean global) {
 
-        metaData = new MGPreferenceMetaData<>(key, typeToken, defaultValue, cacheBreaker);
+        metaData = MGPreferenceMetaData.create(key, typeToken, defaultValue, global);
     }
 
-    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
+    /**
+     * Standard initialization call.
+     *
+     * @param context Application context.
+     */
+    public static void init(Context context) {
 
-        return new MGPreference<>(key, typeToken, defaultValue, cacheBreaker);
+        if (context instanceof Application) {
+
+            MGPreference.getDataStore().init(context);
+
+        } else {
+
+            // Enforce use of an application context.
+            throw new RuntimeException("An application context is required.");
+        }
+    }
+
+    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean global) {
+
+        return new MGPreference<>(key, typeToken, defaultValue, global);
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue) {
@@ -66,6 +89,6 @@ public class MGPreference<T> {
      */
     public void clear() {
 
-        metaData.clear();
+        metaData.set(null);
     }
 }

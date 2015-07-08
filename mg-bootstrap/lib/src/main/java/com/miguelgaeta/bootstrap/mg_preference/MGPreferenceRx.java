@@ -39,9 +39,9 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
 
-    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
+    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue, boolean versioned) {
 
-        return new MGPreferenceRx<>(key, typeToken, defaultValue, cacheBreaker);
+        return new MGPreferenceRx<>(key, typeToken, defaultValue, versioned);
     }
 
     public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue) {
@@ -138,11 +138,11 @@ public class MGPreferenceRx<T> {
 
         if (cache != null) {
 
-            get().observeOn(MGPreferenceConfig.getScheduler()).subscribe(cache::set,
+            get().observeOn(MGPreference.getScheduler()).subscribe(cache::set,
                 MGRxError.create(null, "Unable to cache preference data."));
         }
 
-        Observable.just(null).observeOn(MGPreferenceConfig.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
+        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
             MGRxError.create(null, "Unable to initialize preference."));
     }
 

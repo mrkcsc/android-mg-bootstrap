@@ -31,7 +31,7 @@ public class TestApplication extends Application {
         MGReflection.getConfig().init(this);
 
         // Initialize preferences.
-        MGPreference.getConfig().init(this);
+        MGPreference.init(this);
 
         MGKeyboard.getConfig().init(this);
         MGKeyboard.getConfig().setRootViewResize(true);
