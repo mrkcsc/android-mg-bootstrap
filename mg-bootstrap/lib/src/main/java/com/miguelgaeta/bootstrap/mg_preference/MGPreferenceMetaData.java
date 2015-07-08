@@ -10,8 +10,6 @@ import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.NonNull;
 import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -33,9 +31,6 @@ class MGPreferenceMetaData<T> {
 
     // Gson serializer.
     private final Gson gson = MGRestClient.getGson();
-
-    // Holds any active serialization subscription.
-    private Subscription serializationSubscription;
 
     private TypeToken<?> typeToken;
 
@@ -124,33 +119,14 @@ class MGPreferenceMetaData<T> {
             // Locally cache value.
             locallyCachedValue = value;
 
-            if (serializationSubscription != null) {
-                serializationSubscription.unsubscribe();
-            }
+            Observable.just(null).observeOn(MGPreferenceConfig.getScheduler()).subscribe(r -> {
 
-            // Create an observable that serializes the value and generates its type token.
-            Observable<String> serializationObservable = Observable.create(subscriber -> {
+                SharedPreferences.Editor editor = getSharedPreferencesEditor();
 
-                String valueJson = gson.toJson(value, typeToken.getType());
+                editor.putString(key, gson.toJson(value, typeToken.getType()));
+                editor.apply();
 
-                subscriber.onNext(valueJson);
-                subscriber.onCompleted();
-            });
-
-            serializationSubscription = serializationObservable
-
-                .subscribeOn(MGPreferenceConfig.getScheduler())
-
-                // Update shared preferences on main thread.
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(valueJson -> {
-
-                    SharedPreferences.Editor editor = getSharedPreferencesEditor();
-
-                    editor.putString(key, valueJson);
-                    editor.apply();
-
-                }, MGRxError.create(null, "Unable to serialize preference."));
+            }, MGRxError.create(null, "Unable to serialize preference."));
         }
     }
 }
