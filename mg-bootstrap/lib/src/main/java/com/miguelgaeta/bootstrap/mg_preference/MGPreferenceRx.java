@@ -3,6 +3,9 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
@@ -20,12 +23,14 @@ import rx.subjects.SerializedSubject;
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRx<T> {
 
+    private boolean initialized;
+
     /**
-     * Persist value of this data into the
-     * android preferences object.
+     * Use to buffer values that get set
+     * before the preference is initialized.
      */
-    @Getter(AccessLevel.PRIVATE)
-    private MGPreference<T> dataCache;
+    @Getter(lazy = true, value = AccessLevel.PRIVATE)
+    private final List<T> buffer = new ArrayList<>();
 
     /**
      * Can be used by to publish
@@ -50,19 +55,12 @@ public class MGPreferenceRx<T> {
     }
 
     /**
-     * Initializes the preference object cache
-     * and uses that to initialize rest of the
-     * data object.
+     * Initialize the preference stream with a cached preference
+     * or just use as a non-cached stream is no key is given.
      */
     private MGPreferenceRx(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
-        if (key != null) {
-
-            // Initialize data cache.
-            dataCache = new MGPreference<>(key, typeToken, defaultValue, cacheBreaker);
-        }
-
-        init(defaultValue);
+        init(defaultValue, key != null ? MGPreference.create(key, typeToken, defaultValue, cacheBreaker) : null);
     }
 
     /**
@@ -70,7 +68,14 @@ public class MGPreferenceRx<T> {
      */
     public void set(T t) {
 
-        getDataPublisher().onNext(t);
+        if (!initialized) {
+
+            getBuffer().add(t);
+
+        } else {
+
+            getDataPublisher().onNext(t);
+        }
     }
 
     public void merge(Func1<T, T> mergeFunction) {
@@ -129,34 +134,33 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(T defaultValue) {
+    private void init(T defaultValue, MGPreference<T> cache) {
 
-        get().subscribe(data -> {
+        if (cache != null) {
 
-            if (getDataCache() != null) {
-                getDataCache().set(data);
-            }
-
-        }, MGRxError.create(null, "Unable to fetch initial preference data."));
-
-        if (getDataCache() != null) {
-
-            initFromCache(getDataCache());
-
-        } else {
-
-            set(defaultValue);
+            get().observeOn(MGPreferenceConfig.getScheduler()).subscribe(cache::set,
+                MGRxError.create(null, "Unable to cache preference data."));
         }
+
+        Observable.just(null).observeOn(MGPreferenceConfig.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
+            MGRxError.create(null, "Unable to initialize preference."));
     }
 
-    private void initFromCache(MGPreference<T> dataCache) {
+    /**
+     * Initialize the first value and then flush
+     * out any buffered values.
+     */
+    private void setInitialized(T value) {
 
-        Observable.create(subscriber -> {
+        initialized = true;
 
-            set(dataCache.get());
+        set(value);
 
-            subscriber.onCompleted();
+        for (T bufferedItem : getBuffer()) {
 
-        }).subscribeOn(MGPreferenceConfig.getScheduler()).subscribe();
+            set(bufferedItem);
+        }
+
+        getBuffer().clear();
     }
 }
