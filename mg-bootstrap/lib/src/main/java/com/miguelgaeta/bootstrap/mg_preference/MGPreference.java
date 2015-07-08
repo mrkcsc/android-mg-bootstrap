@@ -8,34 +8,25 @@ import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 12/5/14.
  */
-@SuppressWarnings("unchecked, unused")
+@SuppressWarnings("unchecked, unused") @RequiredArgsConstructor
 public class MGPreference<T> {
 
-    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final MGPreferenceDataStore dataStore = new MGPreferenceDataStore();
 
-    @Getter(lazy = true, value = AccessLevel.PACKAGE)
+    @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();
 
-    // Meta data object to do the persisting.
-    private MGPreferenceData<T> metaData;
+    @Getter(value = AccessLevel.PACKAGE)
+    private final MGPreferenceData<T> metaData;
 
-    MGPreference(String key, TypeToken<?> typeToken, T defaultValue, boolean global) {
-
-        metaData = MGPreferenceData.create(key, typeToken, defaultValue, global);
-    }
-
-    /**
-     * Standard initialization call.
-     *
-     * @param context Application context.
-     */
     public static void init(Context context) {
 
         if (context instanceof Application) {
@@ -44,14 +35,13 @@ public class MGPreference<T> {
 
         } else {
 
-            // Enforce use of an application context.
             throw new RuntimeException("An application context is required.");
         }
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean global) {
 
-        return new MGPreference<>(key, typeToken, defaultValue, global);
+        return new MGPreference<>(MGPreferenceData.create(key, typeToken, defaultValue, global));
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue) {
