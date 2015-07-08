@@ -46,23 +46,23 @@ class MGPreferenceDataStore {
         clearCachedStoreIfNeeded(context, versionCode, versionCodeCached);
     }
 
-    public String get(@NonNull String key, boolean global) {
+    public String get(@NonNull String key, boolean versioned) {
 
-        return getStore(global).getString(key, null);
+        return getStore(versioned).getString(key, null);
     }
 
-    public void set(@NonNull String key, String value, boolean global) {
+    public void set(@NonNull String key, String value, boolean versioned) {
 
-        getStore(global).edit().putString(key, value).apply();
+        getStore(versioned).edit().putString(key, value).apply();
     }
 
     /**
      * Get a shared preferences file that is either
      * global or versioned by application code.
      */
-    private SharedPreferences getStore(boolean global) {
+    private SharedPreferences getStore(boolean versioned) {
 
-        return global ? getStoreGlobal() : getStoreVersioned();
+        return versioned ? getStoreVersioned() : getStoreGlobal();
     }
 
     /**
