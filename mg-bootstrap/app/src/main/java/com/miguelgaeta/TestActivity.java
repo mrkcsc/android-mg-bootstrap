@@ -9,6 +9,7 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -49,10 +50,15 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        for (Integer integer: getPref().get().keySet()) {
+        MGLog.e("Wut: ");
 
-            MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
-        }
+        String json = null;
+
+        Boolean result = MGRestClient.getGson().fromJson(json, Boolean.class);
+
+        MGLog.e("Serializing null json: " + result);
+
+        MGLog.e("Obj: " + getPref().get());
 
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 
@@ -73,10 +79,7 @@ public class TestActivity extends MGLifecycleActivity {
 
         getPref().set(prefData);
 
-        for (Integer integer: getPref().get().keySet()) {
-
-            MGLog.e("Key: " + integer + " value: " + getPref().get().get(integer));
-        }
+        MGLog.e("Obj: " + getPref().get());
 
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
