@@ -7,6 +7,7 @@ import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.RequiredArgsConstructor;
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -26,32 +27,39 @@ class MGPreferenceData<T> {
 
     private final Gson gson = MGRestClient.getGson();
 
+    /**
+     * If value is not already in memory, attempt to fetch
+     * it from the data store.  If still cannot be
+     * found, emit the default value.
+     */
     public T get() {
 
         if (value == null) {
+            value = gson.fromJson(MGPreference.getDataStore().get(key, global), typeToken.getType());
 
-            String valueJson = MGPreference.getDataStore().get(key, global);
+            if (value == null && defaultValue != null) {
 
-            if (valueJson != null) {
-
-                value = gson.fromJson(valueJson, typeToken.getType());
+                return defaultValue;
             }
-        }
-
-        if (value == null && defaultValue != null) {
-
-            return defaultValue;
         }
 
         return value;
     }
 
+    /**
+     * Update the value and also persist to the
+     * data store in the background.
+     */
     public void set(T value) {
 
         this.value = value;
 
-        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> MGPreference.getDataStore().set(key, serializeValue(), global),
-            MGRxError.create(null, "Unable to serialize preference."));
+        persist(o -> MGPreference.getDataStore().set(key, serializeValue(), global));
+    }
+
+    private void persist(Action1<Object> callback) {
+
+        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(callback, MGRxError.create(null, "Unable to serialize preference."));
     }
 
     private String serializeValue() {
