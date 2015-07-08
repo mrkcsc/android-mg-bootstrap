@@ -46,9 +46,9 @@ class MGPreferenceDataStore {
         clearCachedStoreIfNeeded(context, versionCode, versionCodeCached);
     }
 
-    public void get(@NonNull String key, boolean global) {
+    public String get(@NonNull String key, boolean global) {
 
-        getStore(global).getString(key, null);
+        return getStore(global).getString(key, null);
     }
 
     public void set(@NonNull String key, String value, boolean global) {
