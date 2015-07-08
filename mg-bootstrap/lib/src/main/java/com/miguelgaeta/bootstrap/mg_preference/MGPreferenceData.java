@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by mrkcsc on 3/9/15.
  */
 @RequiredArgsConstructor(staticName = "create")
-class MGPreferenceMetaData<T> {
+class MGPreferenceData<T> {
 
     private final String key;
 

@@ -24,11 +24,11 @@ public class MGPreference<T> {
     private static final Scheduler scheduler = Schedulers.computation();
 
     // Meta data object to do the persisting.
-    private MGPreferenceMetaData<T> metaData;
+    private MGPreferenceData<T> metaData;
 
     MGPreference(String key, TypeToken<?> typeToken, T defaultValue, boolean global) {
 
-        metaData = MGPreferenceMetaData.create(key, typeToken, defaultValue, global);
+        metaData = MGPreferenceData.create(key, typeToken, defaultValue, global);
     }
 
     /**
