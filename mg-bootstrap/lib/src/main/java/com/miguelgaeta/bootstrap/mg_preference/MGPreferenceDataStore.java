@@ -56,6 +56,11 @@ class MGPreferenceDataStore {
         getStore(versioned).edit().putString(key, value).apply();
     }
 
+    public void clear() {
+
+        storeVersioned.edit().clear().apply();
+    }
+
     /**
      * Get a shared preferences file that is either
      * global or versioned by application code.

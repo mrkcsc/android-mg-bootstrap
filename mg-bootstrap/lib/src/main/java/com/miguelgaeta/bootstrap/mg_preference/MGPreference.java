@@ -55,6 +55,14 @@ public class MGPreference<T> {
     }
 
     /**
+     * Resets the entire cache for versioned data.
+     */
+    public static void reset() {
+
+        getDataStore().clear();
+    }
+
+    /**
      * Public preference setter, abstracts away the
      * native commit type and allows for persisting
      * more complex types such as dictionaries.
