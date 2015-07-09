@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
@@ -54,22 +55,17 @@ public class MGPreferenceRx<T> {
         return create(null);
     }
 
-    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue, boolean versioned) {
-
-        if (key == null) {
-
-            throw new RuntimeException("Type token is not required for persisted preferences.");
-        }
+    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken, T defaultValue, boolean versioned) {
 
         return new MGPreferenceRx<>(key, typeToken, defaultValue, versioned);
     }
 
-    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue) {
+    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken, T defaultValue) {
 
         return create(key, typeToken, defaultValue, true);
     }
 
-    public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken) {
+    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken) {
 
         return create(key, typeToken, null);
     }
