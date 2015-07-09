@@ -39,9 +39,9 @@ public class MGPreference<T> {
         }
     }
 
-    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean global) {
+    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean versioned) {
 
-        return new MGPreference<>(MGPreferenceData.create(key, typeToken, defaultValue, global));
+        return new MGPreference<>(MGPreferenceData.create(key, typeToken, defaultValue, versioned));
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue) {
