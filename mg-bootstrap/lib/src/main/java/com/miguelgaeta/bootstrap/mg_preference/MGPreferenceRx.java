@@ -39,7 +39,27 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
 
+    public static <T> MGPreferenceRx<T> create(T defaultValue, boolean versioned) {
+
+        return new MGPreferenceRx<>(null, null, defaultValue, versioned);
+    }
+
+    public static <T> MGPreferenceRx<T> create(T defaultValue) {
+
+        return create(defaultValue, true);
+    }
+
+    public static <T> MGPreferenceRx<T> create() {
+
+        return create(null);
+    }
+
     public static <T> MGPreferenceRx<T> create(String key, TypeToken<?> typeToken, T defaultValue, boolean versioned) {
+
+        if (key == null) {
+
+            throw new RuntimeException("Type token is not required for persisted preferences.");
+        }
 
         return new MGPreferenceRx<>(key, typeToken, defaultValue, versioned);
     }

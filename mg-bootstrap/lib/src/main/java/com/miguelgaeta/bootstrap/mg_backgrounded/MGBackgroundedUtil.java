@@ -3,7 +3,6 @@ package com.miguelgaeta.bootstrap.mg_backgrounded;
 import android.app.Activity;
 import android.app.Application;
 
-import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
@@ -21,7 +20,7 @@ class MGBackgroundedUtil {
     private Subscription backgroundedSubscription;
 
     @Getter(lazy = true)
-    private final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create(null, new TypeToken<Boolean>() {}, true);
+    private final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create(true);
 
     /**
      * Time to be backgrounded.  Assume it wont
