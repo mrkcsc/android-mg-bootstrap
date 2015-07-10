@@ -1,12 +1,14 @@
 package com.miguelgaeta.bootstrap.mg_rx.bundle;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 5/20/15.
  */
-@AllArgsConstructor @SuppressWarnings("UnusedDeclaration")
+@AllArgsConstructor @SuppressWarnings("UnusedDeclaration") @ToString @EqualsAndHashCode
 public class MGRxData3<A, B, C> {
 
     public A d1;
