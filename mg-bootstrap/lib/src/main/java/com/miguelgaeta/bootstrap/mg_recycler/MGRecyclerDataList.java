@@ -133,7 +133,7 @@ public class MGRecyclerDataList<T> {
 
         if (count > 0) {
 
-            adapter.notifyItemRangeRemoved(startIndex, count);
+            adapter.notifyItemRangeInserted(startIndex, count);
         }
     }
 
