@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.miguelgaeta.bootstrap.mg_view.MGViewOnPressListener;
+
 import butterknife.ButterKnife;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +24,11 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     protected interface OnClickAction {
 
         void onClick(View view, int position);
+    }
+
+    protected interface OnPressAction {
+
+        void onPress(View view, int position, boolean pressed);
     }
 
     /**
@@ -71,6 +78,29 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         if (itemView != null) {
 
             onClick(itemView, action);
+        }
+    }
+
+    protected void onPress(@NonNull View view, @NonNull OnPressAction action) {
+
+        view.setOnTouchListener(new MGViewOnPressListener() {
+
+            @Override
+            public void onPress(boolean pressed) {
+
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                    action.onPress(view, getAdapterPosition(), pressed);
+                }
+            }
+        });
+    }
+
+    protected void onPress(@NonNull OnPressAction action) {
+
+        if (itemView != null) {
+
+            onPress(itemView, action);
         }
     }
 }
