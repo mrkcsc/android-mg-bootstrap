@@ -8,6 +8,7 @@ import android.view.View;
 import butterknife.ButterKnife;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Created by Miguel Gaeta on 4/9/15.
@@ -47,5 +48,29 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
      */
     protected void onConfigure(int position) {
 
+    }
+
+    public static class OnClick {
+
+        public interface OnClickAction {
+
+            void onClick(View view, int position);
+        }
+
+        public OnClick(@NonNull View view, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull OnClickAction action) {
+
+            view.setOnClickListener(clickedView -> {
+
+                if (viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                    action.onClick(clickedView, viewHolder.getAdapterPosition());
+                }
+            });
+        }
+
+        public static void create(@NonNull View view, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull OnClickAction action) {
+
+            new OnClick(view, viewHolder, action);
+        }
     }
 }
