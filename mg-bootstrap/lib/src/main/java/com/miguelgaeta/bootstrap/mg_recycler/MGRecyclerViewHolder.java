@@ -19,6 +19,11 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     @Getter(AccessLevel.PROTECTED)
     private final T adapter;
 
+    protected interface OnClickAction {
+
+        void onClick(View view, int position);
+    }
+
     /**
      * This recycler view holder subclass exposes
      * the associated adapter so it can self
@@ -50,27 +55,22 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
     }
 
-    public static class OnClick {
+    protected void onClick(@NonNull View view, @NonNull OnClickAction action) {
 
-        public interface OnClickAction {
+        view.setOnClickListener(clickedView -> {
 
-            void onClick(View view, int position);
-        }
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
 
-        public OnClick(@NonNull View view, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull OnClickAction action) {
+                action.onClick(clickedView, getAdapterPosition());
+            }
+        });
+    }
 
-            view.setOnClickListener(clickedView -> {
+    protected void onClick(@NonNull OnClickAction action) {
 
-                if (viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+        if (itemView != null) {
 
-                    action.onClick(clickedView, viewHolder.getAdapterPosition());
-                }
-            });
-        }
-
-        public static void create(@NonNull View view, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull OnClickAction action) {
-
-            new OnClick(view, viewHolder, action);
+            onClick(itemView, action);
         }
     }
 }
