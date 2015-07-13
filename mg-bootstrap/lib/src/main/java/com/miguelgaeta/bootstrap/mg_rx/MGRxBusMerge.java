@@ -46,11 +46,18 @@ public class MGRxBusMerge {
 
             V mergedValue = mergeFunction.call(kvMap.get(key));
 
-            if (!kvMap.containsKey(key) || !kvMap.get(key).equals(mergedValue)) {
+            if (!kvMap.containsKey(key) || kvMap.get(key) == null || !kvMap.get(key).equals(mergedValue)) {
 
                 Map<K, V> kvMapCopy = copyMap(kvMap);
 
-                kvMapCopy.put(key, mergedValue);
+                if (mergedValue == null) {
+
+                    kvMapCopy.remove(key);
+
+                } else {
+
+                    kvMapCopy.put(key, mergedValue);
+                }
 
                 return kvMapCopy;
             }
