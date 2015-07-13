@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by Miguel Gaeta on 5/4/15.
@@ -108,6 +110,28 @@ public class MGRxBusMerge {
 
             return kvMapCopy;
         };
+    }
+
+    public static <K, V> Map<K, V> mergeMap(Map<K, V> map, Map<K, V> partialMap, Func0<Map<K, V>> defaultValue, Func1<V, K> keyGetter, Func2<V, V, V> valueMerger) {
+
+        if (map == null) {
+            map = defaultValue.call();
+        }
+
+        if (partialMap == null) {
+            partialMap = defaultValue.call();
+        }
+
+        Map<K, V> mapCopy = MGRxBusMerge.copyMap(map);
+
+        for (V value : partialMap.values()) {
+
+            K key = keyGetter.call(value);
+
+            mapCopy.put(key, valueMerger.call(mapCopy.get(key), value));
+        }
+
+        return mapCopy;
     }
 
     @SuppressWarnings("unchecked")
