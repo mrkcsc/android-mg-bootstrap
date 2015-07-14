@@ -1,14 +1,21 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import java.util.List;
 import java.util.Map;
+
+import lombok.NonNull;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -19,6 +26,29 @@ public class MGTextEdit extends EditText {
     private final MGTextEditHasText hasText = new MGTextEditHasText(this);
 
     private final MGTextEditMention mention = new MGTextEditMention(this);
+
+    /**
+     * Given a text view and a label, set a long click listener
+     * that will copy the text to the clipboard on
+     * a long press action.
+     */
+    public static void copyTextOnLongPress(@NonNull TextView textView, @NonNull String label) {
+
+        textView.setOnLongClickListener(view -> {
+
+            if (view != null && view instanceof TextView) {
+
+                ClipboardManager clipboard = (ClipboardManager)view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(label, ((TextView)view).getText());
+
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(view.getContext(), R.string.shared_copied_to_clipboard, Toast.LENGTH_SHORT).show();
+            }
+
+            return false;
+        });
+    }
 
     public MGTextEdit(Context context) {
         super(context);

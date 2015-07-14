@@ -20,6 +20,8 @@
     <string name="shared_time_pm">12:00 PM</string>
     <string name="shared_time_formatted">0H 00M</string>
 
+    <string name="shared_copied_to_clipboard">Copied to clipboard.</string>
+
     <string name="shared_lorum_ipsum_tiny">Lorum ipsum</string>
     <string name="shared_lorum_ipsum_long">Hey do you have some time to draft at 7pm today?  We’ll be doing blind auction soon.  Patriots used deception to mount comeback vs Ravens.  Harbaugh is not amused.</string>
 </resources>
