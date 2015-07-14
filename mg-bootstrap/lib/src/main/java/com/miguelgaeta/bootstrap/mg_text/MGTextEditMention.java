@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +35,7 @@ class MGTextEditMention {
 
     private MGTextEdit.OnMentionsStringify stringify;
 
-    @NonNull
+    @NonNull @Getter
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 

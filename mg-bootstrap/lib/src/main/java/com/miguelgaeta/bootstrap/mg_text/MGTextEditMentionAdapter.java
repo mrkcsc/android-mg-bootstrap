@@ -61,26 +61,6 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     public void mentionClicked(int position) {
 
-        insertMention(editText, getTag(position));
-    }
-
-    private void insertMention(MGTextEdit editText, String tag) {
-
-        // Fetch position of cursor.
-        int position = editText.getCursorPosition();
-
-        String lastToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
-
-        if (lastToken != null) {
-
-            int positionStart = position - lastToken.length();
-
-            // Insert tag, replacing any partial tag.
-            editText.insert(tag + "  ", positionStart, position);
-
-            // Selection hack to prevent next user inputted key
-            // press from overwriting what just got input.
-            editText.setSelection(positionStart + tag.length() + 1);
-        }
+        editText.insertMention(getTag(position));
     }
 }
