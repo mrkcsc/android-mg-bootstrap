@@ -14,7 +14,9 @@ import com.miguelgaeta.bootstrap.mg_strings.MGStrings;
  * Created by Miguel on 1/23/2015. Copyright 2014 Blitz Studios
  */
 @SuppressWarnings("UnusedDeclaration")
-class MGLifecycleContentView {
+public class MGLifecycleContentView {
+
+    public static final String INTENT_CONTENT_VIEW = "INTENT_CONTENT_VIEW";
 
     /**
      * Sets the content view of an activity automatically if it is
@@ -22,7 +24,16 @@ class MGLifecycleContentView {
      */
     static void setContentView(@NonNull Activity activity) {
 
-        Integer contentView = MGLifecycleContentView.getContentView(activity.getClass());
+        Integer contentView;
+
+        if (activity.getIntent().hasExtra(INTENT_CONTENT_VIEW)) {
+
+            contentView = activity.getIntent().getIntExtra(INTENT_CONTENT_VIEW, -1);
+
+        } else {
+
+            contentView = MGLifecycleContentView.getContentView(activity.getClass());
+        }
 
         if (contentView != null) {
 
