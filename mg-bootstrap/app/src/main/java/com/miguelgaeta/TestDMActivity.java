@@ -25,7 +25,7 @@ import lombok.Getter;
 import rx.android.schedulers.AndroidSchedulers;
 
 
-public class TestActivity extends MGLifecycleActivity {
+public class TestDMActivity extends MGLifecycleActivity {
 
     @Data
     private static class TestPref {

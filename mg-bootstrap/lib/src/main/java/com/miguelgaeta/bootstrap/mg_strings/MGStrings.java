@@ -1,7 +1,9 @@
 package com.miguelgaeta.bootstrap.mg_strings;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -9,6 +11,15 @@ import lombok.NonNull;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class MGStrings {
+
+    @Getter(lazy = true)
+    private static final Pattern camelCaseSplitter = Pattern.compile(String.format("%s|%s|%s",
+
+        "(?<=[A-Z])(?=[A-Z][a-z])",
+
+        "(?<=[^A-Z])(?=[A-Z])",
+
+        "(?<=[A-Za-z])(?=[^A-Za-z])"));
 
     /**
      * Strip away any matching strings from the target string
@@ -35,23 +46,7 @@ public class MGStrings {
      */
     public static String camelCaseToLowerCaseUnderscores(@NonNull String targetString) {
 
-        StringBuilder sb = new StringBuilder();
-
-        for (Character character : targetString.toCharArray()) {
-
-            if ((Character.isUpperCase(character) || Character.isDigit(character))) {
-
-                if (sb.length() > 0) {
-                    sb.append("_");
-                }
-
-                sb.append(Character.toLowerCase(character));
-            } else {
-                sb.append(character);
-            }
-        }
-
-        return sb.toString();
+        return getCamelCaseSplitter().matcher(targetString).replaceAll("_").toLowerCase();
     }
 
     /**
