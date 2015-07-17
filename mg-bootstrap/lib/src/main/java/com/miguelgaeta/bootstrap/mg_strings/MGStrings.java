@@ -41,8 +41,9 @@ public class MGStrings {
 
     /**
      * Take a string that is camel cased and convert it into
-     * a lowercase string where each upper cased character is
-     * separated with an underscore.
+     * a lowercase split string delimited by underscores.
+     *
+     * Reference: http://bit.ly/1RCGgzJ
      */
     public static String camelCaseToLowerCaseUnderscores(@NonNull String targetString) {
 
