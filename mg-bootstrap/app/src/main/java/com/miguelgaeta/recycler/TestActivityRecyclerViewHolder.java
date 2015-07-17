@@ -19,7 +19,7 @@ public class TestActivityRecyclerViewHolder extends MGRecyclerViewHolder<TestAct
     public TestActivityRecyclerViewHolder(@LayoutRes int layout, TestActivityRecyclerAdapter adapter) {
         super(layout, adapter);
 
-        OnClick.create(itemText, this, (view, position) -> MGLog.e("Clicked at: " + position));
+        onClick(itemText, (view, position) -> MGLog.e("Clicked at: " + position));
     }
 
     @Override
