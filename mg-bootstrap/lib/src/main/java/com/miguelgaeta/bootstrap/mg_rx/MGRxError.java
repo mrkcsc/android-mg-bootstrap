@@ -58,7 +58,7 @@ public class MGRxError implements Action1<Throwable> {
 
             else if (throwable instanceof RetrofitError) {
 
-                MGLog.e(throwable, "Retrofit url: " + ((RetrofitError)throwable).getUrl());
+                MGLog.i(throwable, "Retrofit url: " + ((RetrofitError)throwable).getUrl());
 
             } else {
 
