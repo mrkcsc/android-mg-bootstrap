@@ -50,7 +50,7 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MGLog.e("Dp test: " + MGReflection.dipToPixels(10));
+        MGLog.e("Dp test: " +  MGReflection.getScreenWidth() + " " + MGReflection.getScreenWidthDp() + " " + MGReflection.getScreenSize().y);
 
         MGLog.e("Obj: " + getPref().get());
 

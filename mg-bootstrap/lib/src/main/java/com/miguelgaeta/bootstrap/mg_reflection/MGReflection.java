@@ -2,9 +2,7 @@ package com.miguelgaeta.bootstrap.mg_reflection;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.support.annotation.StringRes;
-import android.view.WindowManager;
 
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 
@@ -76,19 +74,24 @@ public class MGReflection {
         return (int) (pixels / Resources.getSystem().getDisplayMetrics().density);
     }
 
-    /**
-     * Given a context, fetch the size of this
-     * devices screen.
-     */
-    public static Point getScreenSize() {
+    public static int getScreenWidth() {
 
-        Point point = new Point();
+        return dipToPixels(getScreenWidthDp());
+    }
 
-        WindowManager windowManager = (WindowManager)getConfig().getContext().getSystemService(Context.WINDOW_SERVICE);
+    public static int getScreenWidthDp() {
 
-        windowManager.getDefaultDisplay().getSize(point);
+        return Resources.getSystem().getConfiguration().screenWidthDp;
+    }
 
-        return point;
+    public static int getScreenHeight() {
+
+        return dipToPixels(getScreenHeightDp());
+    }
+
+    public static int getScreenHeightDp() {
+
+        return Resources.getSystem().getConfiguration().screenHeightDp;
     }
 
     /**
