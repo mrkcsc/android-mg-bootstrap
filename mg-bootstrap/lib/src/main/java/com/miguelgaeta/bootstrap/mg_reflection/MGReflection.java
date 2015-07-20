@@ -28,6 +28,11 @@ public class MGReflection {
         return MGLifecycleApplication.getContext().getResources().getString(resId);
     }
 
+    public static String getPackageName(@NonNull Context context) {
+
+        return context.getPackageName();
+    }
+
     /**
      * Given a resource name as a string, fetch the associated
      * resource integer id from the target resource class -
