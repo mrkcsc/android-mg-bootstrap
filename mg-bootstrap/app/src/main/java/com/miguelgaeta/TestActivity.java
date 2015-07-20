@@ -9,6 +9,7 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -48,6 +49,8 @@ public class TestActivity extends MGLifecycleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MGLog.e("Dp test: " + MGReflection.dipToPixels(10));
 
         MGLog.e("Obj: " + getPref().get());
 

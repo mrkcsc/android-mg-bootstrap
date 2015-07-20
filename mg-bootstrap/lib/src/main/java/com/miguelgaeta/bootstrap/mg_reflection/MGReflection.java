@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.support.annotation.StringRes;
-import android.util.TypedValue;
 import android.view.WindowManager;
 
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
@@ -64,10 +63,12 @@ public class MGReflection {
      */
     public static int dipToPixels(float densityPixels) {
 
-        Resources resources = getConfig().getContext().getResources();
+        return (int) (densityPixels * Resources.getSystem().getDisplayMetrics().density);
+    }
 
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                densityPixels, resources.getDisplayMetrics()));
+    public static int pixelsToDip(int pixels) {
+
+        return (int) (pixels / Resources.getSystem().getDisplayMetrics().density);
     }
 
     /**
