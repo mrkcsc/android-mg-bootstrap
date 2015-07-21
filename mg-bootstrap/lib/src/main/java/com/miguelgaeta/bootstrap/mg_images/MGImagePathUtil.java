@@ -9,6 +9,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
+
+import java.io.File;
 
 /**
  * Created by Miguel Gaeta on 7/20/15.
@@ -26,7 +29,7 @@ class MGImagePathUtil {
      * represents a local file.
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getPath(final Context context, final Uri uri) {
+    private static String getPath(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -95,6 +98,36 @@ class MGImagePathUtil {
     }
 
     /**
+     * @return The MIME type for the given file.
+     */
+    public static String getMimeType(File file) {
+
+        String extension = getExtension(file.getName());
+
+        if (extension.length() > 0)
+            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.substring(1));
+
+        return "application/octet-stream";
+    }
+
+    /**
+     * Convert Uri into File, if possible.
+     *
+     * @return file A local file that the Uri was pointing to, or null if the
+     *         Uri is unsupported or pointed to a remote resource.
+     * @see #getPath(Context, Uri)
+     */
+    public static File getFile(Context context, Uri uri) {
+        if (uri != null) {
+            String path = getPath(context, uri);
+            if (path != null && isLocal(path)) {
+                return new File(path);
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is ExternalStorageProvider.
      */
@@ -158,5 +191,33 @@ class MGImagePathUtil {
                 cursor.close();
         }
         return null;
+    }
+
+    /**
+     * Gets the extension of a file name, like ".png" or ".jpg".
+     *
+     * @return Extension including the dot("."); "" if there is no extension;
+     *         null if uri was null.
+     */
+    private static String getExtension(String uri) {
+        if (uri == null) {
+            return null;
+        }
+
+        int dot = uri.lastIndexOf(".");
+        if (dot >= 0) {
+            return uri.substring(dot);
+        } else {
+            // No extension.
+            return "";
+        }
+    }
+
+    /**
+     * @return Whether the URI is a local one.
+     */
+    private static boolean isLocal(String url) {
+
+        return url != null && !url.startsWith("http://") && !url.startsWith("https://");
     }
 }
