@@ -8,7 +8,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import java.io.File;
 
@@ -34,6 +34,8 @@ public class MGImageIntentHandler {
 
     private static final String folderName = "intent_handler";
 
+    private static Uri fileUri;
+
     public static void startForImageCapture(@NonNull FragmentActivity activity, Action1<Void> onError) {
 
         startForImageCapture(activity, null, onError);
@@ -47,6 +49,8 @@ public class MGImageIntentHandler {
     private static void startForImageCapture(FragmentActivity activity, Fragment fragment, Action1<Void> onError) {
 
         File file = MGImageIntentUtils.createImageFile(folderName);
+
+        fileUri = Uri.fromFile(file);
 
         if ((file != null) && file.exists()) {
 
@@ -88,71 +92,50 @@ public class MGImageIntentHandler {
 
         return Observable.create(subscriber -> {
 
+            Uri uri = null;
+
             if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAPTURE) {
 
-                MGLog.i("We captured an image.");
-
-                //setCapturedImage();
-
-                subscriber.onNext(null);
+                uri = fileUri;
 
             } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY && data != null) {
 
+                uri = data.getData();
+            }
 
-                File file = MGImagePathUtil.getFile(context, data.getData());
+            if (uri != null) {
+
+                File file = MGImagePathUtil.getFile(context, uri);
 
                 if (file != null && file.exists()) {
-
-                    TypedFile typedFile = new TypedFile(MGImagePathUtil.getMimeType(file), file);
-
-                    subscriber.onNext(FileResult.create(typedFile, FileResult.Status.OK));
+                    file = MGImageIntentUtils.getSmallImageFromSDCard(folderName, file, MGReflection.getScreenWidth());
+                    
+                    subscriber.onNext(FileResult.create(new TypedFile(MGImagePathUtil.getMimeType(file), file), FileResult.Status.OK));
 
                 } else {
 
                     subscriber.onNext(FileResult.create(null, FileResult.Status.FILE_NOT_FOUND));
                 }
+
+            } else  {
+
+                subscriber.onNext(FileResult.create(null, FileResult.Status.URI_NOT_FOUND));
             }
 
             subscriber.onCompleted();
         });
     }
 
-    /*
-    private void setCapturedImage() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                try {
-                    return MGImageIntentUtils.getRightAngleImage(mImagePair.imagePath);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-                return mImagePair.imagePath;
-            }
-
-            @Override
-            protected void onPostExecute(String imagePath) {
-                super.onPostExecute(imagePath);
-                mImagePair.imageView.setImageBitmap(MGImageIntentUtils.getBitmapFromFile(imagePath, mWidth, mHeight));
-            }
-        }.execute();
-    }
-    */
-
     @AllArgsConstructor(staticName = "create") @Getter
     public static class FileResult {
 
         public enum Status {
 
-            OK, FILE_NOT_FOUND
+            OK, FILE_NOT_FOUND, URI_NOT_FOUND
         }
 
         private TypedFile typedFile;
 
         private @NonNull Status status;
     }
-
-    // TODO: Gallery.
-    //mImagePair.imagePath = MGImageIntentUtils.getSmallImageFromSDCard(folderName, MGImageIntentUtils.getRealPathFromURI(mContext, data.getData()), mWidth, mHeight);
-    //mImagePair.imageView.setImageBitmap(MGImageIntentUtils.getBitmapFromFile(mImagePair.imagePath, mWidth, mHeight));
 }

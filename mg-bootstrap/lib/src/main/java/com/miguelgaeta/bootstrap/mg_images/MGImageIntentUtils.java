@@ -5,10 +5,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Environment;
-import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
+
+import lombok.NonNull;
 
 /**
  * Created by Miguel Gaeta on 7/20/15.
@@ -66,27 +67,35 @@ class MGImageIntentUtils {
         return inSampleSize;
     }
 
-    public static String getSmallImageFromSDCard(String folderInExternalStorage, String originalImage, int width, int height) {
-        Bitmap b = BitmapFactory.decodeFile(originalImage);
-        Bitmap out = Bitmap.createScaledBitmap(b, width, height, false);
+    public static File getSmallImageFromSDCard(String folderInExternalDirectory, @NonNull File originalFile, int width) {
 
-        MimeTypeMap m;
-
-        File file = createImageFile(folderInExternalStorage);
-        FileOutputStream fOut;
         try {
-            fOut = new FileOutputStream(file);
-            out.compress(Bitmap.CompressFormat.JPEG, 80, fOut);
-            fOut.flush();
-            fOut.close();
 
-            b.recycle();
-            out.recycle();
+            Bitmap originalBitmap = BitmapFactory.decodeFile(originalFile.getAbsolutePath());
 
-            return file.getAbsolutePath();
-        } catch (Exception e) { // TODO
-            return originalImage;
-        }
+            if (originalBitmap.getWidth() > width) {
+
+                int height = (int)(originalBitmap.getHeight() * (width / (float)originalBitmap.getWidth()));
+
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, false);
+
+                File file = createImageFile(folderInExternalDirectory);
+
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
+
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+                originalBitmap.recycle();
+                resizedBitmap.recycle();
+
+                return file;
+            }
+
+        } catch (Exception ignored) { }
+
+        return originalFile;
     }
 
     public static String getRightAngleImage(String photoPath) {
