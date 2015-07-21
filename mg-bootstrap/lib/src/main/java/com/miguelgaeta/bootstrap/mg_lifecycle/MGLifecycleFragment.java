@@ -79,7 +79,7 @@ public class MGLifecycleFragment extends Fragment {
         super.onDestroyView();
 
         // Reset butter-knife injections.
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     /**
@@ -89,7 +89,7 @@ public class MGLifecycleFragment extends Fragment {
     public void onCreateView(Bundle savedInstanceState, View view) {
 
         // Enable butter-knife injections.
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         // If saved state this is not the first creation.
         getConfig().setRecreated(savedInstanceState != null);

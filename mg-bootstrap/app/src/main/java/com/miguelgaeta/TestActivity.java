@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class TestActivity extends MGLifecycleActivity {
     @Getter(lazy = true)
     private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new TypeToken<Map<Integer, List<TestData>>>() {}, new HashMap<>());
 
-    @InjectView(R.id.fade_test_view) View fadeTestView;
+    @Bind(R.id.fade_test_view) View fadeTestView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

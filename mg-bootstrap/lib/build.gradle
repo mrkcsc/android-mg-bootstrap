@@ -70,7 +70,7 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 
     // XML view injections.
-    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
 
     // Rx Java (reactive programming)
     compile 'io.reactivex:rxjava:1.0.13'

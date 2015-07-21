@@ -43,7 +43,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         this.adapter = adapter;
 
         // Enable butter knife.
-        ButterKnife.inject(this, itemView);
+        ButterKnife.bind(this, itemView);
     }
 
     /**

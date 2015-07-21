@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ import lombok.Getter;
  */
 public class TestActivityRecycler extends MGLifecycleActivity {
 
-    @InjectView(R.id.recycler_view) RecyclerView recyclerView;
+    @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
     @Getter
     public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(new ArrayList<>());

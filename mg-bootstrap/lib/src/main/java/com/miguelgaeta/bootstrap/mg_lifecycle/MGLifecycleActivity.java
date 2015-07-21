@@ -50,7 +50,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
         MGLifecycleContentView.setContentView(this);
 
         // Inject butter-knife views.
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         // Invoke create or resume.
         onCreateOrResume();
