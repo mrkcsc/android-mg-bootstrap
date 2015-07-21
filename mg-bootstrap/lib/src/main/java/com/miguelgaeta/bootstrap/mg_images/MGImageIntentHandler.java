@@ -8,8 +8,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
-
 import java.io.File;
 
 import lombok.AllArgsConstructor;
@@ -108,7 +106,11 @@ public class MGImageIntentHandler {
                 File file = MGImagePathUtil.getFile(context, uri);
 
                 if (file != null && file.exists()) {
-                    file = MGImageIntentUtils.getSmallImageFromSDCard(folderName, file, MGReflection.getScreenWidth());
+
+                    int rotation = MGImageIntentUtils.getRotationDegree(file.getAbsolutePath());
+
+                    file = MGImageIntentUtils.getResizedImage(folderName, file, 1080);
+                    file = MGImageIntentUtils.getRotatedImage(folderName, file, rotation);
                     
                     subscriber.onNext(FileResult.create(new TypedFile(MGImagePathUtil.getMimeType(file), file), FileResult.Status.OK));
 
