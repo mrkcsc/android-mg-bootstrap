@@ -93,19 +93,19 @@ class MGImageIntentUtils {
      * Save bitmap to disk and close all
      * streams and outputs.
      */
-    private static File saveFile(@NonNull String folder, @NonNull Bitmap bitmapOriginal, @NonNull Bitmap BitmapNew) throws IOException {
+    private static File saveFile(@NonNull String folder, @NonNull Bitmap bitmapOld, @NonNull Bitmap bitmapNew) throws IOException {
 
         File file = createImageFile(folder);
 
         FileOutputStream fileOutputStream = new FileOutputStream(file);
 
-        BitmapNew.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+        bitmapNew.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
 
         fileOutputStream.flush();
         fileOutputStream.close();
 
-        bitmapOriginal.recycle();
-        BitmapNew.recycle();
+        bitmapOld.recycle();
+        bitmapNew.recycle();
 
         return file;
     }
