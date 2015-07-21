@@ -3,10 +3,18 @@ package com.miguelgaeta.bootstrap.mg_lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MenuRes;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
+import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboardState;
 
 import butterknife.ButterKnife;
 import lombok.Getter;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -31,6 +39,12 @@ public class MGLifecycleActivity extends AppCompatActivity {
     @Getter
     // Custom observable that emits activity paused events.
     private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.create());
+
+    // Menu layout.
+    private @Nullable Integer menuResourceId;
+
+    // Menu layout item selected callback.
+    private @Nullable Action1<MenuItem> menuResourceIdSelectedAction;
 
     // Tracks if we are currently going back.
     private static boolean goingBack;
@@ -121,6 +135,38 @@ public class MGLifecycleActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (menuResourceId != null) {
+
+            getMenuInflater().inflate(menuResourceId, menu);
+
+            return true;
+        }
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+
+            if (MGKeyboardState.isOpened()) {
+                MGKeyboard.setKeyboardOpen(this, false);
+            }
+
+            super.onBackPressed();
+        }
+
+        if (menuResourceIdSelectedAction != null) {
+            menuResourceIdSelectedAction.call(item);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Adds a clear history overload to the
      * start activity call.
@@ -150,5 +196,14 @@ public class MGLifecycleActivity extends AppCompatActivity {
      */
     public void startActivity(Class activityClass) {
         startActivity(activityClass, false);
+    }
+
+    /**
+     * Set option menu layout and a convenience callback for when a menu item is selected.
+     */
+    protected void setOptionsMenu(@MenuRes int menuResourceId, Action1<MenuItem> menuItemSelectedAction) {
+
+        this.menuResourceId = menuResourceId;
+        this.menuResourceIdSelectedAction = menuItemSelectedAction;
     }
 }
