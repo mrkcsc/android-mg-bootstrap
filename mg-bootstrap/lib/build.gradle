@@ -73,7 +73,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.12'
+    compile 'io.reactivex:rxjava:1.0.13'
     compile 'io.reactivex:rxandroid:0.25.0'
 
     // Google json library.
@@ -86,8 +86,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
 
     // Library for network image loading.
-    compile 'com.facebook.fresco:fresco:0.5.3'
-    compile 'com.facebook.fresco:imagepipeline-okhttp:0.5.3'
+    compile 'com.facebook.fresco:fresco:0.6.0'
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.6.0'
 
     // ISO time format handler
     compile 'net.danlew:android.joda:2.8.1'
