@@ -157,7 +157,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
                 MGKeyboard.setKeyboardOpen(this, false);
             }
 
-            super.onBackPressed();
+            onBackPressed();
         }
 
         if (menuResourceIdSelectedAction != null) {
