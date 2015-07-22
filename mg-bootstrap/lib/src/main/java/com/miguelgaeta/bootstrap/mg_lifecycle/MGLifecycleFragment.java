@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import lombok.Getter;
 import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
 
 /**
  * Created by mrkcsc on 12/2/14.
@@ -23,7 +24,7 @@ public class MGLifecycleFragment extends Fragment {
 
     @Getter
     // Custom observable that emits activity paused events.
-    private PublishSubject<Void> paused = PublishSubject.create();
+    private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.create());
 
     /**
      * Auto-inflate the fragment view based
