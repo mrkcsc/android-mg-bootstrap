@@ -62,7 +62,7 @@ public class MGLifecycleContentView {
      * convention based naming approach - the activity name
      * lower cased and underscored.
      */
-    private static Integer getContentView(@NonNull Class classObject) {
+    static Integer getContentView(@NonNull Class classObject) {
 
         String className = classObject.getSimpleName();
         String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
