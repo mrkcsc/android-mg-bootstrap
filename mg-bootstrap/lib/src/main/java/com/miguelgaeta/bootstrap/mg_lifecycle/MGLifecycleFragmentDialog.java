@@ -16,7 +16,7 @@ import rx.subjects.SerializedSubject;
  * Created by Miguel Gaeta on 7/21/15.
  */
 @SuppressWarnings("UnusedDeclaration")
-public class MGLifecycleDialog extends DialogFragment {
+public class MGLifecycleFragmentDialog extends DialogFragment {
 
     @Getter(lazy = true)
     private final MGLifecycleFragmentConfig config = new MGLifecycleFragmentConfig();
