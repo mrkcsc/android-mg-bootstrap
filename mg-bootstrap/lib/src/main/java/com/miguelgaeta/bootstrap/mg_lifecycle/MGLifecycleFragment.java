@@ -55,7 +55,7 @@ public class MGLifecycleFragment extends Fragment implements MGLifecycleFragment
     @Override
     public void onCreateView(Bundle savedInstanceState, View view) {
 
-        getConfig().onCreateView(this, savedInstanceState, view);;
+        getConfig().onCreateView(this, savedInstanceState, view);
     }
 
     @Override
