@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.ButterKnife;
 import lombok.Getter;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
@@ -16,7 +15,7 @@ import rx.subjects.SerializedSubject;
  * Created by mrkcsc on 12/2/14.
  */
 @SuppressWarnings("unused")
-public class MGLifecycleFragment extends Fragment {
+public class MGLifecycleFragment extends Fragment implements MGLifecycleFragmentInterface {
 
     @Getter
     // Configuration object for the fragment.
@@ -48,24 +47,22 @@ public class MGLifecycleFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Helper lifecycle method that runs either in onCreate or onResume.
-     */
-    protected void onCreateOrResume() {
+    @Override
+    public void onCreateOrResume() {
 
+    }
+
+    @Override
+    public void onCreateView(Bundle savedInstanceState, View view) {
+
+        getConfig().onCreateView(savedInstanceState, view);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (getConfig().isOnCreateOrResumeInvoked()) {
-            getConfig().setOnCreateOrResumeInvoked(false);
-        } else {
-
-            // On resume version invoked.
-            onCreateOrResume();
-        }
+        getConfig().onResume(this);
     }
 
     @Override
@@ -79,21 +76,7 @@ public class MGLifecycleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Reset butter-knife injections.
-        ButterKnife.unbind(this);
-    }
-
-    /**
-     * Shorthand for on create view.  The view
-     * has already been created at this point.
-     */
-    public void onCreateView(Bundle savedInstanceState, View view) {
-
-        // Enable butter-knife injections.
-        ButterKnife.bind(this, view);
-
-        // If saved state this is not the first creation.
-        getConfig().setRecreated(savedInstanceState != null);
+        getConfig().onDestroyView();
     }
 
     /**

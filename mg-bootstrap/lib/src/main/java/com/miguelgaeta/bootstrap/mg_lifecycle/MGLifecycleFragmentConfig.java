@@ -1,7 +1,12 @@
 package com.miguelgaeta.bootstrap.mg_lifecycle;
 
+import android.os.Bundle;
+import android.view.View;
+
+import butterknife.ButterKnife;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -29,4 +34,27 @@ public class MGLifecycleFragmentConfig {
     @Getter
     @Setter(AccessLevel.PACKAGE)
     private boolean onCreateOrResumeInvoked;
+
+    void onResume(@NonNull MGLifecycleFragmentInterface fragment) {
+
+        if (isOnCreateOrResumeInvoked()) {
+            setOnCreateOrResumeInvoked(false);
+
+        } else {
+
+            fragment.onCreateOrResume();
+        }
+    }
+
+    void onCreateView(Bundle savedInstanceState, View view) {
+
+        ButterKnife.bind(this, view);
+
+        setRecreated(savedInstanceState != null);
+    }
+
+    void onDestroyView() {
+
+        ButterKnife.unbind(this);
+    }
 }

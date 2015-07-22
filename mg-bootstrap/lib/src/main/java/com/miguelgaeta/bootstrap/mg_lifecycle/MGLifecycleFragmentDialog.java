@@ -7,7 +7,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
-import butterknife.ButterKnife;
 import lombok.Getter;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
@@ -16,7 +15,7 @@ import rx.subjects.SerializedSubject;
  * Created by Miguel Gaeta on 7/21/15.
  */
 @SuppressWarnings("UnusedDeclaration")
-public class MGLifecycleFragmentDialog extends DialogFragment {
+public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifecycleFragmentInterface {
 
     @Getter(lazy = true)
     private final MGLifecycleFragmentConfig config = new MGLifecycleFragmentConfig();
@@ -56,6 +55,17 @@ public class MGLifecycleFragmentDialog extends DialogFragment {
     }
 
     @Override
+    public void onCreateView(Bundle savedInstanceState, View view) {
+
+        getConfig().onCreateView(savedInstanceState, view);
+    }
+
+    @Override
+    public void onCreateOrResume() {
+
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -66,20 +76,14 @@ public class MGLifecycleFragmentDialog extends DialogFragment {
     public void onResume() {
         super.onResume();
 
-        if (getConfig().isOnCreateOrResumeInvoked()) {
-            getConfig().setOnCreateOrResumeInvoked(false);
-
-        } else {
-
-            onCreateOrResume();
-        }
+        getConfig().onResume(this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        ButterKnife.unbind(this);
+        getConfig().onDestroyView();
     }
 
     /**
@@ -89,16 +93,5 @@ public class MGLifecycleFragmentDialog extends DialogFragment {
     public AlertDialog.Builder onConfigureBuilder(Bundle savedInstanceState, AlertDialog.Builder builder) {
 
         return builder;
-    }
-
-    protected void onCreateOrResume() {
-
-    }
-
-    protected void onCreateView(Bundle savedInstanceState, View view) {
-
-        ButterKnife.bind(this, view);
-
-        getConfig().setRecreated(savedInstanceState != null);
     }
 }
