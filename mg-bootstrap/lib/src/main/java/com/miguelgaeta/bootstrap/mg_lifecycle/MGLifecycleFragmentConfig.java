@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_lifecycle;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import butterknife.ButterKnife;
@@ -46,15 +47,15 @@ public class MGLifecycleFragmentConfig {
         }
     }
 
-    void onCreateView(Bundle savedInstanceState, View view) {
+    void onCreateView(@NonNull Fragment fragment, Bundle savedInstanceState, View view) {
 
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(fragment, view);
 
         setRecreated(savedInstanceState != null);
     }
 
-    void onDestroyView() {
+    void onDestroyView(@NonNull Fragment fragment) {
 
-        ButterKnife.unbind(this);
+        ButterKnife.unbind(fragment);
     }
 }

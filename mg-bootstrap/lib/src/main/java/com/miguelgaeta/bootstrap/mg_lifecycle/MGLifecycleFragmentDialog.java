@@ -57,7 +57,7 @@ public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifec
     @Override
     public void onCreateView(Bundle savedInstanceState, View view) {
 
-        getConfig().onCreateView(savedInstanceState, view);
+        getConfig().onCreateView(this, savedInstanceState, view);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifec
     public void onDestroyView() {
         super.onDestroyView();
 
-        getConfig().onDestroyView();
+        getConfig().onDestroyView(this);
     }
 
     /**
