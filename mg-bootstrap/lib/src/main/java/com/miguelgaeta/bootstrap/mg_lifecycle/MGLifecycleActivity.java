@@ -185,9 +185,8 @@ public class MGLifecycleActivity extends AppCompatActivity {
      * intent options and clear history flag.
      */
     public void startActivity(Class activityClass, boolean clearHistory) {
-        Intent intent = new Intent(this, activityClass);
 
-        startActivity(intent, clearHistory);
+        startActivity(new Intent(this, activityClass), clearHistory);
     }
 
     /**
@@ -195,6 +194,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
      * intent options.
      */
     public void startActivity(Class activityClass) {
+
         startActivity(activityClass, false);
     }
 
