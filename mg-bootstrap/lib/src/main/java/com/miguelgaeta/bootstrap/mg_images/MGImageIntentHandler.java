@@ -28,9 +28,9 @@ import rx.functions.Func1;
 @SuppressWarnings("UnusedDeclaration") @NoArgsConstructor(staticName = "create")
 public class MGImageIntentHandler {
 
-    private static final int REQUEST_CAPTURE = 777;
-    private static final int REQUEST_GALLERY = 779;
-    private static final int REQUEST_CROP    = 800;
+    public static final int REQUEST_CAPTURE = 777;
+    public static final int REQUEST_GALLERY = 779;
+    public static final int REQUEST_CROP    = 800;
 
     private int mWidth = 120;
     private int mHeight = 120;
