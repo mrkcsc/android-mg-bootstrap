@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.ColorRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+
+import com.android.camera.CropImageIntentBuilder;
 
 import java.io.File;
 
@@ -17,6 +20,7 @@ import lombok.NonNull;
 import retrofit.mime.TypedFile;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by Miguel Gaeta on 7/20/15.
@@ -24,8 +28,9 @@ import rx.functions.Action1;
 @SuppressWarnings("UnusedDeclaration") @NoArgsConstructor(staticName = "create")
 public class MGImageIntentHandler {
 
-    private static final int REQUEST_CAPTURE = 100;
-    private static final int REQUEST_GALLERY = 200;
+    private static final int REQUEST_CAPTURE = 777;
+    private static final int REQUEST_GALLERY = 779;
+    private static final int REQUEST_CROP    = 800;
 
     private int mWidth = 120;
     private int mHeight = 120;
@@ -34,32 +39,14 @@ public class MGImageIntentHandler {
 
     public static void startForImageCapture(@NonNull FragmentActivity activity, Action1<Void> onError) {
 
-        startForImageCapture(activity, null, onError);
+        startForIntent(activity, null, file -> new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file)), REQUEST_CAPTURE, onError);
     }
 
     public static void startForImageCapture(@NonNull Fragment fragment, Action1<Void> onError) {
 
-        startForImageCapture(null, fragment, onError);
-    }
-
-    private static void startForImageCapture(FragmentActivity activity, Fragment fragment, Action1<Void> onError) {
-
-        File file = MGImageIntentUtils.createTempImageFile();
-
-        fileUri = Uri.fromFile(file);
-
-        if ((file != null) && file.exists()) {
-
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-
-            startActivityForResult(activity, fragment, intent, REQUEST_CAPTURE);
-
-        } else if (onError != null) {
-
-            onError.call(null);
-        }
+        startForIntent(null, fragment, file -> new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file)), REQUEST_CAPTURE, onError);
     }
 
     public static void startForImagePick(@NonNull FragmentActivity activity) {
@@ -70,6 +57,26 @@ public class MGImageIntentHandler {
     public static void startForImagePick(@NonNull Fragment fragment) {
 
         startActivityForResult(null, fragment, new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), REQUEST_GALLERY);
+    }
+
+    public static void startForImageCrop(@NonNull Fragment fragment, @NonNull Uri uri, @ColorRes int colorResId, Action1<Void> onError) {
+
+        startForIntent(null, fragment, file -> {
+
+            CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(256, 256, Uri.fromFile(file));
+
+            int color = fragment.getResources().getColor(colorResId);
+
+            intentBuilder.setSourceImage(uri);
+            intentBuilder.setCircleCrop(true);
+            intentBuilder.setDoFaceDetection(true);
+            intentBuilder.setOutlineCircleColor(color);
+            intentBuilder.setOutlineColor(color);
+            intentBuilder.setScaleUpIfNeeded(true);
+
+            return intentBuilder.getIntent(fragment.getActivity());
+
+        }, REQUEST_CROP, onError);
     }
 
     private static void startActivityForResult(FragmentActivity activity, Fragment fragment, @NonNull Intent intent, int requestCode) {
@@ -124,6 +131,22 @@ public class MGImageIntentHandler {
 
             subscriber.onCompleted();
         });
+    }
+
+    private static void startForIntent(FragmentActivity activity, Fragment fragment, @NonNull Func1<File, Intent> onIntent, int requestCode, Action1<Void> onError) {
+
+        File file = MGImageIntentUtils.createTempImageFile();
+
+        fileUri = Uri.fromFile(file);
+
+        if ((file != null) && file.exists()) {
+
+            startActivityForResult(activity, fragment, onIntent.call(file), requestCode);
+
+        } else if (onError != null) {
+
+            onError.call(null);
+        }
     }
 
     @AllArgsConstructor(staticName = "create") @Getter
