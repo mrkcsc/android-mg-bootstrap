@@ -30,8 +30,6 @@ public class MGImageIntentHandler {
     private int mWidth = 120;
     private int mHeight = 120;
 
-    private static final String folderName = "intent_handler";
-
     private static Uri fileUri;
 
     public static void startForImageCapture(@NonNull FragmentActivity activity, Action1<Void> onError) {
@@ -46,7 +44,7 @@ public class MGImageIntentHandler {
 
     private static void startForImageCapture(FragmentActivity activity, Fragment fragment, Action1<Void> onError) {
 
-        File file = MGImageIntentUtils.createImageFile(folderName);
+        File file = MGImageIntentUtils.createTempImageFile();
 
         fileUri = Uri.fromFile(file);
 
@@ -109,8 +107,8 @@ public class MGImageIntentHandler {
 
                     int rotation = MGImageIntentUtils.getRotationDegree(file.getAbsolutePath());
 
-                    file = MGImageIntentUtils.getResizedImage(folderName, file, 1080);
-                    file = MGImageIntentUtils.getRotatedImage(folderName, file, rotation);
+                    file = MGImageIntentUtils.getResizedImage(file, 1080);
+                    file = MGImageIntentUtils.getRotatedImage(file, rotation);
                     
                     subscriber.onNext(FileResult.create(new TypedFile(MGImagePathUtil.getMimeType(file), file), FileResult.Status.OK));
 
