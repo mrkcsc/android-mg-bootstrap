@@ -89,6 +89,9 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.6.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.6.0'
 
+    // Image cropper.
+    compile 'me.villani.lorenzo.android:android-cropimage:1.1.0'
+
     // ISO time format handler
     compile 'net.danlew:android.joda:2.8.1'
 
