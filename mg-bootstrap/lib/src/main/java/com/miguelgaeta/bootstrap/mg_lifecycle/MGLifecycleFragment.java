@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import lombok.Getter;
+import lombok.NonNull;
+import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 
@@ -77,6 +79,16 @@ public class MGLifecycleFragment extends Fragment implements MGLifecycleFragment
         super.onDestroyView();
 
         getConfig().onDestroyView(this);
+    }
+
+    /**
+     * Allows fragments to hook into the parent activity lifecycle
+     * functionality. If the default back behavior is to be
+     * suppressed, return true, otherwise return false.
+     */
+    public void setOnBackPressed(@NonNull String fragmentId, @NonNull Func0<Boolean> onBackAction) {
+
+        ((MGLifecycleActivity) getActivity()).getFragmentOnBackPressed().put(fragmentId, onBackAction);
     }
 
     /**

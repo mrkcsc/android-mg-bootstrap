@@ -12,9 +12,14 @@ import android.view.MenuItem;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboardState;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.ButterKnife;
+import lombok.AccessLevel;
 import lombok.Getter;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -25,7 +30,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * setting the content view based on a naming
  * convention and custom activity transitions.
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
 public class MGLifecycleActivity extends AppCompatActivity {
 
     @Getter
@@ -48,6 +53,10 @@ public class MGLifecycleActivity extends AppCompatActivity {
 
     // Tracks if we are currently going back.
     private static boolean goingBack;
+
+    @Getter(value = AccessLevel.PACKAGE)
+    // Allow fragments hook into the back event.
+    private final Map<String, Func0<Boolean>> fragmentOnBackPressed = new HashMap<>();
 
     /**
      * Handles setting the content view
@@ -116,11 +125,22 @@ public class MGLifecycleActivity extends AppCompatActivity {
     }
 
     /**
-     * Track when we are transitioning back
-     * vs forwards in activities.
+     * First check to see if any fragments are attempting to
+     * over ride the default back button behavior.  If
+     * not run default back behavior and track
+     * going back flag.
      */
     @Override
     public void onBackPressed() {
+
+        for (Func0<Boolean> fragmentOnBack : getFragmentOnBackPressed().values()) {
+
+            if (fragmentOnBack.call()) {
+
+                return;
+            }
+        }
+
         super.onBackPressed();
 
         goingBack = true;
