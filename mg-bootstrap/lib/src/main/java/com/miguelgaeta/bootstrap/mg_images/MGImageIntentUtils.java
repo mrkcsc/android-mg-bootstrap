@@ -70,7 +70,7 @@ class MGImageIntentUtils {
 
             int height = (int)(originalBitmap.getHeight() * (width / (float)originalBitmap.getWidth()));
 
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, maxWidth, height, false);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, false);
 
             return saveFile(originalBitmap, resizedBitmap);
 
