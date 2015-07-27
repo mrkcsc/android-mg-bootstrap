@@ -68,7 +68,6 @@ public class MGImageIntentHandler {
             int color = fragment.getResources().getColor(colorResId);
 
             intentBuilder.setSourceImage(uri);
-            intentBuilder.setCircleCrop(true);
             intentBuilder.setDoFaceDetection(true);
             intentBuilder.setOutlineCircleColor(color);
             intentBuilder.setOutlineColor(color);
@@ -97,13 +96,26 @@ public class MGImageIntentHandler {
 
             Uri uri = null;
 
-            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAPTURE) {
+            if (resultCode == Activity.RESULT_OK) {
 
-                uri = fileUri;
+                switch (requestCode) {
+                    
+                    case REQUEST_CAPTURE:
+                    case REQUEST_CROP:
 
-            } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY && data != null) {
+                        uri = fileUri;
 
-                uri = data.getData();
+                        break;
+
+                    case REQUEST_GALLERY:
+
+                        if (data != null) {
+
+                            uri = data.getData();
+                        }
+
+                        break;
+                }
             }
 
             if (uri != null) {
