@@ -1,7 +1,7 @@
 plugins {
 
     // Backport of Java 8 closures.
-    id "me.tatarka.retrolambda" version "3.1.0"
+    id "me.tatarka.retrolambda" version "3.2.0"
 }
 
 // This is a library module.
