@@ -63,7 +63,7 @@ public class MGImageIntentHandler {
 
         startForIntent(null, fragment, file -> {
 
-            CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(256, 256, Uri.fromFile(file));
+            CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(128, 128, Uri.fromFile(file));
 
             int color = fragment.getResources().getColor(colorResId);
 
