@@ -32,9 +32,6 @@ public class MGImageIntentHandler {
     public static final int REQUEST_GALLERY = 779;
     public static final int REQUEST_CROP    = 800;
 
-    private int mWidth = 120;
-    private int mHeight = 120;
-
     private static Uri fileUri;
 
     public static void startForImageCapture(@NonNull FragmentActivity activity, Action1<Void> onError) {
