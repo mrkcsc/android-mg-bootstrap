@@ -11,7 +11,6 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 import java.util.ArrayList;
 
 import lombok.Getter;
-import lombok.NonNull;
 
 /**
  * Created by mrkcsc on 4/27/15.
@@ -21,7 +20,7 @@ public class TestActivityRecyclerAdapter extends MGRecyclerAdapter {
     @Getter
     private MGRecyclerDataList<Integer> data = MGRecyclerDataList.create(this, new ArrayList<>(), integer -> Integer.toString(integer));
 
-    public TestActivityRecyclerAdapter(@NonNull RecyclerView recycler) {
+    public TestActivityRecyclerAdapter(RecyclerView recycler) {
         super(recycler);
     }
 

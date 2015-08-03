@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.NonNull;
-
 /**
  * Created by Miguel Gaeta on 5/6/15.
  */
@@ -20,7 +18,7 @@ public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
      * This adapter streamlines common recycler view operations
      * and boiler plate code.
      */
-    public MGRecyclerAdapterSimple(@NonNull RecyclerView recycler) {
+    public MGRecyclerAdapterSimple(RecyclerView recycler) {
         super(recycler);
     }
 

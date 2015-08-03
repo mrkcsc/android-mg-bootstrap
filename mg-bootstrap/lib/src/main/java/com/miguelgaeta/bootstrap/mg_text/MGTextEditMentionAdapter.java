@@ -8,7 +8,6 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
 import java.util.Map;
 
-import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -26,7 +25,7 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     @Setter
     private Map<String, Object> tags;
 
-    public MGTextEditMentionAdapter(@NonNull RecyclerView recycler) {
+    public MGTextEditMentionAdapter(RecyclerView recycler) {
         super(recycler);
     }
 
