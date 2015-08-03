@@ -33,7 +33,7 @@
       <map>
         <entry key="AppendingToAnObjectOutputStream" value="true" />
         <entry key="AtomicityProblem" value="true" />
-        <entry key="BadAppletConstructor" value="false" />
+        <entry key="BadAppletConstructor" value="true" />
         <entry key="BadResultSetAccess" value="true" />
         <entry key="BadSyntaxForRegularExpression" value="true" />
         <entry key="BadUseOfReturnValue" value="true" />
@@ -42,10 +42,10 @@
         <entry key="BuildInterproceduralCallGraph" value="false" />
         <entry key="BuildObligationPolicyDatabase" value="true" />
         <entry key="BuildStringPassthruGraph" value="true" />
-        <entry key="CallToUnsupportedMethod" value="false" />
+        <entry key="CallToUnsupportedMethod" value="true" />
         <entry key="CalledMethods" value="true" />
         <entry key="CheckCalls" value="false" />
-        <entry key="CheckExpectedWarnings" value="false" />
+        <entry key="CheckExpectedWarnings" value="true" />
         <entry key="CheckImmutableAnnotation" value="true" />
         <entry key="CheckRelaxingNullnessAnnotation" value="true" />
         <entry key="CheckTypeQualifiers" value="true" />
@@ -53,7 +53,7 @@
         <entry key="ComparatorIdiom" value="true" />
         <entry key="ConfusedInheritance" value="true" />
         <entry key="ConfusionBetweenInheritedAndOuterMethod" value="true" />
-        <entry key="CovariantArrayAssignment" value="false" />
+        <entry key="CovariantArrayAssignment" value="true" />
         <entry key="CrossSiteScripting" value="true" />
         <entry key="DefaultEncodingDetector" value="true" />
         <entry key="DoInsideDoPrivileged" value="true" />
@@ -64,7 +64,7 @@
         <entry key="DumbMethodInvocations" value="true" />
         <entry key="DumbMethods" value="true" />
         <entry key="DuplicateBranches" value="true" />
-        <entry key="EmptyZipFileEntry" value="false" />
+        <entry key="EmptyZipFileEntry" value="true" />
         <entry key="EqualsOperandShouldHaveClassCompatibleWithThis" value="true" />
         <entry key="ExplicitSerialization" value="true" />
         <entry key="FieldItemSummary" value="true" />
@@ -72,7 +72,7 @@
         <entry key="FindBadCast2" value="true" />
         <entry key="FindBadForLoop" value="true" />
         <entry key="FindBugsSummaryStats" value="true" />
-        <entry key="FindCircularDependencies" value="false" />
+        <entry key="FindCircularDependencies" value="true" />
         <entry key="FindComparatorProblems" value="true" />
         <entry key="FindDeadLocalStores" value="true" />
         <entry key="FindDoubleCheck" value="true" />
@@ -122,10 +122,10 @@
         <entry key="IDivResultCastToDouble" value="true" />
         <entry key="IncompatMask" value="true" />
         <entry key="InconsistentAnnotations" value="true" />
-        <entry key="InefficientIndexOf" value="false" />
-        <entry key="InefficientInitializationInsideLoop" value="false" />
-        <entry key="InefficientMemberAccess" value="false" />
-        <entry key="InefficientToArray" value="false" />
+        <entry key="InefficientIndexOf" value="true" />
+        <entry key="InefficientInitializationInsideLoop" value="true" />
+        <entry key="InefficientMemberAccess" value="true" />
+        <entry key="InefficientToArray" value="true" />
         <entry key="InfiniteLoop" value="true" />
         <entry key="InfiniteRecursiveLoop" value="true" />
         <entry key="InheritanceUnsafeGetResource" value="true" />
@@ -159,7 +159,7 @@
         <entry key="OptionalReturnNull" value="true" />
         <entry key="OverridingEqualsNotSymmetrical" value="true" />
         <entry key="PreferZeroLengthArrays" value="true" />
-        <entry key="PublicSemaphores" value="false" />
+        <entry key="PublicSemaphores" value="true" />
         <entry key="QuestionableBooleanAssignment" value="true" />
         <entry key="ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass" value="true" />
         <entry key="ReadReturnShouldBeChecked" value="true" />
@@ -192,7 +192,7 @@
         <entry key="UncallableMethodOfAnonymousClass" value="true" />
         <entry key="UnnecessaryMath" value="true" />
         <entry key="UnreadFields" value="true" />
-        <entry key="UselessSubclassMethod" value="false" />
+        <entry key="UselessSubclassMethod" value="true" />
         <entry key="VarArgsProblems" value="true" />
         <entry key="VolatileUsage" value="true" />
         <entry key="WaitInLoop" value="true" />
