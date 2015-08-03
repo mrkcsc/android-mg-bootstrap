@@ -83,7 +83,7 @@
         <entry key="FindFloatMath" value="false" />
         <entry key="FindHEmismatch" value="true" />
         <entry key="FindInconsistentSync2" value="true" />
-        <entry key="FindJSR166LockMonitorenter" value="true" />
+        <entry key="FindJSR166LockMonitorenter" value="false" />
         <entry key="FindLocalSelfAssignment2" value="true" />
         <entry key="FindMaskedFields" value="true" />
         <entry key="FindMismatchedWaitOrNotify" value="true" />
@@ -92,7 +92,7 @@
         <entry key="FindNonSerializableStoreIntoSession" value="false" />
         <entry key="FindNonSerializableValuePassedToWriteObject" value="false" />
         <entry key="FindNonShortCircuit" value="true" />
-        <entry key="FindNullDeref" value="true" />
+        <entry key="FindNullDeref" value="false" />
         <entry key="FindNullDerefsInvolvingNonShortCircuitEvaluation" value="true" />
         <entry key="FindOpenStream" value="true" />
         <entry key="FindPuzzlers" value="true" />
