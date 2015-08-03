@@ -18,10 +18,6 @@ public class MGLifecycleActivityConfig {
 
     private AppCompatActivity activity;
 
-    // Track if we are going back
-    // to another activity.
-    static boolean goingBack;
-
     /**
      * Track if this activity is being created
      * for the first time.  This can be important
