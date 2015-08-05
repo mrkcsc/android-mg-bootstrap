@@ -76,7 +76,7 @@ public class MGPreferenceRx<T> {
      */
     private MGPreferenceRx(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
 
-        init(defaultValue, key != null ? MGPreference.create(key, typeToken, defaultValue, cacheBreaker) : null);
+        init(key, defaultValue, key != null ? MGPreference.create(key, typeToken, defaultValue, cacheBreaker) : null);
     }
 
     /**
@@ -150,16 +150,16 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(T defaultValue, MGPreference<T> cache) {
+    private void init(String key, T defaultValue, MGPreference<T> cache) {
 
         if (cache != null) {
 
             get().observeOn(MGPreference.getScheduler()).subscribe(cache::set,
-                MGRxError.create(null, "Unable to cache preference data."));
+                MGRxError.create(null, "Unable to cache " + key + " preference data."));
         }
 
         Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
-            MGRxError.create(null, "Unable to initialize preference."));
+            MGRxError.create(null, "Unable to initialize " + key + " preference."));
     }
 
     /**
