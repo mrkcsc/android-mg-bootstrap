@@ -17,8 +17,6 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by Miguel Gaeta on 5/2/15.
- *
- * TODO: int lastFirstVisiblePosition = ((LinearLayoutManager)getRecycler().getLayoutManager()).findFirstCompletelyVisibleItemPosition();
  */
 public class MGRecyclerDataList<T> {
 
