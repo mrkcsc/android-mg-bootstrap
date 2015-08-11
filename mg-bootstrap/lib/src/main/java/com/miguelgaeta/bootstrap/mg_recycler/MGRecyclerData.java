@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_recycler;
 
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Created by Miguel Gaeta on 4/28/15.
@@ -9,25 +10,20 @@ public class MGRecyclerData<T> {
 
     private T data;
 
-    @NonNull
-    private DataUpdated<T> dataUpdated;
+    @NonNull @Setter
+    private DataUpdated<T> updater;
 
-    /**
-     * Private constructor.
-     */
-    private MGRecyclerData() {
-
-    }
+    private MGRecyclerData() { }
 
     /**
      * Static constructor.
      */
-    public static <T> MGRecyclerData<T> create(T initialData, DataUpdated<T> dataUpdated) {
+    public static <T> MGRecyclerData<T> create(T initialData, DataUpdated<T> updater) {
 
         MGRecyclerData<T> data = new MGRecyclerData<>();
 
         data.data = initialData;
-        data.dataUpdated = dataUpdated;
+        data.updater = updater;
 
         return data;
     }
@@ -37,20 +33,20 @@ public class MGRecyclerData<T> {
         return data;
     }
 
-    /**
-     * If data changed, set new data, store
-     * old data and emit callback.
-     */
     public void set(T data) {
 
-        if (data == null ? this.data != null : !data.equals(this.data)) {
+        this.data = data;
+    }
 
-            T oldData = this.data;
+    /**
+     * Triggers an update event for a new data set.  Typically
+     * can be used by an adapter or utility to diff the
+     * changes and if needed call a formal set on the
+     * new data.
+     */
+    public void update(T data) {
 
-            this.data = data;
-
-            dataUpdated.updated(oldData, this.data);
-        }
+        updater.updated(this.data, data);
     }
 
     /**

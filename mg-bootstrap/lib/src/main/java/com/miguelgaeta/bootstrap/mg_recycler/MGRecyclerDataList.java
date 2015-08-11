@@ -1,12 +1,19 @@
 package com.miguelgaeta.bootstrap.mg_recycler;
 
+import android.support.v7.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Miguel Gaeta on 5/2/15.
@@ -16,6 +23,8 @@ import rx.functions.Func1;
 public class MGRecyclerDataList<T> {
 
     private MGRecyclerData<List<T>> data;
+
+    private Subscription updateSubscription;
 
     @Setter
     private MGRecyclerData.DataUpdated<List<T>> updated;
@@ -39,16 +48,40 @@ public class MGRecyclerDataList<T> {
 
         dataList.data = MGRecyclerData.create(initialData, (oldData, newData) -> {
 
-            LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
-            LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
+            if (newData == null ? oldData != null : !newData.equals(oldData)) {
 
-            dataList.changeItems(adapter, oldDataIndexes, newDataIndexes, oldData, newData);
+                // On changes, perform diffing on a computation thread.
+                Observable<AdapterUpdateData> worker = Observable.create(subscriber -> {
 
-            dataList.removeItems(adapter, oldData, newDataIndexes, keyGenerator);
-            dataList.insertItems(adapter, newData, oldDataIndexes, keyGenerator);
+                    final LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
+                    final LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
 
-            if (dataList.updated != null) {
-                dataList.updated.updated(oldData, newData);
+                    final List<Integer> indicesChanged = dataList.changeItems(oldDataIndexes, newDataIndexes, oldData, newData);
+
+                    final List<AdapterUpdateData.DataRange> indicesRangeRemoved = dataList.removeItems(oldData, newDataIndexes, keyGenerator);
+                    final List<AdapterUpdateData.DataRange> indicesRangeInserted = dataList.insertItems(newData, oldDataIndexes, keyGenerator);
+
+                    subscriber.onNext(AdapterUpdateData.create(indicesChanged, indicesRangeRemoved, indicesRangeInserted));
+                    subscriber.onCompleted();
+                });
+
+                if (dataList.updateSubscription != null) {
+                    dataList.updateSubscription.unsubscribe();
+                }
+
+                // Run callbacks and adapter update events on the main thread.
+                dataList.updateSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(adapterUpdateData -> {
+
+                    // Set new data.
+                    dataList.data.set(newData);
+
+                    // Trigger adapter updates.
+                    adapterUpdateData.update(adapter);
+
+                    if (dataList.updated != null) {
+                        dataList.updated.updated(oldData, newData);
+                    }
+                });
             }
         });
 
@@ -56,13 +89,13 @@ public class MGRecyclerDataList<T> {
     }
 
     /**
-     * Set a new data list.  Computes all the
-     * changes and calls the associated
-     * adapter functions.
+     * Triggers a lazy update of the backed
+     * data object.  After performing
+     * a diff it may or may not commit the new data.
      */
     public void set(List<T> data) {
 
-        this.data.set(data);
+        this.data.update(data);
     }
 
     /**
@@ -79,9 +112,11 @@ public class MGRecyclerDataList<T> {
      * analysis and do actual item moves instead of just
      * notifying that the item at index has changed.
      */
-    private void changeItems(MGRecyclerAdapter adapter, LinkedHashMap<String, Integer> oldDataIndexes, LinkedHashMap<String, Integer> newDataIndexes, List<T> oldData, List<T> newData) {
+    private List<Integer> changeItems(LinkedHashMap<String, Integer> oldDataIndexes, LinkedHashMap<String, Integer> newDataIndexes, List<T> oldData, List<T> newData) {
 
-        List<String> keys = new ArrayList<>(oldDataIndexes.keySet());
+        final List<String> keys = new ArrayList<>(oldDataIndexes.keySet());
+
+        final List<Integer> changed = new ArrayList<>();
 
         for (int i = 0; i < oldDataIndexes.size(); i++) {
 
@@ -97,17 +132,21 @@ public class MGRecyclerDataList<T> {
 
                 if (oldDataItem == null ? newDataItem != null : !oldDataItem.equals(newDataItem)) {
 
-                    adapter.notifyItemChanged(oldIndex);
+                    changed.add(oldIndex);
                 }
             }
         }
+
+        return changed;
     }
 
     /**
      * Figure out which items were inserted
      * into the list.
      */
-    private void insertItems(MGRecyclerAdapter adapter, List<T> newData, LinkedHashMap<String, Integer> oldDataIndexes, Func1<T, String> keyGenerator) {
+    private List<AdapterUpdateData.DataRange> insertItems(List<T> newData, LinkedHashMap<String, Integer> oldDataIndexes, Func1<T, String> keyGenerator) {
+
+        List<AdapterUpdateData.DataRange> inserted = new ArrayList<>();
 
         int count = 0;
 
@@ -125,7 +164,7 @@ public class MGRecyclerDataList<T> {
 
             } else if (count > 0) {
 
-                adapter.notifyItemRangeInserted(startIndex, count);
+                inserted.add(AdapterUpdateData.DataRange.create(startIndex, count));
 
                 count = 0;
             }
@@ -133,15 +172,19 @@ public class MGRecyclerDataList<T> {
 
         if (count > 0) {
 
-            adapter.notifyItemRangeInserted(startIndex, count);
+            inserted.add(AdapterUpdateData.DataRange.create(startIndex, count));
         }
+
+        return inserted;
     }
 
     /**
      * Figure out which items were removed
      * from the list of data.
      */
-    private void removeItems(MGRecyclerAdapter adapter, List<T> oldData, LinkedHashMap<String, Integer> newDataIndexes, Func1<T, String> keyGenerator) {
+    private List<AdapterUpdateData.DataRange> removeItems(List<T> oldData, LinkedHashMap<String, Integer> newDataIndexes, Func1<T, String> keyGenerator) {
+
+        List<AdapterUpdateData.DataRange> removed = new ArrayList<>();
 
         int count = 0;
 
@@ -160,7 +203,7 @@ public class MGRecyclerDataList<T> {
 
             } else if (count > 0) {
 
-                adapter.notifyItemRangeRemoved(startIndex, count);
+                removed.add(AdapterUpdateData.DataRange.create(startIndex, count));
 
                 startIndexOffset -= count;
 
@@ -170,8 +213,10 @@ public class MGRecyclerDataList<T> {
 
         if (count > 0) {
 
-            adapter.notifyItemRangeRemoved(startIndex, count);
+            removed.add(AdapterUpdateData.DataRange.create(startIndex, count));
         }
+
+        return removed;
     }
 
     /**
@@ -188,5 +233,39 @@ public class MGRecyclerDataList<T> {
         }
 
         return indexMap;
+    }
+
+    @AllArgsConstructor(staticName = "create")
+    private static class AdapterUpdateData {
+
+        @NonNull final List<Integer> indicesChanged;
+
+        @NonNull final List<DataRange> indicesRangeRemoved;
+        @NonNull final List<DataRange> indicesRangeInserted;
+
+        public void update(RecyclerView.Adapter adapter) {
+
+            for (int index : indicesChanged) {
+
+                adapter.notifyItemChanged(index);
+            }
+
+            for (DataRange indexWithCount : indicesRangeRemoved) {
+
+                adapter.notifyItemRangeRemoved(indexWithCount.index, indexWithCount.count);
+            }
+
+            for (DataRange indexWithCount : indicesRangeInserted) {
+
+                adapter.notifyItemRangeInserted(indexWithCount.index, indexWithCount.count);
+            }
+        }
+
+        @AllArgsConstructor(staticName = "create")
+        private static class DataRange {
+
+            final int index;
+            final int count;
+        }
     }
 }
