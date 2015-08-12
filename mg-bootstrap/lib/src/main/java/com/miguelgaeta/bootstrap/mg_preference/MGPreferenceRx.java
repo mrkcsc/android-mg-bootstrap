@@ -159,7 +159,7 @@ public class MGPreferenceRx<T> {
         }
 
         Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
-            MGRxError.create(null, "Unable to initialize " + key + " preference."));
+            MGRxError.create(r -> setInitialized(defaultValue), "Unable to initialize " + key + " preference."));
     }
 
     /**
