@@ -15,16 +15,13 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Created by mrkcsc on 5/23/15.
  */
-@RequiredArgsConstructor
 public class MGTextEditMention<T> {
 
-    @NonNull
-    private MGTextEdit editText;
+    private final MGTextEdit editText;
 
     private TextWatcher textWatcher;
 
@@ -40,6 +37,12 @@ public class MGTextEditMention<T> {
     private List<String> tagsMatchedCache;
 
     private Map<String, T> rawTags;
+
+    public MGTextEditMention(MGTextEdit editText) {
+
+        this.editText = editText;
+        this.editText.setMentionsModule(this);
+    }
 
     public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
 
