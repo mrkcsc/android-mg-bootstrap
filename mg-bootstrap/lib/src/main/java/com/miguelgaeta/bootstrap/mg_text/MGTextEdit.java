@@ -3,7 +3,6 @@ package com.miguelgaeta.bootstrap.mg_text;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,10 +11,8 @@ import android.widget.Toast;
 import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
-import java.util.List;
-import java.util.Map;
-
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -116,24 +113,16 @@ public class MGTextEdit extends EditText {
     /// Mentions Functionality
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final MGTextEditMention mention = new MGTextEditMention(this);
+    @Setter
+    private MGTextEditMention mentionsModule;
 
     @Override
     protected void onSelectionChanged(int start, int end) {
         super.onSelectionChanged(start, end);
 
-        if (mention != null) {
-            mention.processMentions(this, false);
+        if (mentionsModule != null) {
+            mentionsModule.processMentions(this, false);
         }
-    }
-
-    /**
-     * Fetch a list of currently entered mention
-     * tags run through the stringify function.
-     */
-    public List<String> getMentions() {
-
-        return mention.getMentions();
     }
 
     /**
@@ -159,41 +148,5 @@ public class MGTextEdit extends EditText {
             // press from overwriting what just got input.
             setSelection(positionStart + mention.length() + 1);
         }
-    }
-
-    public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
-
-        mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> void setMentionsData(Map<String, T> tags, OnMentionsStringify stringify) {
-
-        mention.setMentionsData((Map<String, Object>) tags, stringify);
-    }
-
-    public void setMentionsRecycler(RecyclerView recycler, OnMentionsRecyclerItem onItem) {
-
-        mention.setRecyclerView(recycler, onItem);
-    }
-
-
-    public interface OnMentionsMatchedListener {
-
-        void mentionsMatched(List<String> tags);
-    }
-
-    public interface OnMentionsRecyclerItem {
-
-        /**
-         * Given an associated mentions list adapter, asks the
-         * callee to generate a mention list item.
-         */
-        MGTextEditMentionItem onItem(MGTextEditMentionAdapter adapter);
-    }
-
-    public interface OnMentionsStringify {
-
-        String stringify(String tag);
     }
 }

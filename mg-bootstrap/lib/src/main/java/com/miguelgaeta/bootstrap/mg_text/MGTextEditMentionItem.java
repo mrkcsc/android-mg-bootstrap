@@ -20,4 +20,13 @@ public class MGTextEditMentionItem extends MGRecyclerViewHolder<MGTextEditMentio
     protected void onConfigure(int position) {
         super.onConfigure(position);
     }
+
+    public interface OnItem {
+
+        /**
+         * Given an associated mentions list adapter, asks the
+         * callee to generate a mention list item.
+         */
+        MGTextEditMentionItem onItem(MGTextEditMentionAdapter adapter);
+    }
 }

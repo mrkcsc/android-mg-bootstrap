@@ -17,13 +17,13 @@ import lombok.Setter;
 public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     @Setter
-    private MGTextEdit.OnMentionsRecyclerItem onItem;
+    private MGTextEditMentionItem.OnItem onItem;
 
     @Setter
     private MGTextEdit editText;
 
     @Setter
-    private Map<String, Object> tags;
+    private Map<String, ?> tags;
 
     public MGTextEditMentionAdapter(RecyclerView recycler) {
         super(recycler);

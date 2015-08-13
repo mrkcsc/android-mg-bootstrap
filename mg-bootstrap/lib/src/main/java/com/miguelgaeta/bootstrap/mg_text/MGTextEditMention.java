@@ -21,34 +21,34 @@ import lombok.RequiredArgsConstructor;
  * Created by mrkcsc on 5/23/15.
  */
 @RequiredArgsConstructor
-class MGTextEditMention {
+public class MGTextEditMention<T> {
 
     @NonNull
     private MGTextEdit editText;
 
     private TextWatcher textWatcher;
 
-    private MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener;
+    private OnMentionsMatchedListener onMentionsMatchedListener;
 
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
 
-    private MGTextEdit.OnMentionsStringify stringify;
+    private OnMentionsStringify stringify;
 
     @NonNull @Getter
     private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 
-    private Map<String, Object> rawTags;
+    private Map<String, T> rawTags;
 
-    public void setOnMentionsMatchedListener(MGTextEdit.OnMentionsMatchedListener onMentionsMatchedListener) {
+    public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
 
         this.onMentionsMatchedListener = onMentionsMatchedListener;
 
         configure();
     }
 
-    public void setMentionsData(Map<String, Object> tags, MGTextEdit.OnMentionsStringify stringify) {
+    public void setMentionsData(Map<String, T> tags, OnMentionsStringify stringify) {
 
         this.stringify = stringify;
 
@@ -92,7 +92,7 @@ class MGTextEditMention {
      * Configure the recycler view and standard
      * adapter to handle the mentions list.
      */
-    public void setRecyclerView(RecyclerView recyclerView, MGTextEdit.OnMentionsRecyclerItem onItem) {
+    public void setRecyclerView(RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem) {
 
         adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         adapter.setOnItem(onItem);
@@ -225,5 +225,15 @@ class MGTextEditMention {
                 startIndex = tagStartIndex + 1;
             }
         }
+    }
+
+    public interface OnMentionsMatchedListener {
+
+        void mentionsMatched(List<String> tags);
+    }
+
+    public interface OnMentionsStringify {
+
+        String stringify(String tag);
     }
 }
