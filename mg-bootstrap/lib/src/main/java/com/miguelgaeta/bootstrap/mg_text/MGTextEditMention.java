@@ -38,19 +38,29 @@ public class MGTextEditMention<T> {
 
     private Map<String, T> rawTags;
 
-    public MGTextEditMention(MGTextEdit editText) {
+    public MGTextEditMention(MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched) {
 
         this.editText = editText;
         this.editText.setMentionsModule(this);
+
+        this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
+        this.adapter.setOnItem(onItem);
+        this.adapter.setEditText(editText);
+        this.adapter.setTags(rawTags);
+
+        this.recyclerView = recyclerView;
+        this.recyclerView.setItemAnimator(null);
+
+        this.onMentionsMatchedListener = onMatched;
+
+        // Configure watcher.
+        configureTextWatcher();
+
+        // Initial processing.
+        processMentions(editText, true);
     }
 
-    public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
-
-        this.onMentionsMatchedListener = onMentionsMatchedListener;
-
-        configure();
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public void setMentionsData(Map<String, T> tags, OnMentionsStringify stringify) {
 
         this.stringify = stringify;
@@ -63,18 +73,18 @@ public class MGTextEditMention<T> {
             adapter.setTags(tags);
         }
 
-        configure();
+        // Re-process mentions.
+        processMentions(editText, true);
     }
 
     /**
      * Get a list of entered mentions run
      * through the stringify function.
      */
-    public List<String> getMentions() {
+    @SuppressWarnings("UnusedDeclaration")
+    public List<String> getMentions(@NonNull String text) {
 
         List<String> mentions = new ArrayList<>();
-
-        String text = editText.toStringSafe();
 
         for (String tag : tags) {
 
@@ -89,23 +99,6 @@ public class MGTextEditMention<T> {
         }
 
         return mentions;
-    }
-
-    /**
-     * Configure the recycler view and standard
-     * adapter to handle the mentions list.
-     */
-    public void setRecyclerView(RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem) {
-
-        adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
-        adapter.setOnItem(onItem);
-        adapter.setEditText(editText);
-        adapter.setTags(rawTags);
-
-        this.recyclerView = recyclerView;
-        this.recyclerView.setItemAnimator(null);
-
-        configure();
     }
 
     private void configureTextWatcher() {
@@ -191,17 +184,6 @@ public class MGTextEditMention<T> {
 
         // Update data source.
         adapter.setData(payload.getList());
-    }
-
-    /**
-     * Configure the mentions module by making sure the text
-     * watched is initialized and do a pass on processing mentions.
-     */
-    private void configure() {
-
-        configureTextWatcher();
-
-        processMentions(editText, true);
     }
 
     /**
