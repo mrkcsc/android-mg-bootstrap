@@ -21,8 +21,6 @@ import lombok.NonNull;
  */
 public class MGTextEditMention<T> {
 
-    private final MGTextEdit editText;
-
     private TextWatcher textWatcher;
 
     private OnMentionsMatchedListener onMentionsMatchedListener;
@@ -38,10 +36,9 @@ public class MGTextEditMention<T> {
 
     private Map<String, T> rawTags;
 
-    public MGTextEditMention(MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched) {
+    public MGTextEditMention(@NonNull MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched) {
 
-        this.editText = editText;
-        this.editText.setMentionsModule(this);
+        editText.setMentionsModule(this);
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         this.adapter.setOnItem(onItem);
@@ -54,14 +51,14 @@ public class MGTextEditMention<T> {
         this.onMentionsMatchedListener = onMatched;
 
         // Configure watcher.
-        configureTextWatcher();
+        configureTextWatcher(editText);
 
         // Initial processing.
         processMentions(editText, true);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void setMentionsData(Map<String, T> tags, OnMentionsStringify stringify) {
+    public void setMentionsData(@NonNull MGTextEdit editText, Map<String, T> tags, OnMentionsStringify stringify) {
 
         this.stringify = stringify;
 
@@ -101,7 +98,7 @@ public class MGTextEditMention<T> {
         return mentions;
     }
 
-    private void configureTextWatcher() {
+    private void configureTextWatcher(@NonNull MGTextEdit editText) {
 
         if (textWatcher == null) {
             textWatcher = new MGTextEditWatcher() {
@@ -121,7 +118,7 @@ public class MGTextEditMention<T> {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    public void processMentions(MGTextEdit editText, boolean force) {
+    public void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
         List<String> tagsMatched = new ArrayList<>();
 
