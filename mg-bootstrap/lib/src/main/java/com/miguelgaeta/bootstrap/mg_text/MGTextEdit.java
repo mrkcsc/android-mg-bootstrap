@@ -25,8 +25,6 @@ public class MGTextEdit extends EditText {
 
     private final MGTextEditHasText hasText = new MGTextEditHasText(this);
 
-    private final MGTextEditMention mention = new MGTextEditMention(this);
-
     /**
      * Given a text view and a label, set a long click listener
      * that will copy the text to the clipboard on
@@ -38,8 +36,8 @@ public class MGTextEdit extends EditText {
 
             if (view != null && view instanceof TextView) {
 
-                ClipboardManager clipboard = (ClipboardManager)view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(label, ((TextView)view).getText());
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(label, ((TextView) view).getText());
 
                 clipboard.setPrimaryClip(clip);
 
@@ -77,15 +75,6 @@ public class MGTextEdit extends EditText {
         }
     }
 
-    @Override
-    protected void onSelectionChanged(int start, int end) {
-        super.onSelectionChanged(start, end);
-
-        if (mention != null) {
-            mention.processMentions(this, false);
-        }
-    }
-
     /**
      * Fetch cursor position.  If no position
      * is available, assume end of content.
@@ -100,6 +89,42 @@ public class MGTextEdit extends EditText {
         }
 
         return position;
+    }
+
+    public void insert(CharSequence charSequence, int start, int end) {
+
+        getText().replace(Math.min(start, end), Math.max(start, end), charSequence, 0, charSequence.length());
+    }
+
+    public void insert(CharSequence charSequence) {
+
+        // See: http://bit.ly/1ArIVnX
+        insert(charSequence, Math.max(getSelectionStart(), 0), Math.max(getSelectionEnd(), 0));
+    }
+
+    public void setOnHasTextListener(OnHasTextListener onHasTextListener) {
+
+        hasText.setOnHasTextListener(onHasTextListener);
+    }
+
+    public interface OnHasTextListener {
+
+        void hasText(boolean hasText);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Mentions Functionality
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final MGTextEditMention mention = new MGTextEditMention(this);
+
+    @Override
+    protected void onSelectionChanged(int start, int end) {
+        super.onSelectionChanged(start, end);
+
+        if (mention != null) {
+            mention.processMentions(this, false);
+        }
     }
 
     /**
@@ -136,22 +161,6 @@ public class MGTextEdit extends EditText {
         }
     }
 
-    public void insert(CharSequence charSequence, int start, int end) {
-
-        getText().replace(Math.min(start, end), Math.max(start, end), charSequence, 0, charSequence.length());
-    }
-
-    public void insert(CharSequence charSequence) {
-
-        // See: http://bit.ly/1ArIVnX
-        insert(charSequence, Math.max(getSelectionStart(), 0), Math.max(getSelectionEnd(), 0));
-    }
-
-    public void setOnHasTextListener(OnHasTextListener onHasTextListener) {
-
-        hasText.setOnHasTextListener(onHasTextListener);
-    }
-
     public void setOnMentionsMatchedListener(OnMentionsMatchedListener onMentionsMatchedListener) {
 
         mention.setOnMentionsMatchedListener(onMentionsMatchedListener);
@@ -168,18 +177,18 @@ public class MGTextEdit extends EditText {
         mention.setRecyclerView(recycler, onItem);
     }
 
+
     public interface OnMentionsMatchedListener {
 
         void mentionsMatched(List<String> tags);
     }
 
-    public interface OnHasTextListener {
-
-        void hasText(boolean hasText);
-    }
-
     public interface OnMentionsRecyclerItem {
 
+        /**
+         * Given an associated mentions list adapter, asks the
+         * callee to generate a mention list item.
+         */
         MGTextEditMentionItem onItem(MGTextEditMentionAdapter adapter);
     }
 
