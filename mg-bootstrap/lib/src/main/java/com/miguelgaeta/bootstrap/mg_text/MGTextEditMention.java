@@ -17,6 +17,10 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by mrkcsc on 5/23/15.
@@ -37,6 +41,8 @@ public class MGTextEditMention<T> {
     private List<Map.Entry<String, T>> tagsMatchedCache;
 
     private Map<String, T> tags;
+
+    private Subscription dataSubscription;
 
     public MGTextEditMention(@NonNull MGTextEdit editText, @NonNull RecyclerView recyclerView, @NonNull MGTextEditMentionCallbacks<T> callbacks) {
 
@@ -74,8 +80,6 @@ public class MGTextEditMention<T> {
      */
     @SuppressWarnings("UnusedDeclaration")
     public List<String> getMentions(@NonNull String text) {
-
-        // TODO: Work off the UI thread.
 
         List<String> mentions = new ArrayList<>();
 
@@ -142,38 +146,50 @@ public class MGTextEditMention<T> {
      */
     void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
-        // TODO: Work off the UI thread.
+        final String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
-        List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
+        Observable<List<Map.Entry<String, T>>> worker = Observable.create(subscriber -> {
 
-        String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
+            List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
-        if (partialMentionToken != null) {
-            partialMentionToken = partialMentionToken.toLowerCase();
+            if (partialMentionToken != null) {
 
-            for (Map.Entry<String, T> entry : tags.entrySet()) {
+                final String token = partialMentionToken.toLowerCase();
 
-                String tagLower = entry.getKey().toLowerCase();
+                for (Map.Entry<String, T> entry : tags.entrySet()) {
 
-                if (tagLower.contains(partialMentionToken) && !tagLower.equals(partialMentionToken)) {
+                    String tagLower = entry.getKey().toLowerCase();
 
-                    tagsMatched.add(entry);
+                    if (tagLower.contains(token) && !tagLower.equals(token)) {
+
+                        tagsMatched.add(entry);
+                    }
                 }
             }
+
+            subscriber.onNext(tagsMatched);
+            subscriber.onCompleted();
+        });
+
+        if (dataSubscription != null) {
+            dataSubscription.unsubscribe();
         }
 
-        if (!tagsMatched.equals(tagsMatchedCache) || force) {
+        dataSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(tagsMatched -> {
 
-            callbacks.onTagsMatched(tagsMatched);
+            if (!tagsMatched.equals(tagsMatchedCache) || force) {
 
-            if (adapter != null) {
+                callbacks.onTagsMatched(tagsMatched);
 
-                setAdapterData(adapter, tagsMatchedCache, tagsMatched);
+                if (adapter != null) {
+
+                    setAdapterData(adapter, tagsMatchedCache, tagsMatched);
+                }
+
+                // Update cached value.
+                tagsMatchedCache = tagsMatched;
             }
-
-            // Update cached value.
-            tagsMatchedCache = tagsMatched;
-        }
+        });
     }
 
     /**
@@ -186,8 +202,6 @@ public class MGTextEditMention<T> {
         if (dataOld == null) {
             dataOld = new LinkedList<>();
         }
-
-        // TODO: Work off the UI thread.
 
         MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
 
@@ -215,8 +229,6 @@ public class MGTextEditMention<T> {
      * Apply spans to spannable string.
      */
     private void applySpan(Spannable spannable) {
-
-        // TODO: Work off the UI thread.
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
