@@ -23,6 +23,7 @@ public class MGTextEditMention<T> {
     private TextWatcher textWatcher;
 
     private MGTextEditMentionCallbacks<T> callbacks;
+    private MGTextEdit editText;
 
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
@@ -34,6 +35,8 @@ public class MGTextEditMention<T> {
     public MGTextEditMention(@NonNull MGTextEdit editText, @NonNull RecyclerView recyclerView, @NonNull MGTextEditMentionCallbacks<T> callbacks) {
 
         editText.setMentionsModule(this);
+
+        this.editText = editText;
 
         this.callbacks = callbacks;
 
@@ -51,7 +54,7 @@ public class MGTextEditMention<T> {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void setMentionsData(@NonNull MGTextEdit editText, Map<String, T> tags) {
+    public void setMentionsData(Map<String, T> tags) {
 
         this.tags = tags;
 
