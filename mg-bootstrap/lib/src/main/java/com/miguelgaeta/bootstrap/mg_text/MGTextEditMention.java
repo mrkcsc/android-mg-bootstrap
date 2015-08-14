@@ -27,7 +27,7 @@ public class MGTextEditMention<T> {
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
 
-    private List<String> tagsMatchedCache;
+    private List<Map.Entry<String, T>> tagsMatchedCache;
 
     private Map<String, T> tags;
 
@@ -39,7 +39,6 @@ public class MGTextEditMention<T> {
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         this.adapter.setCallbacks(callbacks);
-        this.adapter.setTags(tags);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
@@ -55,10 +54,6 @@ public class MGTextEditMention<T> {
     public void setMentionsData(@NonNull MGTextEdit editText, Map<String, T> tags) {
 
         this.tags = tags;
-
-        if (adapter != null) {
-            adapter.setTags(tags);
-        }
 
         // Re-process mentions.
         processMentions(editText, true);
@@ -136,7 +131,7 @@ public class MGTextEditMention<T> {
      */
     void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
-        List<String> tagsMatched = new ArrayList<>();
+        List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
         String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
@@ -149,7 +144,7 @@ public class MGTextEditMention<T> {
 
                 if (tagLower.contains(partialMentionToken) && !tagLower.equals(partialMentionToken)) {
 
-                    tagsMatched.add(entry.getKey());
+                    tagsMatched.add(entry);
                 }
             }
         }
@@ -173,7 +168,7 @@ public class MGTextEditMention<T> {
      * sure the recycler view height
      * is correct.
      */
-    private void setAdapterData(MGTextEditMentionAdapter adapter, List<String> dataOld, List<String> dataNew) {
+    private void setAdapterData(MGTextEditMentionAdapter adapter, List<Map.Entry<String, T>> dataOld, List<Map.Entry<String, T>> dataNew) {
 
         if (dataOld == null) {
             dataOld = new LinkedList<>();
@@ -181,9 +176,9 @@ public class MGTextEditMention<T> {
 
         MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
 
-        for (String tag : dataNew) {
+        for (Map.Entry<String, T> entry : dataNew) {
 
-            payload.add(0, tag, tag);
+            payload.add(0, entry.getKey(), entry);
         }
 
         int heightOld = MGReflection.dipToPixels(Math.min(36 * dataOld.size(), 144));

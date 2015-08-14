@@ -19,9 +19,6 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     @Setter
     private MGTextEditMentionCallbacks callbacks;
 
-    @Setter
-    private Map<String, ?> tags;
-
     public MGTextEditMentionAdapter(RecyclerView recycler) {
         super(recycler);
     }
@@ -40,9 +37,10 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     /**
      * Fetch data item at position.
      */
-    public String getTag(int position) {
+    @SuppressWarnings("unchecked")
+    public Map.Entry<String, ?> getTag(int position) {
 
-        return (String)getItem(position);
+        return (Map.Entry)getItem(position);
     }
 
     /**
@@ -52,11 +50,11 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
      */
     public Object getTagData(int position) {
 
-        return tags.get(getTag(position));
+        return getTag(position).getValue();
     }
 
     public void mentionClicked(int position) {
 
-        callbacks.onTagClicked(getTag(position));
+        callbacks.onTagClicked(getTag(position).getKey());
     }
 }
