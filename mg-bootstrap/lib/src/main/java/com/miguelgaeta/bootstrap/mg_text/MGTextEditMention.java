@@ -75,6 +75,8 @@ public class MGTextEditMention<T> {
     @SuppressWarnings("UnusedDeclaration")
     public List<String> getMentions(@NonNull String text) {
 
+        // TODO: Work off the UI thread.
+
         List<String> mentions = new ArrayList<>();
 
         for (Map.Entry<String, T> tag : tags.entrySet()) {
@@ -140,6 +142,8 @@ public class MGTextEditMention<T> {
      */
     void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
+        // TODO: Work off the UI thread.
+
         List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
         String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
@@ -183,6 +187,8 @@ public class MGTextEditMention<T> {
             dataOld = new LinkedList<>();
         }
 
+        // TODO: Work off the UI thread.
+
         MGRecyclerDataPayload payload = new MGRecyclerDataPayload();
 
         for (Map.Entry<String, T> entry : dataNew) {
@@ -209,6 +215,8 @@ public class MGTextEditMention<T> {
      * Apply spans to spannable string.
      */
     private void applySpan(Spannable spannable) {
+
+        // TODO: Work off the UI thread.
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
