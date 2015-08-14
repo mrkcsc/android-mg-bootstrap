@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -27,11 +28,28 @@ import rx.schedulers.Schedulers;
  */
 public class MGTextEditMention<T> {
 
+    /**
+     * Allow users to get or set the static list of
+     * known identifiers mapped to an integer
+     * that will be used as the recycler view type.
+     */
     @Setter @Getter
     private static Map<String, Integer> identifiers = getDefaultIdentifiers();
 
+    /**
+     * Set a callback that is invoked when a tag
+     * is clicked from the associated
+     * recycler view.
+     */
+    @Setter @Getter
+    private MGTextEditMentionAdapter.TagClicked onTagClicked;
+
+    @Setter @Getter
+    private MGTextEditMentionAdapter.OnBindViewHolder onBindViewHolder;
+
     private TextWatcher textWatcher;
 
+    @Getter(value = AccessLevel.PACKAGE)
     private MGTextEditMentionCallbacks<T> callbacks;
     private MGTextEdit editText;
 
@@ -53,7 +71,7 @@ public class MGTextEditMention<T> {
         this.callbacks = callbacks;
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
-        this.adapter.setCallbacks(callbacks);
+        this.adapter.setMention(this);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);

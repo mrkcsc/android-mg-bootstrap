@@ -16,8 +16,27 @@ import lombok.Setter;
 @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration"})
 public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
+    public interface OnBindViewHolder {
+
+        /**
+         * Required function invoked to obtained a valid
+         * view holder for the associated adapter and
+         * view type.
+         */
+        MGTextEditMentionItem onBindViewHolder(MGTextEditMentionAdapter adapter, int viewType);
+    }
+
+    public interface TagClicked {
+
+        /**
+         * Invoke when an associated item from the
+         * adapter is clicked by the user.
+         */
+        void onTagClicked(String tag);
+    }
+
     @Setter
-    private MGTextEditMentionCallbacks callbacks;
+    private MGTextEditMention mention;
 
     public MGTextEditMentionAdapter(RecyclerView recycler) {
         super(recycler);
@@ -31,7 +50,12 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     @Override
     public MGRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return callbacks.onBindViewHolder(this, viewType);
+        if (mention.getOnBindViewHolder() == null) {
+
+            throw new RuntimeException("A valid view holder must be bound.");
+        }
+
+        return mention.getOnBindViewHolder().onBindViewHolder(this, viewType);
     }
 
     /**
@@ -55,6 +79,8 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     public void mentionClicked(int position) {
 
-        callbacks.onTagClicked(getTag(position).getKey());
+        if (mention.getOnTagClicked() != null) {
+            mention.getOnTagClicked().onTagClicked(getTag(position).getKey());
+        }
     }
 }
