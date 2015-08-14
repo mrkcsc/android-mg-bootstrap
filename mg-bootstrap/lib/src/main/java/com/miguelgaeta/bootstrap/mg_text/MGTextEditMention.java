@@ -80,7 +80,7 @@ public class MGTextEditMention<T> {
 
     private List<Map.Entry<String, T>> tagsMatchedCache;
 
-    private Map<String, T> tags;
+    private Map<String, T> tags = new HashMap<>();
 
     private Subscription dataSubscription;
 
