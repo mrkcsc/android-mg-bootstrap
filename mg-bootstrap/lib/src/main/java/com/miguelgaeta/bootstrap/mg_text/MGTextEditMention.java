@@ -22,31 +22,27 @@ public class MGTextEditMention<T> {
 
     private TextWatcher textWatcher;
 
-    private OnMentionsMatchedListener onMentionsMatchedListener;
+    private MGTextEditMentionCallbacks<T> callbacks;
 
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
-
-    private OnMentionsStringify<T> stringify;
 
     private List<String> tagsMatchedCache;
 
     private Map<String, T> tags;
 
-    public MGTextEditMention(@NonNull MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched, OnMentionsStringify<T> stringify) {
+    public MGTextEditMention(@NonNull MGTextEdit editText, @NonNull RecyclerView recyclerView, @NonNull MGTextEditMentionCallbacks<T> callbacks) {
 
         editText.setMentionsModule(this);
 
+        this.callbacks = callbacks;
+
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
-        this.adapter.setOnItem(onItem);
+        this.adapter.setCallbacks(callbacks);
         this.adapter.setTags(tags);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
-
-        this.stringify = stringify;
-
-        this.onMentionsMatchedListener = onMatched;
 
         // Configure watcher.
         configureTextWatcher(editText);
@@ -79,9 +75,9 @@ public class MGTextEditMention<T> {
 
         for (Map.Entry<String, T> tag : tags.entrySet()) {
 
-            if (text.contains("@" + tag) && stringify != null) {
+            if (text.contains("@" + tag)) {
 
-                String toString = stringify.toString(tag.getValue());
+                String toString = callbacks.tagDataToString(tag.getValue());
 
                 if (!mentions.contains(toString)) {
                      mentions.add(toString);
@@ -160,9 +156,7 @@ public class MGTextEditMention<T> {
 
         if (!tagsMatched.equals(tagsMatchedCache) || force) {
 
-            if (onMentionsMatchedListener != null) {
-                onMentionsMatchedListener.mentionsMatched(tagsMatched);
-            }
+            callbacks.onTagsMatched(tagsMatched);
 
             if (adapter != null) {
 
@@ -229,15 +223,5 @@ public class MGTextEditMention<T> {
                 startIndex = tagStartIndex + 1;
             }
         }
-    }
-
-    public interface OnMentionsMatchedListener {
-
-        void mentionsMatched(List<String> tags);
-    }
-
-    public interface OnMentionsStringify<T> {
-
-        String toString(T data);
     }
 }

@@ -17,7 +17,7 @@ import lombok.Setter;
 public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     @Setter
-    private MGTextEditMentionItem.OnItem onItem;
+    private MGTextEditMentionCallbacks callbacks;
 
     @Setter
     private Map<String, ?> tags;
@@ -34,7 +34,7 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     @Override
     public MGRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return onItem.onItem(this);
+        return callbacks.onBindViewHolder(this);
     }
 
     /**
@@ -57,6 +57,6 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     public void mentionClicked(int position) {
 
-        onItem.onItemClicked(getTag(position));
+        callbacks.onTagClicked(getTag(position));
     }
 }
