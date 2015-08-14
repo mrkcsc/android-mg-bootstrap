@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -27,6 +26,25 @@ import rx.schedulers.Schedulers;
  * Created by mrkcsc on 5/23/15.
  */
 public class MGTextEditMention<T> {
+
+    public interface TagToString<T> {
+
+        /**
+         * Given a tag object, compute a string representation
+         * of the tag - generally to be used for sending raw
+         * tag data to a server.
+         */
+        String toString(T tagData);
+    }
+
+    public interface OnTagsMatched<T> {
+
+        /**
+         * Fire a callback when any tag is matched.  Can be
+         * used for general UI tweaks.
+         */
+        void onTagsMatched(List<Map.Entry<String, T>> tags);
+    }
 
     /**
      * Allow users to get or set the static list of
@@ -47,10 +65,14 @@ public class MGTextEditMention<T> {
     @Setter @Getter
     private MGTextEditMentionAdapter.OnBindViewHolder onBindViewHolder;
 
+    @Setter @Getter
+    private TagToString<T> tagToString;
+
+    @Setter @Getter
+    private OnTagsMatched<T> onTagsMatched;
+
     private TextWatcher textWatcher;
 
-    @Getter(value = AccessLevel.PACKAGE)
-    private MGTextEditMentionCallbacks<T> callbacks;
     private MGTextEdit editText;
 
     private MGTextEditMentionAdapter adapter;
@@ -62,13 +84,11 @@ public class MGTextEditMention<T> {
 
     private Subscription dataSubscription;
 
-    public MGTextEditMention(@NonNull MGTextEdit editText, @NonNull RecyclerView recyclerView, @NonNull MGTextEditMentionCallbacks<T> callbacks) {
+    public MGTextEditMention(@NonNull MGTextEdit editText, @NonNull RecyclerView recyclerView) {
 
         editText.setMentionsModule(this);
 
         this.editText = editText;
-
-        this.callbacks = callbacks;
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         this.adapter.setMention(this);
@@ -105,7 +125,12 @@ public class MGTextEditMention<T> {
 
             if (text.contains(tag.getKey())) {
 
-                String toString = callbacks.tagDataToString(tag.getValue());
+                if (getTagToString() == null) {
+
+                    throw new RuntimeException("Unable to stringify tag, did you provide a tag to string callback?");
+                }
+
+                String toString = getTagToString().toString(tag.getValue());
 
                 if (!mentions.contains(toString)) {
                      mentions.add(toString);
@@ -197,7 +222,9 @@ public class MGTextEditMention<T> {
 
             if (!tagsMatched.equals(tagsMatchedCache) || force) {
 
-                callbacks.onTagsMatched(tagsMatched);
+                if (getOnTagsMatched() != null) {
+                    getOnTagsMatched().onTagsMatched(tagsMatched);
+                }
 
                 if (adapter != null) {
 
