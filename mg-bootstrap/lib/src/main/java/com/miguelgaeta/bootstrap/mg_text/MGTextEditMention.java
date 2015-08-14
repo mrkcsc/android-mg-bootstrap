@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -28,24 +27,24 @@ public class MGTextEditMention<T> {
     private MGTextEditMentionAdapter adapter;
     private RecyclerView recyclerView;
 
-    private OnMentionsStringify stringify;
+    private OnMentionsStringify<T> stringify;
 
-    @NonNull @Getter
-    private List<String> tags = new ArrayList<>();
     private List<String> tagsMatchedCache;
 
-    private Map<String, T> rawTags;
+    private Map<String, T> tags;
 
-    public MGTextEditMention(@NonNull MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched) {
+    public MGTextEditMention(@NonNull MGTextEdit editText, RecyclerView recyclerView, MGTextEditMentionItem.OnItem onItem, OnMentionsMatchedListener onMatched, OnMentionsStringify<T> stringify) {
 
         editText.setMentionsModule(this);
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         this.adapter.setOnItem(onItem);
-        this.adapter.setTags(rawTags);
+        this.adapter.setTags(tags);
 
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
+
+        this.stringify = stringify;
 
         this.onMentionsMatchedListener = onMatched;
 
@@ -57,13 +56,9 @@ public class MGTextEditMention<T> {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void setMentionsData(@NonNull MGTextEdit editText, Map<String, T> tags, OnMentionsStringify stringify) {
+    public void setMentionsData(@NonNull MGTextEdit editText, Map<String, T> tags) {
 
-        this.stringify = stringify;
-
-        this.tags = new ArrayList<>(tags.keySet());
-
-        this.rawTags = tags;
+        this.tags = tags;
 
         if (adapter != null) {
             adapter.setTags(tags);
@@ -82,14 +77,14 @@ public class MGTextEditMention<T> {
 
         List<String> mentions = new ArrayList<>();
 
-        for (String tag : tags) {
+        for (Map.Entry<String, T> tag : tags.entrySet()) {
 
             if (text.contains("@" + tag) && stringify != null) {
 
-                String tagStringified = stringify.stringify(tag);
+                String toString = stringify.toString(tag.getValue());
 
-                if (!mentions.contains(tagStringified)) {
-                     mentions.add(tagStringified);
+                if (!mentions.contains(toString)) {
+                     mentions.add(toString);
                 }
             }
         }
@@ -102,6 +97,7 @@ public class MGTextEditMention<T> {
      * replacing any current partial
      * mention entered.
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void insertMention(MGTextEdit editText, @NonNull String mention) {
 
         // Fetch position of cursor.
@@ -130,7 +126,7 @@ public class MGTextEditMention<T> {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                    applySpan((Spannable) charSequence, tags);
+                    applySpan((Spannable) charSequence);
                 }
             };
 
@@ -142,7 +138,7 @@ public class MGTextEditMention<T> {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    public void processMentions(@NonNull MGTextEdit editText, boolean force) {
+    void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
         List<String> tagsMatched = new ArrayList<>();
 
@@ -151,13 +147,13 @@ public class MGTextEditMention<T> {
         if (partialMentionToken != null) {
             partialMentionToken = partialMentionToken.toLowerCase();
 
-            for (String tag : tags) {
+            for (Map.Entry<String, T> entry : tags.entrySet()) {
 
-                String tagLower = tag.toLowerCase();
+                String tagLower = entry.getKey().toLowerCase();
 
                 if (tagLower.contains(partialMentionToken) && !tagLower.equals(partialMentionToken)) {
 
-                    tagsMatched.add(tag);
+                    tagsMatched.add(entry.getKey());
                 }
             }
         }
@@ -210,12 +206,14 @@ public class MGTextEditMention<T> {
     /**
      * Apply spans to spannable string.
      */
-    private void applySpan(Spannable spannable, List<String> tags) {
+    private void applySpan(Spannable spannable) {
 
         // Remove existing spans.
         MGTextEditMentionUtils.removeSpans(spannable);
 
-        for (String tag : tags) {
+        for (Map.Entry<String, T> entry : tags.entrySet()) {
+
+            String tag = entry.getKey();
 
             tag = "@" + tag;
 
@@ -238,8 +236,8 @@ public class MGTextEditMention<T> {
         void mentionsMatched(List<String> tags);
     }
 
-    public interface OnMentionsStringify {
+    public interface OnMentionsStringify<T> {
 
-        String stringify(String tag);
+        String toString(T data);
     }
 }
