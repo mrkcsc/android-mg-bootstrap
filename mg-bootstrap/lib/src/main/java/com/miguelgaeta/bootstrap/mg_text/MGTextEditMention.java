@@ -9,16 +9,22 @@ import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Created by mrkcsc on 5/23/15.
  */
 public class MGTextEditMention<T> {
+
+    @Setter @Getter
+    private static Map<String, Integer> identifiers = getDefaultIdentifiers();
 
     private TextWatcher textWatcher;
 
@@ -73,7 +79,7 @@ public class MGTextEditMention<T> {
 
         for (Map.Entry<String, T> tag : tags.entrySet()) {
 
-            if (text.contains("@" + tag)) {
+            if (text.contains(tag.getKey())) {
 
                 String toString = callbacks.tagDataToString(tag.getValue());
 
@@ -181,7 +187,11 @@ public class MGTextEditMention<T> {
 
         for (Map.Entry<String, T> entry : dataNew) {
 
-            payload.add(0, entry.getKey(), entry);
+            final String identifier = Character.toString(entry.getKey().charAt(0));
+
+            final int viewType = identifiers.get(identifier);
+
+            payload.add(viewType, entry.getKey(), entry);
         }
 
         int heightOld = MGReflection.dipToPixels(Math.min(36 * dataOld.size(), 144));
@@ -205,21 +215,32 @@ public class MGTextEditMention<T> {
 
         for (Map.Entry<String, T> entry : tags.entrySet()) {
 
-            String tag = entry.getKey();
-
-            tag = "@" + tag;
-
             int startIndex = 0;
 
-            while (spannable.toString().indexOf(tag, startIndex) != -1) {
+            while (indexOfTag(spannable, startIndex, entry.getKey()) != -1) {
 
-                int tagStartIndex = spannable.toString().indexOf(tag, startIndex);
+                int tagStartIndex = indexOfTag(spannable, startIndex, entry.getKey());
 
-                MGTextEditMentionUtils.applyBoldSpan(spannable, tagStartIndex, tagStartIndex + tag.length());
+                MGTextEditMentionUtils.applyBoldSpan(spannable, tagStartIndex, tagStartIndex + entry.getKey().length());
 
                 // Update start index.
                 startIndex = tagStartIndex + 1;
             }
         }
+    }
+
+    private int indexOfTag(Spannable spannable, int startIndex, String tag) {
+
+        return spannable.toString().indexOf(tag, startIndex);
+    }
+
+    private static Map<String, Integer> getDefaultIdentifiers() {
+
+        Map<String, Integer> identifiers = new HashMap<>();
+
+        identifiers.put("@", 0);
+        identifiers.put("+", 1);
+
+        return identifiers;
     }
 }

@@ -31,7 +31,7 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     @Override
     public MGRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return callbacks.onBindViewHolder(this);
+        return callbacks.onBindViewHolder(this, viewType);
     }
 
     /**

@@ -5,8 +5,7 @@ import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import lombok.NonNull;
 
@@ -16,13 +15,11 @@ import lombok.NonNull;
 @SuppressWarnings("unused")
 class MGTextEditMentionUtils {
 
-    private static final List<Character> identifiers = Collections.singletonList('@');
-
     /**
      * Fetch token using end of string or edit text
      * cursor position as the marker.
      */
-    public static String getPartialMentionToken(MGTextEdit editText, @NonNull List<Character> identifiers) {
+    public static String getPartialMentionToken(MGTextEdit editText, @NonNull Set<String> identifiers) {
 
         // Content string.
         String content = editText.toStringSafe();
@@ -35,13 +32,17 @@ class MGTextEditMentionUtils {
             return null;
         }
 
-        // Look for last identifier token before the cursor position.
-        int lastIdentifier = content.substring(0, position).lastIndexOf("@");
+        for (String identifier : identifiers) {
 
-        if (lastIdentifier != -1 && (lastIdentifier == 0 || content.charAt(lastIdentifier - 1) == ' ')) {
+            // Look for last identifier token before the cursor position.
+            int lastIdentifier = content.substring(0, position).lastIndexOf(identifier);
 
-            // Return up to the current cursor position.
-            return content.substring(lastIdentifier + 1, position);
+            if (lastIdentifier != -1 && (lastIdentifier == 0 || content.charAt(lastIdentifier - 1) == ' ')) {
+
+                // Return up to the current cursor position.
+                return content.substring(lastIdentifier, position);
+            }
+
         }
 
         return null;
@@ -53,7 +54,7 @@ class MGTextEditMentionUtils {
      */
     public static String getPartialMentionToken(MGTextEdit editText) {
 
-        return getPartialMentionToken(editText, identifiers);
+        return getPartialMentionToken(editText, MGTextEditMention.getIdentifiers().keySet());
     }
 
     /**

@@ -15,7 +15,7 @@ public interface MGTextEditMentionCallbacks<T> {
 
     void onTagsMatched(List<Map.Entry<String, T>> tags);
 
-    MGTextEditMentionItem onBindViewHolder(MGTextEditMentionAdapter adapter);
+    MGTextEditMentionItem onBindViewHolder(MGTextEditMentionAdapter adapter, int viewType);
 
     void onTagClicked(String tag);
 }
