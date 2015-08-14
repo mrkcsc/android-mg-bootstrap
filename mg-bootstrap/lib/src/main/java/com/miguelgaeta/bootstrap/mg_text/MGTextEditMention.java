@@ -42,7 +42,6 @@ public class MGTextEditMention<T> {
 
         this.adapter = MGRecyclerAdapter.configure(new MGTextEditMentionAdapter(recyclerView));
         this.adapter.setOnItem(onItem);
-        this.adapter.setEditText(editText);
         this.adapter.setTags(rawTags);
 
         this.recyclerView = recyclerView;
@@ -96,6 +95,31 @@ public class MGTextEditMention<T> {
         }
 
         return mentions;
+    }
+
+    /**
+     * Insert a mention tag into the edit text,
+     * replacing any current partial
+     * mention entered.
+     */
+    public void insertMention(MGTextEdit editText, @NonNull String mention) {
+
+        // Fetch position of cursor.
+        int position = editText.getCursorPosition();
+
+        String lastToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
+
+        if (lastToken != null) {
+
+            int positionStart = position - lastToken.length();
+
+            // Insert tag, replacing any partial tag.
+            editText.insert(mention + "  ", positionStart, position);
+
+            // Selection hack to prevent next user inputted key
+            // press from overwriting what just got input.
+            editText.setSelection(positionStart + mention.length() + 1);
+        }
     }
 
     private void configureTextWatcher(@NonNull MGTextEdit editText) {

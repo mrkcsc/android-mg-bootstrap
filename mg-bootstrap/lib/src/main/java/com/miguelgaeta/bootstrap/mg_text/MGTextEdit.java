@@ -124,29 +124,4 @@ public class MGTextEdit extends EditText {
             mentionsModule.processMentions(this, false);
         }
     }
-
-    /**
-     * Insert a mention tag into the edit text,
-     * replacing any current partial
-     * mention entered.
-     */
-    public void insertMention(@NonNull String mention) {
-
-        // Fetch position of cursor.
-        int position = getCursorPosition();
-
-        String lastToken = MGTextEditMentionUtils.getPartialMentionToken(this);
-
-        if (lastToken != null) {
-
-            int positionStart = position - lastToken.length();
-
-            // Insert tag, replacing any partial tag.
-            insert(mention + "  ", positionStart, position);
-
-            // Selection hack to prevent next user inputted key
-            // press from overwriting what just got input.
-            setSelection(positionStart + mention.length() + 1);
-        }
-    }
 }

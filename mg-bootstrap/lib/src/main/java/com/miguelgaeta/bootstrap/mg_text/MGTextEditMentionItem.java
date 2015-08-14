@@ -28,5 +28,7 @@ public class MGTextEditMentionItem extends MGRecyclerViewHolder<MGTextEditMentio
          * callee to generate a mention list item.
          */
         MGTextEditMentionItem onItem(MGTextEditMentionAdapter adapter);
+
+        void onItemClicked(String tag);
     }
 }

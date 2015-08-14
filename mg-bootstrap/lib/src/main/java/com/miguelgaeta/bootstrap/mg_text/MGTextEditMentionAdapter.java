@@ -20,9 +20,6 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
     private MGTextEditMentionItem.OnItem onItem;
 
     @Setter
-    private MGTextEdit editText;
-
-    @Setter
     private Map<String, ?> tags;
 
     public MGTextEditMentionAdapter(RecyclerView recycler) {
@@ -60,6 +57,6 @@ public class MGTextEditMentionAdapter extends MGRecyclerAdapterSimple {
 
     public void mentionClicked(int position) {
 
-        editText.insertMention(getTag(position));
+        onItem.onItemClicked(getTag(position));
     }
 }
