@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
@@ -64,6 +65,16 @@ class MGPreferenceData<T> {
 
     private String serializeValue() {
 
-        return value == null ? null : gson.toJson(value, typeToken.getType());
+        try {
+
+            return value == null ? null : gson.toJson(value, typeToken.getType());
+
+        } catch (OutOfMemoryError e) {
+
+            // Alert of any preferences that become too large.
+            MGLog.e("Out of memory while trying to serialize: " + key);
+
+            throw e;
+        }
     }
 }
