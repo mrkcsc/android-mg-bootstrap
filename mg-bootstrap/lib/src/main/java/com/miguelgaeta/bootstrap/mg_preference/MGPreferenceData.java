@@ -2,19 +2,25 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.RequiredArgsConstructor;
-import rx.Observable;
-import rx.functions.Action1;
+import rx.Subscription;
 
 /**
  * Created by mrkcsc on 3/9/15.
  */
 @RequiredArgsConstructor(staticName = "create")
 class MGPreferenceData<T> {
+
+    /**
+     * Standard delay to prevent stacked serialize calls
+     * from using up too much memory and OOM.
+     */
+    private static final int SERIALIZATION_DELAY = 10000;
 
     private final String key;
 
@@ -25,6 +31,8 @@ class MGPreferenceData<T> {
     private T value;
 
     private final boolean global;
+
+    private Subscription delayedSerialization;
 
     private final Gson gson = MGRestClient.getGson();
 
@@ -55,12 +63,16 @@ class MGPreferenceData<T> {
 
         this.value = value;
 
-        persist(o -> MGPreference.getDataStore().set(key, serializeValue(), global));
-    }
+        if (delayedSerialization != null) {
+            delayedSerialization.unsubscribe();
+        }
 
-    private void persist(Action1<Object> callback) {
+        delayedSerialization = MGDelay.delay(SERIALIZATION_DELAY).observeOn(MGPreference.getScheduler()).subscribe(r -> {
 
-        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(callback, MGRxError.create(null, "Unable to serialize preference."));
+            // Make sure we don't serialize too fast.
+            MGPreference.getDataStore().set(key, serializeValue(), global);
+
+        }, MGRxError.create(null, "Unable to serialize preference."));
     }
 
     private String serializeValue() {
