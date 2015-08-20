@@ -26,12 +26,12 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 326
         versionName "3.2.6"
     }
@@ -60,8 +60,9 @@ android {
 dependencies {
 
     // Support libraries.
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile "com.android.support:design:23.0.0"
 
     // Provides support for annotated get/set.
     compile 'org.projectlombok:lombok:1.16.4'
