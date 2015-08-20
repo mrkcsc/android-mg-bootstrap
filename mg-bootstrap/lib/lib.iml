@@ -113,8 +113,8 @@
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.8.1-no-tzdb" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-0.25.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="okio-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.0.0" level="project" />
   </component>
 </module>
