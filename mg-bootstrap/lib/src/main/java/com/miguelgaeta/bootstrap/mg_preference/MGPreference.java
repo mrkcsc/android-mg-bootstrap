@@ -87,6 +87,6 @@ public class MGPreference<T> {
      */
     public void clear() {
 
-        metaData.set(null);
+        metaData.clear();
     }
 }

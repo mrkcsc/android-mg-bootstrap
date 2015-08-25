@@ -9,7 +9,6 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
-import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -50,10 +49,6 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MGLog.e("Dp test: " +  MGReflection.getScreenWidth() + " " + MGReflection.getScreenWidthDp());
-
-        MGLog.e("Obj: " + getPref().get());
-
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 
         List<TestData> td1 = new ArrayList<>();
@@ -73,7 +68,11 @@ public class TestActivity extends MGLifecycleActivity {
 
         getPref().set(prefData);
 
-        MGLog.e("Obj: " + getPref().get());
+        MGLog.e("Stuff: " + getPref().get());
+
+        getPref().set(null);
+
+        MGLog.e("Not cleared: " + getPref().get());
 
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")

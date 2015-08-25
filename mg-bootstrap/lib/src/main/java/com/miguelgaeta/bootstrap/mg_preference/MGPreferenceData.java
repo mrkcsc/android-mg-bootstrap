@@ -43,7 +43,7 @@ class MGPreferenceData<T> {
      */
     public T get() {
 
-        if (value == null) {
+        if (value == null && delayedSerialization == null) {
             value = gson.fromJson(MGPreference.getDataStore().get(key, global), typeToken.getType());
 
             if (value == null && defaultValue != null) {
@@ -72,7 +72,14 @@ class MGPreferenceData<T> {
             // Make sure we don't serialize too fast.
             MGPreference.getDataStore().set(key, serializeValue(), global);
 
+            delayedSerialization = null;
+
         }, MGRxError.create(null, "Unable to serialize preference."));
+    }
+
+    public void clear() {
+
+        set(defaultValue);
     }
 
     private String serializeValue() {
