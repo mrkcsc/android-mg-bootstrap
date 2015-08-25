@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_keyboard;
 import android.app.Activity;
 import android.content.Context;
 import android.os.IBinder;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class MGKeyboard {
     private static final MGKeyboardMetrics metrics = new MGKeyboardMetrics();
 
     /**
-     * Allows for programatic opening and
+     * Allows for programmatic opening and
      * closing of the soft keyboard.
      */
     public static void setKeyboardOpen(Activity activity, boolean keyboardOpen) {
@@ -36,6 +37,9 @@ public class MGKeyboard {
             // Show the keyboard.
             inputMethodManager.toggleSoftInputFromWindow(windowToken, InputMethodManager.SHOW_FORCED, 0);
         } else {
+
+            activity.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
             // Hide the keyboard.
             inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
