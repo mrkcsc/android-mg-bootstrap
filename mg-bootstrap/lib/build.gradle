@@ -10,7 +10,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '4.0.1'
+    PUBLISH_VERSION = '3.2.7'
 }
 
 allprojects {
@@ -26,14 +26,14 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 401
-        versionName "4.0.1"
+        targetSdkVersion 22
+        versionCode 327
+        versionName "3.2.7"
     }
 
     compileOptions {
@@ -60,9 +60,9 @@ android {
 dependencies {
 
     // Support libraries.
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:recyclerview-v7:23.0.0'
-    compile "com.android.support:design:23.0.0"
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    //compile "com.android.support:design:23.0.0"
 
     // Provides support for annotated get/set.
     compile 'org.projectlombok:lombok:1.16.4'
