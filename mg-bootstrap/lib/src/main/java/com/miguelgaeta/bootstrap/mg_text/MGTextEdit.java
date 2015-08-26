@@ -48,16 +48,16 @@ public class MGTextEdit extends EditText {
 
         if (longPress) {
 
-            view.setOnClickListener(v -> copyText(textView, copiedMessage));
-
-        } else {
-
             view.setOnLongClickListener(v -> {
 
                 copyText(textView, copiedMessage);
 
                 return false;
             });
+
+        } else {
+
+            view.setOnClickListener(v -> copyText(textView, copiedMessage));
         }
     }
 
