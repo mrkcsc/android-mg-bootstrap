@@ -3,7 +3,9 @@ package com.miguelgaeta.bootstrap.mg_text;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,27 +24,56 @@ public class MGTextEdit extends EditText {
 
     private final MGTextEditHasText hasText = new MGTextEditHasText(this);
 
-    /**
-     * Given a text view and a label, set a long click listener
-     * that will copy the text to the clipboard on
-     * a long press action.
-     */
-    public static void copyTextOnLongPress(@NonNull TextView textView, @NonNull String label) {
+    public static void copyTextOnPress(@NonNull TextView textView, boolean longPress) {
 
-        textView.setOnLongClickListener(view -> {
+        copyTextOnPress(textView, textView, R.string.shared_copied_to_clipboard, longPress);
+    }
 
-            if (view != null && view instanceof TextView) {
+    public static void copyTextOnPress(@NonNull TextView textView) {
 
-                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(label, ((TextView) view).getText());
+        copyTextOnPress(textView, textView);
+    }
 
-                clipboard.setPrimaryClip(clip);
+    public static void copyTextOnPress(@NonNull View view, @NonNull TextView textView) {
 
-                Toast.makeText(view.getContext(), R.string.shared_copied_to_clipboard, Toast.LENGTH_SHORT).show();
-            }
+        copyTextOnPress(view, textView, R.string.shared_copied_to_clipboard);
+    }
 
-            return false;
-        });
+    public static void copyTextOnPress(@NonNull View view, @NonNull TextView textView, @StringRes int copiedMessage) {
+
+        copyTextOnPress(view, textView, copiedMessage, false);
+    }
+
+    public static void copyTextOnPress(@NonNull View view, @NonNull TextView textView, @StringRes int copiedMessage, boolean longPress) {
+
+        if (longPress) {
+
+            view.setOnClickListener(v -> copyText(textView, copiedMessage));
+
+        } else {
+
+            view.setOnLongClickListener(v -> {
+
+                copyText(textView, copiedMessage);
+
+                return false;
+            });
+        }
+    }
+
+    public static void copyText(@NonNull TextView textView) {
+
+        copyText(textView, R.string.shared_copied_to_clipboard);
+    }
+
+    public static void copyText(@NonNull TextView textView, @StringRes int copiedMessage) {
+
+        ClipboardManager clipboard = (ClipboardManager) textView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("", textView.getText());
+
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(textView.getContext(), copiedMessage, Toast.LENGTH_SHORT).show();
     }
 
     public MGTextEdit(Context context) {
