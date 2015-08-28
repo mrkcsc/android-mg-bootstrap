@@ -8,7 +8,6 @@ import android.view.View;
 import com.miguelgaeta.bootstrap.mg_view.MGViewOnPressListener;
 
 import butterknife.ButterKnife;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -18,7 +17,7 @@ import lombok.NonNull;
 @SuppressWarnings({"unused", "FieldCanBeLocal" })
 public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends RecyclerView.ViewHolder {
 
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final T adapter;
 
     protected interface OnClickAction {
