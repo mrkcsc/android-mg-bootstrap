@@ -54,6 +54,11 @@ public class MGLifecycleContentView {
             view = fragment.getActivity().getLayoutInflater().inflate(contentView, container, false);
         }
 
+        if (view == null) {
+
+            throw new RuntimeException("Unable to inflate fragment content view: " + fragment.getClass().getSimpleName());
+        }
+
         return view;
     }
 
