@@ -60,9 +60,9 @@ android {
 dependencies {
 
     // Support libraries.
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:recyclerview-v7:23.0.0'
-    compile "com.android.support:design:23.0.0"
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile "com.android.support:design:23.0.1"
 
     // Provides support for annotated get/set.
     compile 'org.projectlombok:lombok:1.16.4'
