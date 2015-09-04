@@ -25,16 +25,16 @@ import rx.schedulers.Schedulers;
 /**
  * Created by mrkcsc on 5/23/15.
  */
-public class MGTextEditMention<T> {
+public class MGTextEditMention<T, O> {
 
-    public interface TagToString<T> {
+    public interface TagToOutput<T, O> {
 
         /**
          * Given a tag object, compute a string representation
          * of the tag - generally to be used for sending raw
          * tag data to a server.
          */
-        String toString(T tagData);
+        O toOutput(T tagData);
     }
 
     public interface OnTagsMatched<T> {
@@ -66,7 +66,7 @@ public class MGTextEditMention<T> {
     private MGTextEditMentionAdapter.OnBindViewHolder onBindViewHolder;
 
     @Setter @Getter
-    private TagToString<T> tagToString;
+    private TagToOutput<T, O> tagToOutput;
 
     @Setter @Getter
     private OnTagsMatched<T> onTagsMatched;
@@ -117,23 +117,23 @@ public class MGTextEditMention<T> {
      * through the stringify function.
      */
     @SuppressWarnings("UnusedDeclaration")
-    public List<String> getMentions(@NonNull String text) {
+    public List<O> getMentions(@NonNull String text) {
 
-        List<String> mentions = new ArrayList<>();
+        List<O> mentions = new ArrayList<>();
 
         for (Map.Entry<String, T> tag : tags.entrySet()) {
 
             if (text.contains(tag.getKey())) {
 
-                if (getTagToString() == null) {
+                if (getTagToOutput() == null) {
 
                     throw new RuntimeException("Unable to stringify tag, did you provide a tag to string callback?");
                 }
 
-                String toString = getTagToString().toString(tag.getValue());
+                O output = getTagToOutput().toOutput(tag.getValue());
 
-                if (!mentions.contains(toString)) {
-                     mentions.add(toString);
+                if (!mentions.contains(output)) {
+                     mentions.add(output);
                 }
             }
         }
