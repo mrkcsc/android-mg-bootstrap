@@ -131,7 +131,7 @@ public class MGImages {
                     subscriber.onNext(null);
                 }
 
-            }, new DefaultExecutorSupplier().forDecode());
+            }, new DefaultExecutorSupplier(1).forDecode());
         });
     }
 
