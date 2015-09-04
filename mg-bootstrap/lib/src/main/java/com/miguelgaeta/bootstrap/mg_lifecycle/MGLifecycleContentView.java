@@ -56,7 +56,7 @@ public class MGLifecycleContentView {
 
         if (view == null) {
 
-            throw new RuntimeException("Unable to inflate fragment content view: " + fragment.getClass().getSimpleName());
+            throw new RuntimeException("Unable to inflate fragment content view: " + fragment.getClass().getName());
         }
 
         return view;
