@@ -305,6 +305,7 @@ public class MGTextEditMention<T, O> {
 
         identifiers.put("@", 0);
         identifiers.put("+", 1);
+        identifiers.put("#", 2);
 
         return identifiers;
     }
