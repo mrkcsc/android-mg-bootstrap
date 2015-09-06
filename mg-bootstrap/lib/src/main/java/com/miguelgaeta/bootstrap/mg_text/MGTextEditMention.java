@@ -195,15 +195,17 @@ public class MGTextEditMention<T, O> {
 
             List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
-            if (partialMentionToken != null) {
+            if (partialMentionToken != null && partialMentionToken.length() > 0) {
 
-                final String token = partialMentionToken.toLowerCase();
+                final char tokenIdentifier = partialMentionToken.charAt(0);
+                final String token = getFormattedMention(partialMentionToken);
 
                 for (Map.Entry<String, T> entry : tags.entrySet()) {
 
-                    String tagLower = entry.getKey().toLowerCase();
+                    final char tagIdentifier = entry.getKey().charAt(0);
+                    final String tag = getFormattedMention(entry.getKey());
 
-                    if (tagLower.contains(token) && !tagLower.equals(token)) {
+                    if (tagIdentifier == tokenIdentifier && tag.contains(token)) {
 
                         tagsMatched.add(entry);
                     }
@@ -235,6 +237,18 @@ public class MGTextEditMention<T, O> {
                 tagsMatchedCache = tagsMatched;
             }
         });
+    }
+
+    private String getFormattedMention(@NonNull String fullToken) {
+
+        String token = "";
+
+        if (fullToken.length() > 1) {
+
+            token = fullToken.substring(1, fullToken.length()).toLowerCase();
+        }
+
+        return token;
     }
 
     /**
