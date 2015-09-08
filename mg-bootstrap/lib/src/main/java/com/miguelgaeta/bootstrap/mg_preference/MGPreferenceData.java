@@ -30,7 +30,7 @@ class MGPreferenceData<T> {
 
     private T value;
 
-    private final boolean global;
+    private final boolean versioned;
 
     private Subscription delayedSerialization;
 
@@ -44,7 +44,7 @@ class MGPreferenceData<T> {
     public T get() {
 
         if (value == null && delayedSerialization == null) {
-            value = gson.fromJson(MGPreference.getDataStore().get(key, global), typeToken.getType());
+            value = gson.fromJson(MGPreference.getDataStore().get(key, versioned), typeToken.getType());
 
             if (value == null && defaultValue != null) {
 
@@ -56,8 +56,12 @@ class MGPreferenceData<T> {
     }
 
     /**
-     * Update the value and also persist to the
-     * data store in the background.
+     * Updates value in memory and also persists to cache.  If versioned
+     * field, persist on delay, otherwise persist immediately.  This is
+     * not really a very good heuristic so should be revised to happen in a
+     * more intelligent fashion.
+     *
+     * TODO: Delay flag should be configurable and off by default.
      */
     public void set(T value) {
 
@@ -67,14 +71,25 @@ class MGPreferenceData<T> {
             delayedSerialization.unsubscribe();
         }
 
-        delayedSerialization = MGDelay.delay(SERIALIZATION_DELAY).observeOn(MGPreference.getScheduler()).subscribe(r -> {
+        if (versioned) {
 
-            // Make sure we don't serialize too fast.
-            MGPreference.getDataStore().set(key, serializeValue(), global);
+            delayedSerialization = MGDelay.delay(SERIALIZATION_DELAY).observeOn(MGPreference.getScheduler()).subscribe(r -> {
 
-            delayedSerialization = null;
+                set();
 
-        }, MGRxError.create(null, "Unable to serialize preference."));
+                delayedSerialization = null;
+
+            }, MGRxError.create(null, "Unable to serialize preference."));
+
+        } else {
+
+            set();
+        }
+    }
+
+    private void set() {
+
+        MGPreference.getDataStore().set(key, serializeValue(), versioned);
     }
 
     public void clear() {
