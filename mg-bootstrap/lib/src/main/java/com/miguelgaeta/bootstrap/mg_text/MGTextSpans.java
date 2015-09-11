@@ -1,11 +1,13 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
 
@@ -19,7 +21,22 @@ public class MGTextSpans {
 
     public static StyleSpan getBoldSpan() {
 
-        return new StyleSpan(android.graphics.Typeface.BOLD);
+        return new StyleSpan(Typeface.BOLD);
+    }
+
+    public static StyleSpan getBoldItalicSpan() {
+
+        return new StyleSpan(Typeface.BOLD_ITALIC);
+    }
+
+    public static StyleSpan getItalicSpan() {
+
+        return new StyleSpan(Typeface.ITALIC);
+    }
+
+    public static StrikethroughSpan getStrikeThroughSpan() {
+
+        return new StrikethroughSpan();
     }
 
     public static BackgroundColorSpan getBackgroundColorSpan(@NonNull Context context, @ColorRes int color) {
