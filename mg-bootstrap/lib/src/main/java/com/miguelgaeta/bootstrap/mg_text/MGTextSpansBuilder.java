@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
+import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
@@ -21,25 +22,29 @@ import rx.Observable;
 @AllArgsConstructor(staticName = "create")
 public class MGTextSpansBuilder {
 
-    private @NonNull String sourceString;
+    @NonNull
+    private String sourceString;
 
-    public void addReplacement(String targetStart, String targetEnd, Replacement replacement, boolean targetEndRequired) {
+    @NonNull @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final List<MatchStrategy> matchStrategies = new ArrayList<>();
 
-        // TODO
+    public void addMatchStrategy(@NonNull String matchStart, @NonNull String matchEnd, @NonNull OnMatch onMatch) {
+
+        addMatchStrategy(matchStart, matchEnd, onMatch, true);
     }
 
-    public void addReplacement(String targetStart, String targetEnd, Replacement replacement) {
+    public void addMatchStrategy(@NonNull String matchStart, @NonNull String matchEnd, @NonNull OnMatch onMatch, boolean matchEndRequired) {
 
-        addReplacement(targetStart, targetEnd, replacement, true);
+        matchStrategies.add(MatchStrategy.create(matchStart, matchEnd, onMatch, matchEndRequired));
     }
 
     /**
      * Looks for any instances of the start target and matches them. Since
      * no end target is specified, no delimiter is needed.
      */
-    public void addReplacement(String targetStart, Replacement replacement) {
+    public void addMatchStrategy(@NonNull String matchStart, @NonNull OnMatch onMatch) {
 
-        // TODO
+        matchStrategies.add(MatchStrategy.create(matchStart, null, onMatch, false));
     }
 
     /**
@@ -95,6 +100,26 @@ public class MGTextSpansBuilder {
         private final String content;
     }
 
+    @AllArgsConstructor(staticName = "create")
+    private static class MatchStrategy {
+
+        @NonNull
+        private final String matchStart;
+
+        @Nullable
+        private final String matchEnd;
+
+        @NonNull
+        private final OnMatch onMatch;
+
+        private final boolean matchEndRequired;
+    }
+
+    public interface OnMatch {
+
+        Span call(Match match);
+    }
+
     public static class Span {
 
         @Getter(value = AccessLevel.PRIVATE)
@@ -128,10 +153,5 @@ public class MGTextSpansBuilder {
 
             return new Span(spanString, spanStyles);
         }
-    }
-
-    public interface Replacement {
-
-        Span call(Match match);
     }
 }
