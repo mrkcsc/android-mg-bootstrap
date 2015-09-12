@@ -228,5 +228,10 @@ public class MGTextSpansBuilder {
 
             return new Span(spanString, spanStyles);
         }
+
+        public static Span create(String spanString) {
+
+            return new Span(spanString, new ArrayList<>());
+        }
     }
 }
