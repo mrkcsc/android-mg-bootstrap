@@ -96,7 +96,7 @@ public class MGTextSpansBuilder {
 
                         int endIndex = sourceString.indexOf(matchStrategy.getMatchEnd(), startIndex);
 
-                        final boolean isEndOfStringMatch = endIndex == -1 && matchStrategy.isMatchEndRequired();
+                        final boolean isEndOfStringMatch = endIndex == -1 && !matchStrategy.isMatchEndRequired();
 
                         if (isEndOfStringMatch) {
 
