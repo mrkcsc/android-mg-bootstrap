@@ -13,13 +13,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 9/11/15.
  */
-@AllArgsConstructor(staticName = "create")
+@AllArgsConstructor(staticName = "create") @SuppressWarnings("UnusedDeclaration")
 public class MGTextSpansBuilder {
 
     @NonNull
@@ -56,13 +55,13 @@ public class MGTextSpansBuilder {
         return buildSpannableString(sourceString, buildSpans());
     }
 
-    private SpannableString buildSpannableString(@NonNull final String sourceString, @NonNull final List<Span> spans) {
+    private SpannableString buildSpannableString(@NonNull final String sourceString, @NonNull final List<SpanMatch> spans) {
 
         final SpannableString spannableString = new SpannableString(sourceString);
 
-        for (Span span: spans) {
+        for (SpanMatch span: spans) {
 
-            for (CharacterStyle characterStyle : span.spanStyles) {
+            for (CharacterStyle characterStyle : span.getStyles()) {
 
                 spannableString.setSpan(characterStyle, span.getStart(), span.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -71,11 +70,81 @@ public class MGTextSpansBuilder {
         return spannableString;
     }
 
-    private List<Span> buildSpans() {
+    private List<SpanMatch> buildSpans() {
 
-        // TODO
+        final List<SpanMatch> spans = new ArrayList<>();
 
-        return new ArrayList<>();
+        for (MatchStrategy matchStrategy : matchStrategies) {
+
+            int startIndex = 0;
+
+            do {
+
+                startIndex = sourceString.indexOf(matchStrategy.getMatchStart(), startIndex);
+
+                if (startIndex != -1) {
+
+                    if (matchStrategy.getMatchEnd() == null) {
+
+                        int endIndex = startIndex + matchStrategy.getMatchStart().length();
+
+                        final Span span = matchStrategy.getOnMatch().call(Match.create(matchStrategy.getMatchStart()));
+
+                        startIndex = computeStartIndexWithSpans(spans, startIndex, endIndex, span);
+
+                    } else {
+
+                        int endIndex = sourceString.indexOf(matchStrategy.getMatchEnd(), startIndex);
+
+                        final boolean isEndOfStringMatch = endIndex == -1 && matchStrategy.isMatchEndRequired();
+
+                        if (isEndOfStringMatch) {
+
+                            endIndex = sourceString.length();
+                        }
+
+                        if (endIndex != -1) {
+
+                            final String match = sourceString.substring(startIndex + matchStrategy.getMatchStart().length(), endIndex);
+
+                            final Span span = matchStrategy.getOnMatch().call(Match.create(match));
+
+                            if (!isEndOfStringMatch) {
+
+                                endIndex += matchStrategy.getMatchEnd().length();
+                            }
+
+                            startIndex = computeStartIndexWithSpans(spans, startIndex, endIndex, span);
+
+                        } else {
+
+                            startIndex = -1;
+                        }
+                    }
+                }
+
+            } while (startIndex != -1);
+        }
+
+        return spans;
+    }
+
+    /**
+     * Given a user provided span and a current start and
+     * end index.  Replace range with span result
+     * and add to span match array.
+     */
+    private int computeStartIndexWithSpans(List<SpanMatch> spans, int startIndex, int endIndex, Span span) {
+
+        // Replace match with user provided replacement.
+        sourceString = new StringBuilder(sourceString).replace(startIndex, endIndex, span.getSpanString()).toString();
+
+        // Update the new end index location.
+        endIndex = startIndex + span.getSpanString().length();
+
+        spans.add(SpanMatch.create(startIndex, endIndex, span.getSpanStyles()));
+
+        return endIndex;
     }
 
     /**
@@ -90,17 +159,7 @@ public class MGTextSpansBuilder {
         });
     }
 
-    @AllArgsConstructor(staticName = "create") @Getter
-    public static class Match {
-
-        private final int start;
-
-        private final int end;
-
-        private final String content;
-    }
-
-    @AllArgsConstructor(staticName = "create")
+    @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE) @Getter(value = AccessLevel.PRIVATE)
     private static class MatchStrategy {
 
         @NonNull
@@ -115,24 +174,40 @@ public class MGTextSpansBuilder {
         private final boolean matchEndRequired;
     }
 
+    @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE) @Getter(value = AccessLevel.PRIVATE)
+    private static class SpanMatch {
+
+        private int start;
+
+        private int end;
+
+        private List<CharacterStyle> styles;
+    }
+
     public interface OnMatch {
 
         Span call(Match match);
     }
 
+    /**
+     * Represents a matched string used during the
+     * span searching process of the original
+     * string.
+     */
+    @AllArgsConstructor(staticName = "create") @Getter
+    public static class Match {
+
+        private final String match;
+    }
+
+    @Getter
     public static class Span {
 
-        @Getter(value = AccessLevel.PRIVATE)
+        @SuppressWarnings("UnusedDeclaration")
         private final String spanString;
 
-        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection, UnusedDeclaration")
         private final List<CharacterStyle> spanStyles;
-
-        @Getter @Setter(value = AccessLevel.PRIVATE)
-        private int start;
-
-        @Getter @Setter(value = AccessLevel.PRIVATE)
-        private int end;
 
         private Span(String spanString, List<CharacterStyle> spanStyles) {
 
