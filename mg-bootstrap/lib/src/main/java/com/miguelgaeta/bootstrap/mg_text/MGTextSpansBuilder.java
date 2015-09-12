@@ -52,10 +52,10 @@ public class MGTextSpansBuilder {
      */
     public SpannableString build() {
 
-        return buildSpannableString(sourceString, buildSpans());
+        return buildSpannableString(buildSpans());
     }
 
-    private SpannableString buildSpannableString(@NonNull final String sourceString, @NonNull final List<SpanMatch> spans) {
+    private SpannableString buildSpannableString(@NonNull final List<SpanMatch> spans) {
 
         final SpannableString spannableString = new SpannableString(sourceString);
 
