@@ -64,16 +64,16 @@ public class MGTextSpansBuilder {
 
         for (SpanMatch span: spans) {
 
-            for (CharacterStyle characterStyle : span.getStyles()) {
+            try {
 
-                try {
+                for (CharacterStyle characterStyle : span.getStyles()) {
 
                     spannableString.setSpan(characterStyle, span.getStart(), span.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                } catch (IndexOutOfBoundsException e) {
-
-                    MGLog.i("Span cannot be applied, out of bounds.");
                 }
+
+            } catch (IndexOutOfBoundsException e) {
+
+                MGLog.i(e, "Span cannot be applied, out of bounds: " + sourceString);
             }
         }
 
@@ -152,8 +152,6 @@ public class MGTextSpansBuilder {
         // Update the new end index location.
         final int endIndexUpdated = startIndex + span.getSpanString().length();
 
-        spans.add(SpanMatch.create(startIndex, endIndexUpdated, span.getSpanStyles()));
-
         final int offset = (endIndex - startIndex) - (endIndexUpdated - startIndex);
 
         if (offset != 0) {
@@ -171,6 +169,8 @@ public class MGTextSpansBuilder {
                 }
             }
         }
+
+        spans.add(SpanMatch.create(startIndex, endIndexUpdated, span.getSpanStyles()));
 
         return endIndexUpdated;
     }
