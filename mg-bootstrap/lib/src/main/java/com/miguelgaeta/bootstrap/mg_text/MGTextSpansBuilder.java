@@ -5,6 +5,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import rx.Observable;
 
 /**
@@ -63,7 +66,14 @@ public class MGTextSpansBuilder {
 
             for (CharacterStyle characterStyle : span.getStyles()) {
 
-                spannableString.setSpan(characterStyle, span.getStart(), span.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                try {
+
+                    spannableString.setSpan(characterStyle, span.getStart(), span.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                } catch (IndexOutOfBoundsException e) {
+
+                    MGLog.i("Span cannot be applied, out of bounds.");
+                }
             }
         }
 
@@ -134,17 +144,31 @@ public class MGTextSpansBuilder {
      * end index.  Replace range with span result
      * and add to span match array.
      */
-    private int computeStartIndexWithSpans(List<SpanMatch> spans, int startIndex, int endIndex, Span span) {
+    private int computeStartIndexWithSpans(final List<SpanMatch> spans, final int startIndex, final int endIndex, Span span) {
 
         // Replace match with user provided replacement.
         sourceString = new StringBuilder(sourceString).replace(startIndex, endIndex, span.getSpanString()).toString();
 
         // Update the new end index location.
-        endIndex = startIndex + span.getSpanString().length();
+        final int endIndexUpdated = startIndex + span.getSpanString().length();
 
-        spans.add(SpanMatch.create(startIndex, endIndex, span.getSpanStyles()));
+        spans.add(SpanMatch.create(startIndex, endIndexUpdated, span.getSpanStyles()));
 
-        return endIndex;
+        final int offset = (endIndex - startIndex) - (endIndexUpdated - startIndex);
+
+        if (offset != 0) {
+
+            for (SpanMatch spanMatch : spans) {
+
+                if (spanMatch.getStart() > endIndex) {
+
+                    spanMatch.setStart(spanMatch.getStart() - offset);
+                    spanMatch.setEnd(spanMatch.getEnd() - offset);
+                }
+            }
+        }
+
+        return endIndexUpdated;
     }
 
     /**
@@ -177,8 +201,10 @@ public class MGTextSpansBuilder {
     @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE) @Getter(value = AccessLevel.PRIVATE)
     private static class SpanMatch {
 
+        @Setter(value = AccessLevel.PRIVATE)
         private int start;
 
+        @Setter(value = AccessLevel.PRIVATE)
         private int end;
 
         private List<CharacterStyle> styles;
