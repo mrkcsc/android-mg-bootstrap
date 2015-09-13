@@ -164,6 +164,10 @@ public class MGTextSpansBuilder {
 
                     spanMatch.setStart(spanMatch.getStart() - offset);
                     spanMatch.setEnd(spanMatch.getEnd() - offset);
+
+                } else if (spanMatch.getEnd() > endIndex) {
+
+                    spanMatch.setEnd(spanMatch.getEnd() - offset);
                 }
             }
         }
