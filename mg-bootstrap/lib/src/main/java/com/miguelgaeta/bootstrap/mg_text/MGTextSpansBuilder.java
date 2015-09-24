@@ -94,17 +94,19 @@ public class MGTextSpansBuilder {
 
                 if (startIndex != -1) {
 
+                    final int startIndexOffset = matchStrategy.getMatchStart().length();
+
                     if (matchStrategy.getMatchEnd() == null) {
 
-                        int endIndex = startIndex + matchStrategy.getMatchStart().length();
+                        int endIndex = startIndex + startIndexOffset;
 
                         final Span span = matchStrategy.getOnMatch().call(Match.create(matchStrategy.getMatchStart()));
 
-                        startIndex = computeStartIndexWithSpans(spans, startIndex, endIndex, span);
+                        startIndex = computeStartIndexWithSpans(spans, startIndex, startIndexOffset, endIndex, span);
 
                     } else {
 
-                        int endIndex = sourceString.indexOf(matchStrategy.getMatchEnd(), startIndex + matchStrategy.getMatchStart().length());
+                        int endIndex = sourceString.indexOf(matchStrategy.getMatchEnd(), startIndex + startIndexOffset);
 
                         final boolean isEndOfStringMatch = endIndex == -1 && !matchStrategy.isMatchEndRequired();
 
@@ -115,7 +117,7 @@ public class MGTextSpansBuilder {
 
                         if (endIndex != -1) {
 
-                            final String match = sourceString.substring(startIndex + matchStrategy.getMatchStart().length(), endIndex);
+                            final String match = sourceString.substring(startIndex + startIndexOffset, endIndex);
 
                             final Span span = matchStrategy.getOnMatch().call(Match.create(match));
 
@@ -124,7 +126,7 @@ public class MGTextSpansBuilder {
                                 endIndex += matchStrategy.getMatchEnd().length();
                             }
 
-                            startIndex = computeStartIndexWithSpans(spans, startIndex, endIndex, span);
+                            startIndex = computeStartIndexWithSpans(spans, startIndex, startIndexOffset, endIndex, span);
 
                         } else {
 
@@ -144,7 +146,7 @@ public class MGTextSpansBuilder {
      * end index.  Replace range with span result
      * and add to span match array.
      */
-    private int computeStartIndexWithSpans(final List<SpanMatch> spans, final int startIndex, final int endIndex, Span span) {
+    private int computeStartIndexWithSpans(final List<SpanMatch> spans, final int startIndex, final int startIndexOffset, final int endIndex, Span span) {
 
         // Replace match with user provided replacement.
         sourceString = new StringBuilder(sourceString).replace(startIndex, endIndex, span.getSpanString()).toString();
@@ -158,14 +160,20 @@ public class MGTextSpansBuilder {
 
             for (SpanMatch spanMatch : spans) {
 
-                if (spanMatch.getStart() > endIndex) {
+                if (spanMatch.getStart() > startIndex) {
+                    spanMatch.setStart(spanMatch.getStart() - startIndexOffset);
 
-                    spanMatch.setStart(spanMatch.getStart() - offset);
-                    spanMatch.setEnd(spanMatch.getEnd() - offset);
+                    if (spanMatch.getStart() > endIndex) {
+                        spanMatch.setStart(spanMatch.getStart() - (offset - startIndexOffset));
+                    }
+                }
 
-                } else if (spanMatch.getEnd() > endIndex) {
+                if (spanMatch.getEnd() > startIndex) {
+                    spanMatch.setEnd(spanMatch.getEnd() - startIndexOffset);
 
-                    spanMatch.setEnd(spanMatch.getEnd() - offset);
+                    if (spanMatch.getEnd() > endIndex) {
+                        spanMatch.setEnd(spanMatch.getEnd() - (offset - startIndexOffset));
+                    }
                 }
             }
         }
