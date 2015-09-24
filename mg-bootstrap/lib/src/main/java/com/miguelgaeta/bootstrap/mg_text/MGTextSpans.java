@@ -1,14 +1,15 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
-import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.ColorRes;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 
 import rx.functions.Action1;
@@ -19,32 +20,39 @@ import rx.functions.Action1;
 @SuppressWarnings("UnusedDeclaration")
 public class MGTextSpans {
 
-    public static StyleSpan getBoldSpan() {
-
-        return new StyleSpan(Typeface.BOLD);
+    public enum Type {
+        BOLD, BOLD_ITALIC, ITALIC, UNDERLINE, STRIKE_THROUGH
     }
 
-    public static StyleSpan getBoldItalicSpan() {
+    public static CharacterStyle get(Type type) {
 
-        return new StyleSpan(Typeface.BOLD_ITALIC);
+        switch (type) {
+
+            case BOLD:
+
+                return new StyleSpan(Typeface.BOLD);
+
+            case BOLD_ITALIC:
+
+                return new StyleSpan(Typeface.BOLD_ITALIC);
+
+            case ITALIC:
+
+                return new StyleSpan(Typeface.ITALIC);
+
+            case STRIKE_THROUGH:
+
+                return new StrikethroughSpan();
+
+            case UNDERLINE:
+
+                return new UnderlineSpan();
+        }
+
+        throw new RuntimeException("Unrecognized type.");
     }
 
-    public static StyleSpan getItalicSpan() {
-
-        return new StyleSpan(Typeface.ITALIC);
-    }
-
-    public static StrikethroughSpan getStrikeThroughSpan() {
-
-        return new StrikethroughSpan();
-    }
-
-    public static BackgroundColorSpan getBackgroundColorSpan(@NonNull Context context, @ColorRes int color) {
-
-        return new BackgroundColorSpan(context.getResources().getColor(color));
-    }
-
-    public static ClickableSpan getClickableSpan(@NonNull Context context, Action1<View> onClick, @ColorRes int color, boolean underline) {
+    public static CharacterStyle getClickable(Action1<View> onClick, @ColorInt int color, boolean underline) {
 
         return new ClickableSpan() {
 
@@ -60,8 +68,13 @@ public class MGTextSpans {
             public void updateDrawState(@NonNull TextPaint drawState) {
 
                 drawState.setUnderlineText(underline);
-                drawState.setColor(context.getResources().getColor(color));
+                drawState.setColor(color);
             }
         };
+    }
+
+    public static CharacterStyle getBackgroundColor(@ColorInt int color) {
+
+        return new BackgroundColorSpan(color);
     }
 }
