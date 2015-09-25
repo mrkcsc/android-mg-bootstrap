@@ -10,6 +10,8 @@ import lombok.NonNull;
  */
 abstract class MGPreferenceStore implements MGPrefStoreInterface {
 
+    private static final String DATA_PREFIX = "PREF";
+
     /**
      * Attempts to extract the version code of the
      * host application.
@@ -26,5 +28,19 @@ abstract class MGPreferenceStore implements MGPrefStoreInterface {
 
             return 0;
         }
+    }
+
+    /**
+     * Use a naming scheme to version each store file as
+     * the application changes.
+     */
+    static String getFileName(int versionCode) {
+
+        return DATA_PREFIX + "_V_" + versionCode;
+    }
+
+    static String getFileName(int versionCode, String key) {
+
+        return DATA_PREFIX + "_V_" + versionCode + "_K_" + key;
     }
 }

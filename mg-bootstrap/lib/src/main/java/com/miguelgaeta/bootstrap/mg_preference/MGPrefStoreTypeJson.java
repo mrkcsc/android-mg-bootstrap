@@ -18,8 +18,6 @@ import lombok.NonNull;
  */
 class MGPrefStoreTypeJson extends MGPreferenceStore {
 
-    private static final String DATA_PREFIX = "PREFERENCE_";
-
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     private final MGPreference<Integer> versionCodeCached = MGPreference.create("VERSION_CODE", new TypeToken<Integer>() {}, 0, false);
 
@@ -41,14 +39,14 @@ class MGPrefStoreTypeJson extends MGPreferenceStore {
     @Override
     public void init(@NonNull Context context) {
 
-        storeGlobal = getStore(context, DATA_PREFIX + "SHARED");
+        storeGlobal = getStore(context, getFileName(0));
 
         int versionCode = getVersionCode(context);
         int versionCodeCached = getVersionCodeCached().get();
 
         getVersionCodeCached().set(versionCode);
 
-        storeVersioned = getStore(context, getVersionedStoreName(versionCode));
+        storeVersioned = getStore(context, getFileName(versionCode));
 
         clearCachedStoreIfNeeded(context, versionCode, versionCodeCached);
     }
@@ -94,7 +92,7 @@ class MGPrefStoreTypeJson extends MGPreferenceStore {
 
         if (versionCodeCached != versionCode) {
 
-            SharedPreferences storeVersioned = getStore(context, getVersionedStoreName(versionCodeCached));
+            SharedPreferences storeVersioned = getStore(context, getFileName(versionCodeCached));
 
             storeVersioned.edit().clear().apply();
         }
@@ -107,14 +105,5 @@ class MGPrefStoreTypeJson extends MGPreferenceStore {
     private static SharedPreferences getStore(@NonNull Context context, @NonNull String fileName) {
 
         return context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-    }
-
-    /**
-     * Use a naming scheme to version each store file as
-     * the application changes.
-     */
-    private static String getVersionedStoreName(int versionCode) {
-
-        return DATA_PREFIX + "VERSION_" + versionCode;
     }
 }

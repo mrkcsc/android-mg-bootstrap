@@ -44,7 +44,7 @@ public class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
         try {
 
-            final Input input = new Input(context.openFileInput("shared_prefs_key.bin"));
+            final Input input = new Input(context.openFileInput(getFileName(-1, key)));
 
             final Object output = getKryo().readClassAndObject(input);
 
@@ -64,8 +64,8 @@ public class MGPrefStoreTypeByeStream extends MGPreferenceStore {
     public void set(@NonNull String key, Object value, Type typeOfObject, boolean versioned) {
 
         try {
-            final Output output =
-                new Output(context.openFileOutput("shared_prefs_key.bin", Context.MODE_PRIVATE));
+            final Output output = new Output(context
+                .openFileOutput(getFileName(0, key), Context.MODE_PRIVATE));
 
             getKryo().writeClassAndObject(output, value);
 
