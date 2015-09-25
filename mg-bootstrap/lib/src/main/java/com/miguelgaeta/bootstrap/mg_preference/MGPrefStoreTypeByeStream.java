@@ -10,6 +10,8 @@ import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 
@@ -18,7 +20,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 9/25/15.
  */
-public class MGPrefStoreTypeByeStream extends MGPreferenceStore {
+class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
     private Context context;
 
@@ -42,19 +44,24 @@ public class MGPrefStoreTypeByeStream extends MGPreferenceStore {
     @Override
     public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 
-        try {
+        final File file = new File(context.getFilesDir() + "/" + getFileName(0, key));
 
-            final Input input = new Input(context.openFileInput(getFileName(-1, key)));
+        if (file.exists()) {
 
-            final Object output = getKryo().readClassAndObject(input);
+            try {
 
-            input.close();
+                final Input input = new Input(new FileInputStream(file));
 
-            return output;
+                final Object output = getKryo().readClassAndObject(input);
 
-        } catch (KryoException | FileNotFoundException e) {
+                input.close();
 
-            MGLog.i(e, "Unable to deserialize for key: " + key);
+                return output;
+
+            } catch (KryoException | FileNotFoundException e) {
+
+                MGLog.i(e, "Unable to deserialize for key: " + key);
+            }
         }
 
         return null;

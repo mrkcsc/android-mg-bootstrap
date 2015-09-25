@@ -85,13 +85,16 @@ public class TestActivity extends MGLifecycleActivity {
         // Test shit data.
         prefData.put(-12, new ArrayList<>());
 
+        MGLog.e("Set");
+
         getPref().set(prefData);
 
-        MGLog.e("Stuff: " + getPref().get());
+        MGLog.e("Get: " + getPref().get());
 
-        getPref().set(null);
+        for (String file : fileList()) {
 
-        MGLog.e("Not cleared: " + getPref().get());
+            MGLog.e("File name: " + file);
+        }
 
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
