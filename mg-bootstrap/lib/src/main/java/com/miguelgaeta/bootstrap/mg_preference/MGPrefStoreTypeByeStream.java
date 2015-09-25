@@ -13,7 +13,6 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 
-import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -23,24 +22,21 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
 
     private Context context;
 
-    @Getter(lazy = true)
-    private final ThreadLocal<Kryo> kryos = new ThreadLocal<Kryo>() {
+    private ThreadLocal<Kryo> kryos;
 
-        protected Kryo initialValue() {
+    private boolean allowClassesWithNoConstructors;
 
-            final Kryo kryo = new Kryo();
+    public void init(@NonNull Context context, boolean allowClassesWithNoConstructors) {
 
-            // Use the default instantiation, but attempt to use JVM trickery if that fails.
-            kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        this.context = context;
 
-            return kryo;
-        }
-    };
+        this.allowClassesWithNoConstructors = allowClassesWithNoConstructors;
+    }
 
     @Override
     public void init(@NonNull Context context) {
 
-        this.context = context;
+        init(context, true);
     }
 
     @Override
@@ -50,7 +46,7 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
 
             final Input input = new Input(context.openFileInput("shared_prefs_key.bin"));
 
-            final Object output = getKryos().get().readClassAndObject(input);
+            final Object output = getKryo().readClassAndObject(input);
 
             input.close();
 
@@ -71,7 +67,7 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
             final Output output =
                 new Output(context.openFileOutput("shared_prefs_key.bin", Context.MODE_PRIVATE));
 
-            getKryos().get().writeClassAndObject(output, value);
+            getKryo().writeClassAndObject(output, value);
 
             output.close();
 
@@ -85,5 +81,28 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
     public void clear() {
 
         // TODO
+    }
+
+    private Kryo getKryo() {
+
+        if (kryos == null) {
+            kryos = new ThreadLocal<Kryo>() {
+
+                protected Kryo initialValue() {
+
+                    final Kryo kryo = new Kryo();
+
+                    if (allowClassesWithNoConstructors) {
+
+                        // Use the default instantiation, but attempt to use JVM trickery if that fails.
+                        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+                    }
+
+                    return kryo;
+                }
+            };
+        }
+
+        return kryos.get();
     }
 }
