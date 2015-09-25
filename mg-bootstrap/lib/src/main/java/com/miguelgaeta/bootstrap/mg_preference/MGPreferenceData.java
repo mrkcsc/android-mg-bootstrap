@@ -3,7 +3,6 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
@@ -76,7 +75,7 @@ class MGPreferenceData<T> {
 
             delayedSerialization = MGDelay.delay(SERIALIZATION_DELAY).observeOn(MGPreference.getScheduler()).subscribe(r -> {
 
-                set();
+                MGPreference.getDataStore().set(key, value, typeToken.getType(), true);
 
                 delayedSerialization = null;
 
@@ -84,32 +83,12 @@ class MGPreferenceData<T> {
 
         } else {
 
-            set();
+            MGPreference.getDataStore().set(key, value, typeToken.getType(), false);
         }
-    }
-
-    private void set() {
-
-        MGPreference.getDataStore().set(key, serializeValue(), typeToken.getType(), versioned);
     }
 
     public void clear() {
 
         set(defaultValue);
-    }
-
-    private String serializeValue() {
-
-        try {
-
-            return value == null ? null : gson.toJson(value, typeToken.getType());
-
-        } catch (OutOfMemoryError e) {
-
-            // Alert of any preferences that become too large.
-            MGLog.e("Out of memory while trying to serialize: " + key);
-
-            throw e;
-        }
     }
 }
