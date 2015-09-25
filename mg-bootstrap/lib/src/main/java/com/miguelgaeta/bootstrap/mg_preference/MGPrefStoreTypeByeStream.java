@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
@@ -37,7 +38,20 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
     @Override
     public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 
-        // TODO
+
+        try {
+            final Input input = new Input(context.openFileInput("shared_prefs_key.bin"));
+
+            final Object output = getKryos().get().readClassAndObject(input);
+
+            input.close();
+
+            return output;
+
+        } catch (FileNotFoundException e) {
+
+            MGLog.i(e, "File not found for key: " + key);
+        }
 
         return null;
     }
