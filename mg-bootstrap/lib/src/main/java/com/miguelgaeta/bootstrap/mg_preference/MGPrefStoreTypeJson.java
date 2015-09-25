@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
+
+import java.lang.reflect.Type;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,12 +17,15 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 7/8/15.
  */
-class MGPreferenceDataStore {
+class MGPrefStoreTypeJson implements MGPrefStoreInterface {
 
     private static final String DATA_PREFIX = "PREFERENCE_";
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     private final MGPreference<Integer> versionCodeCached = MGPreference.create("VERSION_CODE", new TypeToken<Integer>() {}, 0, false);
+
+    @Getter(value = AccessLevel.PRIVATE, lazy = true)
+    private final Gson gson = MGRestClient.getGson();
 
     @Getter(value = AccessLevel.PRIVATE)
     private SharedPreferences storeGlobal;
@@ -32,6 +39,7 @@ class MGPreferenceDataStore {
      * allows us to initialize the versioned store and also
      * clear and old store if needed.
      */
+    @Override
     public void init(@NonNull Context context) {
 
         storeGlobal = getStore(context, DATA_PREFIX + "SHARED");
@@ -46,19 +54,27 @@ class MGPreferenceDataStore {
         clearCachedStoreIfNeeded(context, versionCode, versionCodeCached);
     }
 
-    public String get(@NonNull String key, boolean versioned) {
+    @Override
+    public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 
-        return getStore(versioned).getString(key, null);
+        return getGson().fromJson(getStore(versioned).getString(key, null), typeOfObject);
     }
 
-    public void set(@NonNull String key, String value, boolean versioned) {
+    @Override
+    public void set(@NonNull String key, Object value, Type typeOfObject, boolean versioned) {
 
-        getStore(versioned).edit().putString(key, value).apply();
+        getStore(versioned).edit().putString(key, serializeValue(value, typeOfObject)).apply();
     }
 
+    @Override
     public void clear() {
 
         storeVersioned.edit().clear().apply();
+    }
+
+    private String serializeValue(Object value, Type typeOfObject) throws OutOfMemoryError {
+
+        return value == null ? null : getGson().toJson(value, typeOfObject);
     }
 
     /**

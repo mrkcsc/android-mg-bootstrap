@@ -41,10 +41,11 @@ class MGPreferenceData<T> {
      * it from the data store.  If still cannot be
      * found, emit the default value.
      */
+    @SuppressWarnings("unchecked")
     public T get() {
 
         if (value == null && delayedSerialization == null) {
-            value = gson.fromJson(MGPreference.getDataStore().get(key, versioned), typeToken.getType());
+            value = (T)MGPreference.getDataStore().get(key, typeToken.getRawType(), versioned) ;
 
             if (value == null && defaultValue != null) {
 
@@ -89,7 +90,7 @@ class MGPreferenceData<T> {
 
     private void set() {
 
-        MGPreference.getDataStore().set(key, serializeValue(), versioned);
+        MGPreference.getDataStore().set(key, serializeValue(), typeToken.getType(), versioned);
     }
 
     public void clear() {
