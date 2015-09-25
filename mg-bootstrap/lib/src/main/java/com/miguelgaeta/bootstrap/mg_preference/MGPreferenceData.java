@@ -1,9 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
-import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.RequiredArgsConstructor;
@@ -32,8 +30,6 @@ class MGPreferenceData<T> {
     private final boolean versioned;
 
     private Subscription delayedSerialization;
-
-    private final Gson gson = MGRestClient.getGson();
 
     /**
      * If value is not already in memory, attempt to fetch
