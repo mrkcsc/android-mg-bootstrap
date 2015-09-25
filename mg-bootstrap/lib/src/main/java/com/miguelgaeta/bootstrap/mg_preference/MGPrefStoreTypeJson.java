@@ -2,7 +2,6 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,7 +16,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 7/8/15.
  */
-class MGPrefStoreTypeJson implements MGPrefStoreInterface {
+class MGPrefStoreTypeJson extends MGPreferenceStore {
 
     private static final String DATA_PREFIX = "PREFERENCE_";
 
@@ -98,24 +97,6 @@ class MGPrefStoreTypeJson implements MGPrefStoreInterface {
             SharedPreferences storeVersioned = getStore(context, getVersionedStoreName(versionCodeCached));
 
             storeVersioned.edit().clear().apply();
-        }
-    }
-
-    /**
-     * Attempts to extract the version code of the
-     * host application.
-     */
-    private static int getVersionCode(@NonNull Context context) {
-
-        PackageManager manager = context.getPackageManager();
-
-        try {
-
-            return manager.getPackageInfo(context.getPackageName(), 0).versionCode;
-
-        } catch (PackageManager.NameNotFoundException e) {
-
-            return 0;
         }
     }
 

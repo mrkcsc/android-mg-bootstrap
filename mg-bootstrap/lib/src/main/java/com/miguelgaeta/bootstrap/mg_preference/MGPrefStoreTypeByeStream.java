@@ -18,7 +18,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 9/25/15.
  */
-public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
+public class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
     private Context context;
 
