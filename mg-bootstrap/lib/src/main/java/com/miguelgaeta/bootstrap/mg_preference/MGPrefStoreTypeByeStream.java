@@ -3,9 +3,12 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
@@ -25,7 +28,12 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
 
         protected Kryo initialValue() {
 
-            return new Kryo();
+            final Kryo kryo = new Kryo();
+
+            // Use the default instantiation, but attempt to use JVM trickery if that fails.
+            kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+
+            return kryo;
         }
     };
 
@@ -38,8 +46,8 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
     @Override
     public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 
-
         try {
+
             final Input input = new Input(context.openFileInput("shared_prefs_key.bin"));
 
             final Object output = getKryos().get().readClassAndObject(input);
@@ -48,9 +56,9 @@ public class MGPrefStoreTypeByeStream implements MGPrefStoreInterface {
 
             return output;
 
-        } catch (FileNotFoundException e) {
+        } catch (KryoException | FileNotFoundException e) {
 
-            MGLog.i(e, "File not found for key: " + key);
+            MGLog.i(e, "Unable to deserialize for key: " + key);
         }
 
         return null;
