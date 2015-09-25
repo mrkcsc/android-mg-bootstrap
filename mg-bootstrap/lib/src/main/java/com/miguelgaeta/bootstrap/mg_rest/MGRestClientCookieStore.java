@@ -22,7 +22,7 @@ import lombok.Getter;
 class MGRestClientCookieStore implements CookieStore {
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new TypeToken<Map<String, HttpCookie>>() {}, new HashMap<>());
+    private static final MGPreference<Map<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new TypeToken<Map<String, HttpCookie>>() {}, new HashMap<>(), false);
 
     @Getter(lazy = true)
     private final CookieStore cookieStore = new CookieManager().getCookieStore();
