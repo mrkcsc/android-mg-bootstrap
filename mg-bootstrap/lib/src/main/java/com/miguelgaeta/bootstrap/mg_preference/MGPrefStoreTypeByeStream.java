@@ -9,6 +9,9 @@ import com.esotericsoftware.kryo.io.Output;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.File;
@@ -16,6 +19,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 
+import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer;
+import de.javakaffee.kryoserializers.jodatime.JodaLocalDateSerializer;
+import de.javakaffee.kryoserializers.jodatime.JodaLocalDateTimeSerializer;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -93,6 +99,11 @@ class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
                     // Use the default instantiation, but attempt to use JVM trickery if that fails.
                     kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+
+                    // Support for serializing joda time.
+                    kryo.register(DateTime.class, new JodaDateTimeSerializer());
+                    kryo.register(LocalDate.class, new JodaLocalDateSerializer());
+                    kryo.register(LocalDateTime.class, new JodaLocalDateTimeSerializer());
 
                     return kryo;
                 }

@@ -82,6 +82,7 @@ dependencies {
 
     // Byte stream serializer.
     compile 'com.esotericsoftware:kryo:3.0.3'
+    compile 'de.javakaffee:kryo-serializers:0.36'
 
     // Library for making REST calls.
     compile 'com.squareup.retrofit:retrofit:1.9.0'
