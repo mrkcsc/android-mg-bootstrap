@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -15,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -22,29 +24,20 @@ import lombok.NonNull;
  */
 class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
-    private Context context;
+    @Getter(lazy = true)
+    private final Context context = MGLifecycleApplication.getContext();
 
     private ThreadLocal<Kryo> kryos;
-
-    private boolean allowClassesWithNoConstructors;
-
-    public void init(@NonNull Context context, boolean allowClassesWithNoConstructors) {
-
-        this.context = context;
-
-        this.allowClassesWithNoConstructors = allowClassesWithNoConstructors;
-    }
 
     @Override
     public void init(@NonNull Context context) {
 
-        init(context, true);
     }
 
     @Override
     public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 
-        final File file = new File(context.getFilesDir() + "/" + getFileName(0, key));
+        final File file = new File(getContext().getFilesDir() + "/" + getFileName(0, key));
 
         if (file.exists()) {
 
@@ -71,8 +64,7 @@ class MGPrefStoreTypeByeStream extends MGPreferenceStore {
     public void set(@NonNull String key, Object value, Type typeOfObject, boolean versioned) {
 
         try {
-            final Output output = new Output(context
-                .openFileOutput(getFileName(0, key), Context.MODE_PRIVATE));
+            final Output output = new Output(getContext().openFileOutput(getFileName(0, key), Context.MODE_PRIVATE));
 
             getKryo().writeClassAndObject(output, value);
 
@@ -99,11 +91,8 @@ class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
                     final Kryo kryo = new Kryo();
 
-                    if (allowClassesWithNoConstructors) {
-
-                        // Use the default instantiation, but attempt to use JVM trickery if that fails.
-                        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-                    }
+                    // Use the default instantiation, but attempt to use JVM trickery if that fails.
+                    kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
 
                     return kryo;
                 }
