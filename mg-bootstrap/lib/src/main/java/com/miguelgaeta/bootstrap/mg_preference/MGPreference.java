@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeJson();
+    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream();
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();
