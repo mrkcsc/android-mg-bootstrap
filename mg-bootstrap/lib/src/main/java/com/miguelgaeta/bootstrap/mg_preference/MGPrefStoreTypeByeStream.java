@@ -70,7 +70,7 @@ class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
             output.close();
 
-        } catch (FileNotFoundException e) {
+        } catch (KryoException | FileNotFoundException e) {
 
             MGLog.i(e, "File not found for key: " + key);
         }
