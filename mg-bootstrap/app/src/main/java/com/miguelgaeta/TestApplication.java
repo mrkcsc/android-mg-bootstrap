@@ -1,12 +1,11 @@
 package com.miguelgaeta;
 
-import android.app.Application;
-
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
@@ -14,7 +13,7 @@ import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 /**
  * Created by mrkcsc on 3/28/15.
  */
-public class TestApplication extends Application {
+public class TestApplication extends MGLifecycleApplication {
 
     /**
      * Initialize libraries that require
