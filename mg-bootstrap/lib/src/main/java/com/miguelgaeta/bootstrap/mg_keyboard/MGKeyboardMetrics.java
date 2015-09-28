@@ -9,7 +9,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
@@ -27,7 +26,7 @@ import lombok.NonNull;
 class MGKeyboardMetrics {
 
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private static final MGPreference<MGKeyboardHeights> keyboardHeights = MGPreference.create("KEYBOARD_HEIGHTS", new TypeToken<MGKeyboardHeights>() {});
+    private static final MGPreference<MGKeyboardHeights> keyboardHeights = MGPreference.create("KEYBOARD_HEIGHTS");
 
     @Getter
     private static int windowHeight;

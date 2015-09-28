@@ -31,10 +31,10 @@ import rx.Subscription;
  */
 class MGWebsocketClient {
 
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create();
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create();
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create();
-    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create();
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventOpened>  eventOpn = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventClosed>  eventCls = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventMessage> eventMsg = MGPreferenceRx.create(null);
+    @Getter(lazy = true) private final MGPreferenceRx<MGWebsocketEventError>   eventErr = MGPreferenceRx.create(null);
 
     @Getter(AccessLevel.PACKAGE)
     private final List<String> messageBuffer = new ArrayList<>();

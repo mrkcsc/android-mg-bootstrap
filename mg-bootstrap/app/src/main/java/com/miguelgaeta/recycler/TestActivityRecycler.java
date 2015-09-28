@@ -25,7 +25,7 @@ public class TestActivityRecycler extends MGLifecycleActivity {
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
     @Getter
-    public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(new ArrayList<>());
+    public static final MGPreferenceRx<List<Integer>> testStream = MGPreferenceRx.create(null, new ArrayList<>());
 
     private TestActivityRecyclerAdapter adapter;
 

@@ -15,7 +15,7 @@ public enum  MGKeyboardState {
 
     OPENED, OPENING, CLOSED;
 
-    private static final MGPreferenceRx<MGKeyboardState> _state = MGPreferenceRx.create(CLOSED);
+    private static final MGPreferenceRx<MGKeyboardState> _state = MGPreferenceRx.create(null, CLOSED);
 
     private static Subscription subscription;
 

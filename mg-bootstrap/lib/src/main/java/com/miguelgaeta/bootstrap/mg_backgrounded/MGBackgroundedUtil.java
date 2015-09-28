@@ -20,7 +20,7 @@ class MGBackgroundedUtil {
     private Subscription backgroundedSubscription;
 
     @Getter(lazy = true)
-    private final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create(true);
+    private final MGPreferenceRx<Boolean> backgrounded = MGPreferenceRx.create(null, true);
 
     /**
      * Time to be backgrounded.  Assume it wont

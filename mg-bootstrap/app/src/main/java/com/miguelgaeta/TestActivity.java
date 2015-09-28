@@ -3,7 +3,6 @@ package com.miguelgaeta;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
@@ -44,7 +43,7 @@ public class TestActivity extends MGLifecycleActivity {
     }
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new TypeToken<Map<Integer, List<TestData>>>() {}, new HashMap<>());
+    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new HashMap<>());
 
     @Bind(R.id.fade_test_view) View fadeTestView;
 
