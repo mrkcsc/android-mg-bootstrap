@@ -26,7 +26,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 9/25/15.
  */
-class MGPrefStoreTypeByeStream extends MGPreferenceStore {
+class MGPrefStoreTypeByteStream extends MGPrefStore {
 
     private ThreadLocal<Kryo> kryos;
 

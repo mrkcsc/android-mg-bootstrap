@@ -13,7 +13,7 @@ import lombok.NonNull;
  * Created by Miguel Gaeta on 9/25/15.
  */
 @AllArgsConstructor
-abstract class MGPreferenceStore implements MGPrefStoreInterface {
+abstract class MGPrefStore implements MGPrefStoreInterface {
 
     private static final String DATA_PREFIX = "PREF";
 

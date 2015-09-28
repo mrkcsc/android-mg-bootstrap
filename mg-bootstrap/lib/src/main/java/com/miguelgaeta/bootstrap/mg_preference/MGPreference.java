@@ -20,7 +20,7 @@ import rx.subjects.SerializedSubject;
 public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream();
+    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByteStream();
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();

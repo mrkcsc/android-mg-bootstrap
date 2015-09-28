@@ -17,7 +17,7 @@ import lombok.NonNull;
  * Created by Miguel Gaeta on 7/8/15.
  */
 @SuppressWarnings("UnusedDeclaration")
-class MGPrefStoreTypeJson extends MGPreferenceStore {
+class MGPrefStoreTypeJson extends MGPrefStore {
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     private final MGPreference<Integer> versionCodeCached = MGPreference.create("VERSION_CODE", new TypeToken<Integer>() {}, 0, false);
