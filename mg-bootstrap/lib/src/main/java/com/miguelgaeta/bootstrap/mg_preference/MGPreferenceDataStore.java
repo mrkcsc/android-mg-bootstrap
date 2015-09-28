@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import org.joda.time.DateTime;
@@ -20,16 +21,21 @@ import java.io.FileNotFoundException;
 import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer;
 import de.javakaffee.kryoserializers.jodatime.JodaLocalDateSerializer;
 import de.javakaffee.kryoserializers.jodatime.JodaLocalDateTimeSerializer;
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
  * Created by Miguel Gaeta on 9/25/15.
  */
-class MGPrefStoreTypeByteStream extends MGPrefStore {
+class MGPreferenceDataStore {
+
+    private static final String DATA_PREFIX = "PREF";
+
+    @Getter(lazy = true)
+    private final Context context = MGLifecycleApplication.getContext();
 
     private ThreadLocal<Kryo> kryos;
 
-    @Override
     public Object get(@NonNull String key) {
 
         final File file = new File(getContext().getFilesDir() + "/" + getFileName(0, key));
@@ -55,7 +61,6 @@ class MGPrefStoreTypeByteStream extends MGPrefStore {
         return null;
     }
 
-    @Override
     public void set(@NonNull String key, Object value) {
 
         try {
@@ -71,7 +76,6 @@ class MGPrefStoreTypeByteStream extends MGPrefStore {
         }
     }
 
-    @Override
     public void clear() {
 
         // TODO
@@ -100,5 +104,10 @@ class MGPrefStoreTypeByteStream extends MGPrefStore {
         }
 
         return kryos.get();
+    }
+
+    static String getFileName(int versionCode, String key) {
+
+        return DATA_PREFIX + "_V_" + versionCode + "_K_" + key;
     }
 }

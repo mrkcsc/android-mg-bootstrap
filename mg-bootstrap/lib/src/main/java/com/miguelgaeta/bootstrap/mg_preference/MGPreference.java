@@ -18,7 +18,7 @@ import rx.subjects.SerializedSubject;
 public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByteStream();
+    private static final MGPreferenceDataStore dataStore = new MGPreferenceDataStore();
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();
