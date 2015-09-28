@@ -16,7 +16,6 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
 
 import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer;
 import de.javakaffee.kryoserializers.jodatime.JodaLocalDateSerializer;
@@ -31,7 +30,7 @@ class MGPrefStoreTypeByteStream extends MGPrefStore {
     private ThreadLocal<Kryo> kryos;
 
     @Override
-    public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
+    public Object get(@NonNull String key) {
 
         final File file = new File(getContext().getFilesDir() + "/" + getFileName(0, key));
 
@@ -57,7 +56,7 @@ class MGPrefStoreTypeByteStream extends MGPrefStore {
     }
 
     @Override
-    public void set(@NonNull String key, Object value, Type typeOfObject, boolean versioned) {
+    public void set(@NonNull String key, Object value) {
 
         try {
             final Output output = new Output(getContext().openFileOutput(getFileName(0, key), Context.MODE_PRIVATE));

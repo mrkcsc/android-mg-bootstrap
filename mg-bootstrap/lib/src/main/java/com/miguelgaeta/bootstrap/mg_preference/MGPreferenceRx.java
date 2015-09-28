@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import com.google.gson.reflect.TypeToken;
+import android.support.annotation.Nullable;
+
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
@@ -8,7 +9,6 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
@@ -40,14 +40,19 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
 
-    public static <T> MGPreferenceRx<T> create(T defaultValue, boolean versioned) {
+    public static <T> MGPreferenceRx<T> create(@Nullable String key, T defaultValue, int serializationDelay) {
 
-        return new MGPreferenceRx<>(null, null, defaultValue, versioned);
+        return new MGPreferenceRx<>(key, defaultValue, serializationDelay);
     }
 
-    public static <T> MGPreferenceRx<T> create(T defaultValue) {
+    public static <T> MGPreferenceRx<T> create(@Nullable String key, T defaultValue) {
 
-        return create(defaultValue, true);
+        return create(key, defaultValue, 100);
+    }
+
+    public static <T> MGPreferenceRx<T> create(@Nullable String key) {
+
+        return create(key, null);
     }
 
     public static <T> MGPreferenceRx<T> create() {
@@ -55,28 +60,13 @@ public class MGPreferenceRx<T> {
         return create(null);
     }
 
-    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken, T defaultValue, boolean versioned) {
-
-        return new MGPreferenceRx<>(key, typeToken, defaultValue, versioned);
-    }
-
-    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken, T defaultValue) {
-
-        return create(key, typeToken, defaultValue, true);
-    }
-
-    public static <T> MGPreferenceRx<T> create(@NonNull String key, TypeToken<?> typeToken) {
-
-        return create(key, typeToken, null);
-    }
-
     /**
      * Initialize the preference stream with a cached preference
      * or just use as a non-cached stream is no key is given.
      */
-    private MGPreferenceRx(String key, TypeToken<?> typeToken, T defaultValue, boolean cacheBreaker) {
+    private MGPreferenceRx(String key, T defaultValue, int serializationDelay) {
 
-        init(key, defaultValue, key != null ? MGPreference.create(key, typeToken, defaultValue, cacheBreaker) : null);
+        init(key, defaultValue, key != null ? MGPreference.create(key, defaultValue, serializationDelay) : null);
     }
 
     /**

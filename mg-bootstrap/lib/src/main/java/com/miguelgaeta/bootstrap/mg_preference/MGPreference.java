@@ -2,8 +2,6 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.Context;
 
-import com.google.gson.reflect.TypeToken;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -36,19 +34,19 @@ public class MGPreference<T> {
         getInitialized().onNext(true);
     }
 
-    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean versioned) {
+    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue, int serializationDelay) {
 
-        return new MGPreference<>(MGPreferenceData.create(key, typeToken, defaultValue, versioned));
+        return new MGPreference<>(MGPreferenceData.create(key, defaultValue, serializationDelay));
     }
 
-    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue) {
+    public static <T> MGPreference<T> create(@NonNull String key, T defaultValue) {
 
-        return create(key, typeToken, defaultValue, true);
+        return create(key, defaultValue, 100);
     }
 
-    public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken) {
+    public static <T> MGPreference<T> create(@NonNull String key) {
 
-        return create(key, typeToken, null);
+        return create(key, null);
     }
 
     /**

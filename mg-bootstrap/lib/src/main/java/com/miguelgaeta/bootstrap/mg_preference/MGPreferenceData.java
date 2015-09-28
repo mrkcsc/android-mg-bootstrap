@@ -1,6 +1,5 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import com.google.gson.reflect.TypeToken;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
@@ -13,21 +12,21 @@ import rx.Subscription;
 @RequiredArgsConstructor(staticName = "create")
 class MGPreferenceData<T> {
 
-    /**
-     * Standard delay to prevent stacked serialize calls
-     * from using up too much memory and OOM.
-     */
-    private static final int SERIALIZATION_DELAY = 10000;
-
     private final String key;
-
-    private final TypeToken<?> typeToken;
 
     private final T defaultValue;
 
+    /**
+     * In memory value of the preference object to
+     * minimize reads from file system.
+     */
     private T value;
 
-    private final boolean versioned;
+    /**
+     * In some situation this value should be set to larger
+     * values if it's a fast emitting data stream.
+     */
+    private final int serializationDelay;
 
     private Subscription delayedSerialization;
 
@@ -40,7 +39,7 @@ class MGPreferenceData<T> {
     public T get() {
 
         if (value == null && delayedSerialization == null) {
-            value = (T)MGPreference.getDataStore().get(key, typeToken.getRawType(), versioned) ;
+            value = (T)MGPreference.getDataStore().get(key);
 
             if (value == null && defaultValue != null) {
 
@@ -52,12 +51,7 @@ class MGPreferenceData<T> {
     }
 
     /**
-     * Updates value in memory and also persists to cache.  If versioned
-     * field, persist on delay, otherwise persist immediately.  This is
-     * not really a very good heuristic so should be revised to happen in a
-     * more intelligent fashion.
-     *
-     * TODO: Delay flag should be configurable and off by default.
+     * Updates value in memory and also persists to cache.
      */
     public void set(T value) {
 
@@ -67,20 +61,13 @@ class MGPreferenceData<T> {
             delayedSerialization.unsubscribe();
         }
 
-        if (versioned) {
+        delayedSerialization = MGDelay.delay(serializationDelay).observeOn(MGPreference.getScheduler()).subscribe(r -> {
 
-            delayedSerialization = MGDelay.delay(SERIALIZATION_DELAY).observeOn(MGPreference.getScheduler()).subscribe(r -> {
+            MGPreference.getDataStore().set(key, value);
 
-                MGPreference.getDataStore().set(key, value, typeToken.getType(), true);
+            delayedSerialization = null;
 
-                delayedSerialization = null;
-
-            }, MGRxError.create(null, "Unable to serialize preference."));
-
-        } else {
-
-            MGPreference.getDataStore().set(key, value, typeToken.getType(), false);
-        }
+        }, MGRxError.create(null, "Unable to serialize preference."));
     }
 
     public void clear() {
