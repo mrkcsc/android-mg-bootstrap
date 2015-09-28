@@ -3,14 +3,20 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
  * Created by Miguel Gaeta on 9/25/15.
  */
+@AllArgsConstructor
 abstract class MGPreferenceStore implements MGPrefStoreInterface {
 
     private static final String DATA_PREFIX = "PREF";
+
+    @Getter
+    private final Context context;
 
     /**
      * Attempts to extract the version code of the

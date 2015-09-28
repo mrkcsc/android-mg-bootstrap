@@ -6,7 +6,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import org.joda.time.DateTime;
@@ -22,7 +21,6 @@ import java.lang.reflect.Type;
 import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer;
 import de.javakaffee.kryoserializers.jodatime.JodaLocalDateSerializer;
 import de.javakaffee.kryoserializers.jodatime.JodaLocalDateTimeSerializer;
-import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -30,14 +28,10 @@ import lombok.NonNull;
  */
 class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
-    @Getter(lazy = true)
-    private final Context context = MGLifecycleApplication.getContext();
-
     private ThreadLocal<Kryo> kryos;
 
-    @Override
-    public void init(@NonNull Context context) {
-
+    public MGPrefStoreTypeByeStream(Context context) {
+        super(context);
     }
 
     @Override

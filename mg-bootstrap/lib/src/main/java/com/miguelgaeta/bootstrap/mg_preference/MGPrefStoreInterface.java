@@ -1,7 +1,5 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import android.content.Context;
-
 import java.lang.reflect.Type;
 
 import lombok.NonNull;
@@ -10,11 +8,6 @@ import lombok.NonNull;
  * Created by Miguel Gaeta on 9/25/15.
  */
 interface MGPrefStoreInterface {
-
-    /**
-     * Initialize the store.
-     */
-    void init(@NonNull Context context);
 
     /**
      * Get the associated object keyed to the

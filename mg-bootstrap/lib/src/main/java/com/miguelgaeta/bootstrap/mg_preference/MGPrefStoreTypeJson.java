@@ -16,6 +16,7 @@ import lombok.NonNull;
 /**
  * Created by Miguel Gaeta on 7/8/15.
  */
+@SuppressWarnings("UnusedDeclaration")
 class MGPrefStoreTypeJson extends MGPreferenceStore {
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
@@ -36,8 +37,9 @@ class MGPrefStoreTypeJson extends MGPreferenceStore {
      * allows us to initialize the versioned store and also
      * clear and old store if needed.
      */
-    @Override
-    public void init(@NonNull Context context) {
+    @SuppressWarnings("UnusedDeclaration")
+    public MGPrefStoreTypeJson(Context context) {
+        super(context);
 
         storeGlobal = getStore(context, getFileName(0));
 

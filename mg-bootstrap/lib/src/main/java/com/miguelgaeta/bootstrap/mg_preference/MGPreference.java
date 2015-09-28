@@ -1,9 +1,9 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream();
+    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream(MGLifecycleApplication.getContext());
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();
@@ -29,14 +29,6 @@ public class MGPreference<T> {
 
     public static void init(Context context) {
 
-        if (context instanceof Application) {
-
-            getDataStore().init(context);
-
-        } else {
-
-            throw new RuntimeException("An application context is required.");
-        }
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean versioned) {
