@@ -29,7 +29,7 @@ import lombok.NonNull;
  */
 class MGPreferenceDataStore {
 
-    private static final String DATA_PREFIX = "PREF";
+    private static final String DATA_PREFIX = "PREF_K_";
 
     @Getter(lazy = true)
     private final Context context = MGLifecycleApplication.getContext();
@@ -38,7 +38,7 @@ class MGPreferenceDataStore {
 
     public Object get(@NonNull String key) {
 
-        final File file = new File(getContext().getFilesDir() + "/" + getFileName(0, key));
+        final File file = new File(getContext().getFilesDir() + "/" + getFileName(key));
 
         if (file.exists()) {
 
@@ -64,7 +64,7 @@ class MGPreferenceDataStore {
     public void set(@NonNull String key, Object value) {
 
         try {
-            final Output output = new Output(getContext().openFileOutput(getFileName(0, key), Context.MODE_PRIVATE));
+            final Output output = new Output(getContext().openFileOutput(getFileName(key), Context.MODE_PRIVATE));
 
             getKryo().writeClassAndObject(output, value);
 
@@ -76,9 +76,15 @@ class MGPreferenceDataStore {
         }
     }
 
-    public void clear() {
+    public void reset() {
 
-        // TODO
+        for (String fileName : getContext().fileList()) {
+
+            if (fileName.contains(DATA_PREFIX)) {
+
+                getContext().deleteFile(fileName);
+            }
+        }
     }
 
     private Kryo getKryo() {
@@ -106,8 +112,8 @@ class MGPreferenceDataStore {
         return kryos.get();
     }
 
-    static String getFileName(int versionCode, String key) {
+    static String getFileName(String key) {
 
-        return DATA_PREFIX + "_V_" + versionCode + "_K_" + key;
+        return DATA_PREFIX + key;
     }
 }

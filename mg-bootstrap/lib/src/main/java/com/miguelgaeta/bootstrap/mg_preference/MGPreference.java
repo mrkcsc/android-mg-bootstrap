@@ -54,7 +54,7 @@ public class MGPreference<T> {
      */
     public static void reset() {
 
-        getDataStore().clear();
+        getDataStore().reset();
     }
 
     /**

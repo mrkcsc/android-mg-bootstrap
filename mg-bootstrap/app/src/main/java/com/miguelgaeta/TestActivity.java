@@ -90,10 +90,7 @@ public class TestActivity extends MGLifecycleActivity {
 
         MGLog.e("Get: " + getPref().get());
 
-        for (String file : fileList()) {
-
-            MGLog.e("File name: " + file);
-        }
+        MGPreference.reset();
 
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
