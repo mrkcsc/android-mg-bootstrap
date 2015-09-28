@@ -2,6 +2,10 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.Context;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -26,6 +30,9 @@ public class MGPreference<T> {
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final SerializedSubject<Boolean, Boolean> initialized = new SerializedSubject<>(BehaviorSubject.create());
 
+    @Getter(value = AccessLevel.PACKAGE, lazy = true)
+    private static final List<WeakReference<MGPreference>> preferences = new ArrayList<>();
+
     @Getter(value = AccessLevel.PACKAGE)
     private final MGPreferenceData<T> metaData;
 
@@ -36,7 +43,11 @@ public class MGPreference<T> {
 
     public static <T> MGPreference<T> create(@NonNull String key, T defaultValue, int serializationDelay) {
 
-        return new MGPreference<>(MGPreferenceData.create(key, defaultValue, serializationDelay));
+        final MGPreference<T> preference = new MGPreference<>(MGPreferenceData.create(key, defaultValue, serializationDelay));
+
+        getPreferences().add(new WeakReference<>(preference));
+
+        return preference;
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, T defaultValue) {
@@ -54,6 +65,15 @@ public class MGPreference<T> {
      */
     public static void reset() {
 
+        // Reset any preferences in memory.
+        for (WeakReference<MGPreference> weakPreferenceReference : getPreferences()) {
+
+            if (weakPreferenceReference.get() != null) {
+                weakPreferenceReference.get().clear();
+            }
+        }
+
+        // Hard delete files.
         getDataStore().reset();
     }
 
