@@ -55,11 +55,6 @@ public class MGPreferenceRx<T> {
         return create(key, null);
     }
 
-    public static <T> MGPreferenceRx<T> create() {
-
-        return create(null);
-    }
-
     /**
      * Initialize the preference stream with a cached preference
      * or just use as a non-cached stream is no key is given.
