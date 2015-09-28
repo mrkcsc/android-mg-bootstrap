@@ -3,6 +3,8 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,8 +17,8 @@ abstract class MGPreferenceStore implements MGPrefStoreInterface {
 
     private static final String DATA_PREFIX = "PREF";
 
-    @Getter
-    private final Context context;
+    @Getter (lazy = true)
+    private final Context context = MGLifecycleApplication.getContext();
 
     /**
      * Attempts to extract the version code of the

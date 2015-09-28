@@ -38,19 +38,18 @@ class MGPrefStoreTypeJson extends MGPreferenceStore {
      * clear and old store if needed.
      */
     @SuppressWarnings("UnusedDeclaration")
-    public MGPrefStoreTypeJson(Context context) {
-        super(context);
+    public MGPrefStoreTypeJson() {
 
-        storeGlobal = getStore(context, getFileName(0));
+        storeGlobal = getStore(getContext(), getFileName(0));
 
-        int versionCode = getVersionCode(context);
+        int versionCode = getVersionCode(getContext());
         int versionCodeCached = getVersionCodeCached().get();
 
         getVersionCodeCached().set(versionCode);
 
-        storeVersioned = getStore(context, getFileName(versionCode));
+        storeVersioned = getStore(getContext(), getFileName(versionCode));
 
-        clearCachedStoreIfNeeded(context, versionCode, versionCodeCached);
+        clearCachedStoreIfNeeded(getContext(), versionCode, versionCodeCached);
     }
 
     @Override

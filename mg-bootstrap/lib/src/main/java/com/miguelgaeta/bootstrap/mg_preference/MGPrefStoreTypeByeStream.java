@@ -30,10 +30,6 @@ class MGPrefStoreTypeByeStream extends MGPreferenceStore {
 
     private ThreadLocal<Kryo> kryos;
 
-    public MGPrefStoreTypeByeStream(Context context) {
-        super(context);
-    }
-
     @Override
     public Object get(@NonNull String key, Type typeOfObject, boolean versioned) {
 

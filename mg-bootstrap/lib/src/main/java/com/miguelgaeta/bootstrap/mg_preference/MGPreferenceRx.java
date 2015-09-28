@@ -158,7 +158,7 @@ public class MGPreferenceRx<T> {
                 MGRxError.create(null, "Unable to cache " + key + " preference data."));
         }
 
-        Observable.just(null).observeOn(MGPreference.getScheduler()).subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
+        whenInitialized().subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
             MGRxError.create(r -> setInitialized(defaultValue), "Unable to initialize " + key + " preference."));
     }
 
@@ -178,5 +178,10 @@ public class MGPreferenceRx<T> {
         }
 
         getBuffer().clear();
+    }
+
+    private Observable<Boolean> whenInitialized() {
+
+        return MGPreference.getInitialized().observeOn(MGPreference.getScheduler()).take(1);
     }
 }

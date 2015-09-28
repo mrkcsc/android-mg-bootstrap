@@ -3,7 +3,6 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
-import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,6 +10,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.SerializedSubject;
 
 /**
  * Created by mrkcsc on 12/5/14.
@@ -19,16 +20,20 @@ import rx.schedulers.Schedulers;
 public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream(MGLifecycleApplication.getContext());
+    private static final MGPrefStoreInterface dataStore = new MGPrefStoreTypeByeStream();
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final Scheduler scheduler = Schedulers.computation();
+
+    @Getter(value = AccessLevel.PACKAGE, lazy = true)
+    private static final SerializedSubject<Boolean, Boolean> initialized = new SerializedSubject<>(BehaviorSubject.create());
 
     @Getter(value = AccessLevel.PACKAGE)
     private final MGPreferenceData<T> metaData;
 
     public static void init(Context context) {
 
+        getInitialized().onNext(true);
     }
 
     public static <T> MGPreference<T> create(@NonNull String key, @NonNull TypeToken<?> typeToken, T defaultValue, boolean versioned) {
