@@ -33,10 +33,7 @@ proguard/
 
 ### IDEA
 
-**/.idea/workspace.xml
-**/.idea/libraries
-**/.idea/dictionaries
-**/.idea/modules.xml
+**/.idea
 
 *.iml
 
