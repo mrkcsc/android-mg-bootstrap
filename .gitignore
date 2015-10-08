@@ -37,6 +37,8 @@ proguard/
 **/.idea/libraries
 **/.idea/dictionaries
 
+*.iml
+
 ### OSX
 
 .DS_Store
