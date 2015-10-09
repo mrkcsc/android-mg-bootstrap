@@ -54,6 +54,9 @@ class MGWebsocketClient {
     // Optionally used for SSL.
     private SSLSocketFactory socketFactory;
 
+    // Reconnect subscription.
+    private Subscription clientSubscriptionReconnect;
+
     /**
      * This is the state we want the client to be in. If
      * reconnecting, will always try to achieve this state.
@@ -81,9 +84,7 @@ class MGWebsocketClient {
         this.reconnectDelay = reconnectDelay;
         this.socketFactory = socketFactory;
 
-        if (client != null) {
-            client.close();
-        }
+        disconnect();
 
         client = createClient();
         client.connect();
@@ -104,6 +105,10 @@ class MGWebsocketClient {
         if (client != null && !closed) {
             client.close();
             clientDesiredState = MGWebsocketState.CLOSED;
+        }
+
+        if (clientSubscriptionReconnect != null) {
+            clientSubscriptionReconnect.unsubscribe();
         }
     }
 
@@ -146,7 +151,8 @@ class MGWebsocketClient {
             // Done with observable.
             subscriber.onCompleted();
 
-        }).subscribe(r -> { }, MGRxError.create(null, "Unable to send message."));
+        }).subscribe(r -> {
+        }, MGRxError.create(null, "Unable to send message."));
     }
 
     /**
@@ -279,7 +285,7 @@ class MGWebsocketClient {
 
             if (shouldReconnect()) {
 
-                MGDelay.delay(reconnectDelay).subscribe(r -> {
+                clientSubscriptionReconnect = MGDelay.delay(reconnectDelay).subscribe(r -> {
 
                     if (shouldReconnect()) {
 
