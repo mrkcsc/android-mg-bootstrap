@@ -10,7 +10,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '5.0.5'
+    PUBLISH_VERSION = '5.0.6'
 }
 
 allprojects {
@@ -32,8 +32,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 505
-        versionName "5.0.5"
+        versionCode 506
+        versionName "5.0.6"
     }
 
     compileOptions {
