@@ -9,7 +9,7 @@ import lombok.ToString;
  * Created by Miguel Gaeta on 5/20/15.
  */
 @SuppressWarnings("UnusedDeclaration") @AllArgsConstructor(access = AccessLevel.PACKAGE) @ToString @EqualsAndHashCode
-public class MGRxData6<A, B, C, D, E, F> {
+public class Tuple7<A, B, C, D, E, F, G> {
 
     public final A d1;
     public final B d2;
@@ -17,4 +17,5 @@ public class MGRxData6<A, B, C, D, E, F> {
     public final D d4;
     public final E d5;
     public final F d6;
+    public final G d7;
 }
