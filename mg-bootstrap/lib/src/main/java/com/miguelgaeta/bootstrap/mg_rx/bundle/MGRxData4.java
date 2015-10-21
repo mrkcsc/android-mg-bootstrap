@@ -1,29 +1,18 @@
 package com.miguelgaeta.bootstrap.mg_rx.bundle;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 5/20/15.
  */
-@SuppressWarnings("UnusedDeclaration") @AllArgsConstructor @NoArgsConstructor @ToString @EqualsAndHashCode
+@SuppressWarnings("UnusedDeclaration") @AllArgsConstructor(access = AccessLevel.PACKAGE) @ToString @EqualsAndHashCode
 public class MGRxData4<A, B, C, D> {
 
-    public A d1;
-    public B d2;
-    public C d3;
-    public D d4;
-
-    public static <A, B, C, D> MGRxData4<A, B, C, D> create(A a, B b, C c, D d) {
-
-        return new MGRxData4<>(a, b, c, d);
-    }
-
-    public static <A, B, C, D> Observable<MGRxData4<A, B, C, D>> combineLatest(Observable<A> a, Observable<B> b, Observable<C> c, Observable<D> d) {
-
-        return Observable.combineLatest(a, b, c, d, MGRxData4::create);
-    }
+    public final A d1;
+    public final B d2;
+    public final C d3;
+    public final D d4;
 }
