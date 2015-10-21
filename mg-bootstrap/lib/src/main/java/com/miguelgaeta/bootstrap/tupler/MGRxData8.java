@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_rx.bundle;
+package com.miguelgaeta.bootstrap.tupler;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,14 @@ import lombok.ToString;
  * Created by Miguel Gaeta on 5/20/15.
  */
 @SuppressWarnings("UnusedDeclaration") @AllArgsConstructor(access = AccessLevel.PACKAGE) @ToString @EqualsAndHashCode
-public class MGRxData1<A> {
+public class MGRxData8<A, B, C, D, E, F, G, H> {
 
-    public final A d1;
+    public A d1;
+    public B d2;
+    public C d3;
+    public D d4;
+    public E d5;
+    public F d6;
+    public G d7;
+    public H d8;
 }

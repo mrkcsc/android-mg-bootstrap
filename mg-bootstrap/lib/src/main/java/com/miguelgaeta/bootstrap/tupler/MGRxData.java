@@ -1,4 +1,4 @@
-package com.miguelgaeta.bootstrap.mg_rx.bundle;
+package com.miguelgaeta.bootstrap.tupler;
 
 import rx.Observable;
 
