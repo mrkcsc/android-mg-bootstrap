@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -43,7 +44,16 @@ public class MGWebsocketEventMessage {
 
         return Observable.create(subscriber -> {
 
-            T json = new Gson().fromJson(message, clazz);
+            T json = null;
+
+            try {
+
+                json = new Gson().fromJson(message, clazz);
+
+            } catch (IncompatibleClassChangeError e) {
+
+                MGLog.e("Unable to deserialize from class: ", clazz);
+            }
 
             subscriber.onNext(json);
             subscriber.onCompleted();
