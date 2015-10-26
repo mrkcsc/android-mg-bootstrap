@@ -8,6 +8,7 @@ import android.text.TextPaint;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
@@ -47,6 +48,10 @@ public class MGTextSpans {
                 drawState.setColor(color);
             }
         };
+    }
+
+    public static CharacterStyle getForegroundColor(@ColorInt int color) {
+        return new ForegroundColorSpan(color);
     }
 
     public static CharacterStyle getBold() {
