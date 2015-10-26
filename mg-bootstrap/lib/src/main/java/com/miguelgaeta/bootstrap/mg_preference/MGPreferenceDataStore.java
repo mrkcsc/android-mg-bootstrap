@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.miguelgaeta.bootstrap.logger.Logger;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
@@ -38,7 +39,7 @@ class MGPreferenceDataStore {
 
     public Object get(@NonNull String key) {
 
-        final long startTime = DateTime.now().getMillis();
+        final Logger.Elapsed elapsed = Logger.Elapsed.create();
 
         final File file = new File(getContext().getFilesDir() + "/" + getFileName(key));
 
@@ -60,18 +61,16 @@ class MGPreferenceDataStore {
             }
         }
 
-        final long endTime = DateTime.now().getMillis();
-
-        debugOperationTime("De-serialized", key, startTime, endTime);
+        debugOperationTime("De-serialized", key, elapsed);
 
         return output;
     }
 
     public void set(@NonNull String key, Object value) {
 
-        try {
+        final Logger.Elapsed elapsed = Logger.Elapsed.create();
 
-            final long startTime = DateTime.now().getMillis();
+        try {
 
             final Output output = new Output(getContext().openFileOutput(getFileName(key), Context.MODE_PRIVATE));
 
@@ -79,14 +78,12 @@ class MGPreferenceDataStore {
 
             output.close();
 
-            final long endTime = DateTime.now().getMillis();
-
-            debugOperationTime("Serialized", key, startTime, endTime);
-
         } catch (KryoException | FileNotFoundException e) {
 
             MGLog.i(e, "File not found for key: " + key);
         }
+
+        debugOperationTime("Serialized", key, elapsed);
     }
 
     public void reset() {
@@ -130,13 +127,11 @@ class MGPreferenceDataStore {
         return DATA_PREFIX + key;
     }
 
-    private void debugOperationTime(String operation, String key, long startTime, long endTime) {
+    private void debugOperationTime(final String operation, String key, final Logger.Elapsed elapsed) {
 
-        final long time = endTime - startTime;
+        if (elapsed.getMilliseconds() > 500) {
 
-        if (time > 500) {
-
-            MGLog.i(operation + " " + key + " in " + (time / 1000.0f) + " seconds");
+            MGLog.i(operation + " " + key + " in " + elapsed.getSeconds() + " seconds");
         }
     }
 }
