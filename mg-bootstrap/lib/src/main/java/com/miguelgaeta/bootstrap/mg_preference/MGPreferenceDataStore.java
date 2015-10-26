@@ -38,7 +38,11 @@ class MGPreferenceDataStore {
 
     public Object get(@NonNull String key) {
 
+        final long startTime = DateTime.now().getMillis();
+
         final File file = new File(getContext().getFilesDir() + "/" + getFileName(key));
+
+        Object output = null;
 
         if (file.exists()) {
 
@@ -46,11 +50,9 @@ class MGPreferenceDataStore {
 
                 final Input input = new Input(new FileInputStream(file));
 
-                final Object output = getKryo().readClassAndObject(input);
+                output = getKryo().readClassAndObject(input);
 
                 input.close();
-
-                return output;
 
             } catch (KryoException | FileNotFoundException e) {
 
@@ -58,17 +60,28 @@ class MGPreferenceDataStore {
             }
         }
 
-        return null;
+        final long endTime = DateTime.now().getMillis();
+
+        debugOperationTime("De-serialized", key, startTime, endTime);
+
+        return output;
     }
 
     public void set(@NonNull String key, Object value) {
 
         try {
+
+            final long startTime = DateTime.now().getMillis();
+
             final Output output = new Output(getContext().openFileOutput(getFileName(key), Context.MODE_PRIVATE));
 
             getKryo().writeClassAndObject(output, value);
 
             output.close();
+
+            final long endTime = DateTime.now().getMillis();
+
+            debugOperationTime("Serialized", key, startTime, endTime);
 
         } catch (KryoException | FileNotFoundException e) {
 
@@ -115,5 +128,15 @@ class MGPreferenceDataStore {
     static String getFileName(String key) {
 
         return DATA_PREFIX + key;
+    }
+
+    private void debugOperationTime(String operation, String key, long startTime, long endTime) {
+
+        final long time = endTime - startTime;
+
+        if (time > 500) {
+
+            MGLog.i(operation + " " + key + " in " + (time / 1000.0f) + " seconds");
+        }
     }
 }
