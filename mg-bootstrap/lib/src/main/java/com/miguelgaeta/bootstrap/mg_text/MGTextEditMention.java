@@ -82,6 +82,8 @@ public class MGTextEditMention<T, O> {
     @Setter @Getter
     private OnPartialToken onPartialToken;
 
+    private String partialToken;
+
     private TextWatcher textWatcher;
 
     private MGTextEdit editText;
@@ -200,20 +202,25 @@ public class MGTextEditMention<T, O> {
      */
     void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
-        final String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
+        final String partialToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
-        if (onPartialToken != null && partialMentionToken != null) {
-            onPartialToken.onPartialToken(partialMentionToken);
+        if (partialToken != null ? !partialToken.equals(this.partialToken) : this.partialToken != null) {
+
+            this.partialToken = partialToken;
+
+            if (onPartialToken != null) {
+                onPartialToken.onPartialToken(partialToken);
+            }
         }
 
         Observable<List<Map.Entry<String, T>>> worker = Observable.create(subscriber -> {
 
             List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
-            if (partialMentionToken != null && partialMentionToken.length() > 0) {
+            if (partialToken != null && partialToken.length() > 0) {
 
-                final char tokenIdentifier = partialMentionToken.charAt(0);
-                final String token = getFormattedMention(partialMentionToken);
+                final char tokenIdentifier = partialToken.charAt(0);
+                final String token = getFormattedMention(partialToken);
 
                 for (Map.Entry<String, T> entry : tags.entrySet()) {
 
