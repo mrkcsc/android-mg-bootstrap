@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.TextWatcher;
 
+import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
@@ -26,14 +27,6 @@ import rx.schedulers.Schedulers;
  * Created by mrkcsc on 5/23/15.
  */
 public class MGTextEditMention<T, O> {
-
-    /**
-     * Fires when a partial token exists.
-     */
-    public interface OnPartialToken {
-
-        void onPartialToken(String partialToken);
-    }
 
     public interface TagToOutput<T, O> {
 
@@ -79,10 +72,8 @@ public class MGTextEditMention<T, O> {
     @Setter @Getter
     private OnTagsMatched<T> onTagsMatched;
 
-    @Setter @Getter
-    private OnPartialToken onPartialToken;
-
-    private String partialToken;
+    @Getter(lazy = true)
+    private final MGPreferenceRx<String> onPartialToken = MGPreferenceRx.create(null);
 
     private TextWatcher textWatcher;
 
@@ -204,14 +195,7 @@ public class MGTextEditMention<T, O> {
 
         final String partialToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
-        if (partialToken != null ? !partialToken.equals(this.partialToken) : this.partialToken != null) {
-
-            this.partialToken = partialToken;
-
-            if (onPartialToken != null) {
-                onPartialToken.onPartialToken(partialToken);
-            }
-        }
+        getOnPartialToken().set(partialToken);
 
         Observable<List<Map.Entry<String, T>>> worker = Observable.create(subscriber -> {
 
