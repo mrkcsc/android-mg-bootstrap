@@ -27,6 +27,14 @@ import rx.schedulers.Schedulers;
  */
 public class MGTextEditMention<T, O> {
 
+    /**
+     * Fires when a partial token exists.
+     */
+    public interface OnPartialToken {
+
+        void onPartialToken(String partialToken);
+    }
+
     public interface TagToOutput<T, O> {
 
         /**
@@ -70,6 +78,9 @@ public class MGTextEditMention<T, O> {
 
     @Setter @Getter
     private OnTagsMatched<T> onTagsMatched;
+
+    @Setter @Getter
+    private OnPartialToken onPartialToken;
 
     private TextWatcher textWatcher;
 
@@ -190,6 +201,10 @@ public class MGTextEditMention<T, O> {
     void processMentions(@NonNull MGTextEdit editText, boolean force) {
 
         final String partialMentionToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
+
+        if (onPartialToken != null && partialMentionToken != null) {
+            onPartialToken.onPartialToken(partialMentionToken);
+        }
 
         Observable<List<Map.Entry<String, T>>> worker = Observable.create(subscriber -> {
 
