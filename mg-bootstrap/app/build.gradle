@@ -1,7 +1,7 @@
 plugins {
 
     // Backport of Java 8 closures.
-    id "me.tatarka.retrolambda" version "3.2.0"
+    id "me.tatarka.retrolambda" version "3.2.3"
 }
 
 // This is an application module.
@@ -9,14 +9,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.miguelgaeta"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 3
-        versionName "2.0.1"
+        versionCode 1
+        versionName "1.0.0"
     }
 
     compileOptions {

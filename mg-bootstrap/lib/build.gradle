@@ -1,7 +1,7 @@
 plugins {
 
     // Backport of Java 8 closures.
-    id "me.tatarka.retrolambda" version "3.2.0"
+    id "me.tatarka.retrolambda" version "3.2.3"
 }
 
 // This is a library module.
@@ -10,7 +10,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.miguelgaeta.bootstrap'
     PUBLISH_ARTIFACT_ID = 'mg-bootstrap'
-    PUBLISH_VERSION = '5.1.6'
+    PUBLISH_VERSION = '6.0.0'
 }
 
 allprojects {
@@ -27,13 +27,13 @@ allprojects {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 516
-        versionName "5.1.6"
+        versionCode 600
+        versionName "6.0.0"
     }
 
     compileOptions {
