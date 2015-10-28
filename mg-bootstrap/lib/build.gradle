@@ -33,7 +33,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 603
-        versionName "6.0.3"
+        versionName '6.0.3'
     }
 
     compileOptions {
