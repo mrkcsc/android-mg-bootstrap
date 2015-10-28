@@ -1,12 +1,19 @@
 package com.miguelgaeta.bootstrap.mg_websocket;
 
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Created by Miguel Gaeta on 5/19/15.
@@ -82,6 +89,19 @@ public abstract class MGWebsocketClientBase extends WebSocketClient {
     }
 
     @Override
+    public void onMessage(ByteBuffer byteBuffer) {
+
+        try {
+
+            onMessage(decompressZlib(byteBuffer.array()));
+
+        } catch (IOException e) {
+
+            MGLog.e(e, "Unable to decompress websocket data.");
+        }
+    }
+
+    @Override
     public final void onMessage(String message) {
 
         onDidMessage(message);
@@ -109,5 +129,20 @@ public abstract class MGWebsocketClientBase extends WebSocketClient {
 
             throw new RuntimeException("Unable to create URI from provided URL: " + URL);
         }
+    }
+
+    private static String decompressZlib(byte[] compressedData) throws IOException {
+
+        final byte[] buffer = new byte[compressedData.length];
+
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final InflaterInputStream in = new InflaterInputStream(new ByteArrayInputStream(compressedData));
+
+        for (int bytesRead = 0; bytesRead != -1; bytesRead = in.read(buffer)) {
+
+            out.write(buffer,0,bytesRead);
+        }
+
+        return new String(out.toByteArray(),"UTF-8");
     }
 }
