@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_recycler;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,7 +43,11 @@ public abstract class MGRecyclerAdapter extends RecyclerView.Adapter<MGRecyclerV
             // Configure recycler view with standard config.
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
-            recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+
+            if (recyclerView.getItemAnimator() instanceof SimpleItemAnimator) {
+
+                ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+            }
 
             if (animationDuration != null) {
 
