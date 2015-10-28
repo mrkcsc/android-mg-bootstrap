@@ -24,6 +24,11 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
         // Fetch root.
         rootView = getRootView(activity);
 
+        if (rootView == null) {
+
+            return;
+        }
+
         MGKeyboardMetrics.setActivityMetrics(activity);
 
         // Assign the layout listener.
@@ -46,8 +51,9 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
             listener.unsubscribe();
         }
 
-        // Remove the listener.
-        rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
+        if (rootView != null) {
+            rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
+        }
     }
 
     private void initializeEditTexts(ViewGroup viewGroup) {
