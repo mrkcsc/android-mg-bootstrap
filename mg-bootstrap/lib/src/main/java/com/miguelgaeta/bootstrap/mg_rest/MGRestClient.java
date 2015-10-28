@@ -13,7 +13,6 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -130,8 +129,6 @@ public class MGRestClient {
             // Assign it to the client.
             client.setSslSocketFactory(getConfig().getSocketFactory());
         }
-
-        client.setConnectTimeout(getConfig().getTimeoutInSections(), TimeUnit.SECONDS);
 
         if (getConfig().isCookieStorageEnabled()) {
 

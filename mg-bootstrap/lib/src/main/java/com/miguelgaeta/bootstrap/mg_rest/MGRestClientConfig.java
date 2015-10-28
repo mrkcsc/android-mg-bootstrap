@@ -26,8 +26,5 @@ public class MGRestClientConfig {
     private RequestInterceptor interceptor;
 
     @Setter @Getter(value = AccessLevel.PACKAGE)
-    private int timeoutInSections = 10;
-
-    @Setter @Getter(value = AccessLevel.PACKAGE)
     private SSLSocketFactory socketFactory;
 }
