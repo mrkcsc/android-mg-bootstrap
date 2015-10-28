@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_lifecycle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -45,18 +46,18 @@ public class MGLifecycleContentView {
      * Attempts to fetch the content view of the fragment,
      * returns the unmodified input view if not found.
      */
-    static View getContentView(@NonNull Fragment fragment, ViewGroup container, View view) {
+    static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container, View view) {
 
         Integer contentView = MGLifecycleContentView.getContentView(fragment.getClass());
 
         if (contentView != null) {
 
-            view = fragment.getActivity().getLayoutInflater().inflate(contentView, container, false);
+            view = inflater.inflate(contentView, container, false);
         }
 
         if (view == null) {
 
-            throw new RuntimeException("Unable to inflate fragment content view: " + fragment.getClass().getName());
+            throw new RuntimeException("Unable to inflate fragment content view: " + fragment.getClass().getName() + ", with resource id: " + contentView);
         }
 
         return view;
@@ -69,8 +70,8 @@ public class MGLifecycleContentView {
      */
     static Integer getContentView(@NonNull Class classObject) {
 
-        String className = classObject.getSimpleName();
-        String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
+        final String className = classObject.getSimpleName();
+        final String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
 
         return MGReflection.getResourceId(classNameFormatted, R.layout.class);
     }

@@ -36,7 +36,7 @@ public class MGLifecycleFragment extends Fragment implements MGLifecycleFragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         // Fetch the content view of the fragment.
-        view = MGLifecycleContentView.getContentView(this, container, view);
+        view = MGLifecycleContentView.getContentView(this, inflater, container, view);
 
         onCreateView(savedInstanceState, view);
 
