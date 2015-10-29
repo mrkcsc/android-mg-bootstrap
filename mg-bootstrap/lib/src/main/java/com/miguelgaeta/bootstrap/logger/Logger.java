@@ -1,6 +1,6 @@
 package com.miguelgaeta.bootstrap.logger;
 
-import org.joda.time.DateTime;
+import com.miguelgaeta.bootstrap.dates.SimpleTime;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +13,10 @@ public class Logger {
     @RequiredArgsConstructor(staticName = "create")
     public static class Elapsed {
 
-        public final long startTime = DateTime.now().getMillis();
+        public final long startTime = SimpleTime.getNow();
 
         @Getter(lazy = true)
-        private final long milliseconds = DateTime.now().getMillis() - startTime;
+        private final long milliseconds = SimpleTime.getNow() - startTime;
 
         @Getter(lazy = true)
         private final float seconds = getMilliseconds() / 1000.0f;
