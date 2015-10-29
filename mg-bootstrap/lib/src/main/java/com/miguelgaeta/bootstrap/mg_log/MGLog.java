@@ -32,32 +32,28 @@ public class MGLog {
         }
     }
 
-    /**
-     * Info level message.
-     */
     public static void i(String message, Object... args) {
         Timber.i(message, args);
     }
 
-    /**
-     * Info level message with throwable.
-     */
     public static void i(Throwable t, String message, Object... args) {
         Timber.i(t, message, args);
     }
 
-    /**
-     * Error level message.
-     */
     public static void e(String message, Object... args) {
         Timber.e(message, args);
     }
 
-    /**
-     * Error level message with throwable.
-     */
     public static void e(Throwable t, String message, Object... args) {
         Timber.e(t, message, args);
+    }
+
+    public static void v(String message, Object... args) {
+        Timber.v(message, args);
+    }
+
+    public static void v(Throwable t, String message, Object... args) {
+        Timber.v(t, message, args);
     }
 
     public static StackTraceElement[] getStackTrace(StackTraceElement[] stackTrace, String exclusionTag) {
