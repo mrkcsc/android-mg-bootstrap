@@ -15,6 +15,7 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -215,9 +216,9 @@ class MGWebsocketClient {
             }
 
             @Override
-            public void onDidMessage(String message) {
+            public void onDidMessage(String message, ByteBuffer byteBuffer) {
 
-                getEventMsg().set(MGWebsocketEventMessage.create(message));
+                getEventMsg().set(MGWebsocketEventMessage.create(message, byteBuffer));
             }
 
             @Override
