@@ -82,7 +82,6 @@ dependencies {
 
     // Byte stream serializer.
     compile 'com.esotericsoftware:kryo:3.0.3'
-    compile 'de.javakaffee:kryo-serializers:0.37'
 
     // Library for making REST calls.
     compile 'com.squareup.retrofit:retrofit:1.9.0' // TODO: 2.0.0-beta2
@@ -91,8 +90,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
 
     // Library for network image loading.
-    compile 'com.facebook.fresco:fresco:0.8.0'
-    compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.0'
+    compile 'com.facebook.fresco:fresco:0.7.0' // TODO: 0.8.0-beta
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.7.0'
 
     // Image cropper.
     compile 'me.villani.lorenzo.android:android-cropimage:1.1.0'
