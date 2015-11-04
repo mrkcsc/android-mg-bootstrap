@@ -36,16 +36,13 @@ public class MGReflection {
      * resource integer id from the target resource class -
      * layout, drawable, strings, etc.
      */
-    public static Integer getResourceId(@NonNull String resourceName, @NonNull Class<?> resourceClass) {
-
-        // Fetch resources.
-        Resources resources = getConfig().getContext().getResources();
+    public static Integer getResourceId(@NonNull Context context, @NonNull String resourceName, @NonNull Class<?> resourceClass) {
 
         // Fetch application package.
-        String applicationPackageName = getConfig().getContext().getPackageName();
+        String applicationPackageName = context.getPackageName();
 
         // Try to fetch associated resource id.
-        int resourceId = resources.getIdentifier(resourceName, resourceClass.getSimpleName(), applicationPackageName);
+        int resourceId = context.getResources().getIdentifier(resourceName, resourceClass.getSimpleName(), applicationPackageName);
 
         return resourceId == 0 ? null : resourceId;
     }

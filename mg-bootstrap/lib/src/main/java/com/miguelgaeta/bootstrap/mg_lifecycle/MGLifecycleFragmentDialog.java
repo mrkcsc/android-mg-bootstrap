@@ -32,7 +32,7 @@ public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifec
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        final Integer contentViewResourceId = MGLifecycleContentView.getContentView(this.getClass());
+        final Integer contentViewResourceId = MGLifecycleContentView.getContentView(getContext(), this.getClass());
 
         if (contentViewResourceId != null) {
 

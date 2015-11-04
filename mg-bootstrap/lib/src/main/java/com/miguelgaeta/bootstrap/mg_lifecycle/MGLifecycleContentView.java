@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_lifecycle;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ public class MGLifecycleContentView {
 
         } else {
 
-            contentView = MGLifecycleContentView.getContentView(activity.getClass());
+            contentView = MGLifecycleContentView.getContentView(activity, activity.getClass());
         }
 
         if (contentView != null) {
@@ -48,7 +49,7 @@ public class MGLifecycleContentView {
      */
     static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container, View view) {
 
-        Integer contentView = MGLifecycleContentView.getContentView(fragment.getClass());
+        Integer contentView = MGLifecycleContentView.getContentView(fragment.getContext(), fragment.getClass());
 
         if (contentView != null) {
 
@@ -68,11 +69,11 @@ public class MGLifecycleContentView {
      * convention based naming approach - the activity name
      * lower cased and underscored.
      */
-    static Integer getContentView(@NonNull Class classObject) {
+    static Integer getContentView(@NonNull Context context, @NonNull Class classObject) {
 
         final String className = classObject.getSimpleName();
         final String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
 
-        return MGReflection.getResourceId(classNameFormatted, R.layout.class);
+        return MGReflection.getResourceId(context, classNameFormatted, R.layout.class);
     }
 }
