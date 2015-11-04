@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import rx.Observable;
 
 /**
  * Created by Miguel Gaeta on 9/11/15.
@@ -27,32 +26,24 @@ public class MGTextSpansBuilder {
     @NonNull
     private String sourceString;
 
-    @NonNull @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<MatchStrategy> matchStrategies = new ArrayList<>();
 
-    public void addMatchStrategy(@NonNull String matchStart, @NonNull String matchEnd, @NonNull OnMatch onMatch) {
-
-        addMatchStrategy(matchStart, matchEnd, onMatch, true);
+    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start) {
+        addMatchStrategy(onMatch, start, null);
     }
 
-    public void addMatchStrategy(@NonNull String matchStart, @NonNull String matchEnd, @NonNull OnMatch onMatch, boolean matchEndRequired) {
-
-        matchStrategies.add(MatchStrategy.create(matchStart, matchEnd, onMatch, matchEndRequired));
+    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end) {
+        addMatchStrategy(onMatch, start, end, true);
     }
 
-    /**
-     * Looks for any instances of the start target and matches them. Since
-     * no end target is specified, no delimiter is needed.
-     */
-    public void addMatchStrategy(@NonNull String matchStart, @NonNull OnMatch onMatch) {
-
-        matchStrategies.add(MatchStrategy.create(matchStart, null, onMatch, false));
+    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired) {
+        addMatchStrategy(onMatch, start, end, endRequired, false);
     }
 
-    /**
-     * Given replacement strategies, build an associated
-     * spannable string.
-     */
+    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired, boolean endWithWhitespaceOrEOL) {
+        matchStrategies.add(MatchStrategy.create(onMatch, start, end, endRequired, endWithWhitespaceOrEOL));
+    }
+
     public SpannableString build() {
 
         return buildSpannableString(buildSpans());
@@ -90,40 +81,48 @@ public class MGTextSpansBuilder {
 
             do {
 
-                startIndex = sourceString.indexOf(matchStrategy.getMatchStart(), startIndex);
+                startIndex = sourceString.indexOf(matchStrategy.start, startIndex);
 
                 if (startIndex != -1) {
 
-                    final int startIndexOffset = matchStrategy.getMatchStart().length();
+                    final int startIndexOffset = matchStrategy.start.length();
 
-                    if (matchStrategy.getMatchEnd() == null) {
+                    if (matchStrategy.end == null) {
 
                         int endIndex = startIndex + startIndexOffset;
 
-                        final Span span = matchStrategy.getOnMatch().call(Match.create(matchStrategy.getMatchStart()));
+                        final Span span = matchStrategy.onMatch.call(Match.create(matchStrategy.start));
 
                         startIndex = computeStartIndexWithSpans(spans, startIndex, startIndexOffset, endIndex, span);
 
                     } else {
 
-                        int endIndex = sourceString.indexOf(matchStrategy.getMatchEnd(), startIndex + startIndexOffset);
+                        int endIndex = sourceString.indexOf(matchStrategy.end, startIndex + startIndexOffset);
 
-                        final boolean isEndOfStringMatch = endIndex == -1 && !matchStrategy.isMatchEndRequired();
+                        final boolean isEOLMatch = endIndex == -1 && !matchStrategy.endRequired;
 
-                        if (isEndOfStringMatch) {
+                        if (isEOLMatch) {
 
                             endIndex = sourceString.length();
+                        }
+
+                        if (matchStrategy.endWithWhitespaceOrEOL && endIndex != -1) {
+
+                            if (endIndex != (sourceString.length() - 1) && !Character.isWhitespace(sourceString.charAt(endIndex + 1))) {
+
+                                endIndex = -1;
+                            }
                         }
 
                         if (endIndex != -1) {
 
                             final String match = sourceString.substring(startIndex + startIndexOffset, endIndex);
 
-                            final Span span = matchStrategy.getOnMatch().call(Match.create(match));
+                            final Span span = matchStrategy.onMatch.call(Match.create(match));
 
-                            if (!isEndOfStringMatch) {
+                            if (!isEOLMatch) {
 
-                                endIndex += matchStrategy.getMatchEnd().length();
+                                endIndex += matchStrategy.end.length();
                             }
 
                             startIndex = computeStartIndexWithSpans(spans, startIndex, startIndexOffset, endIndex, span);
@@ -183,31 +182,20 @@ public class MGTextSpansBuilder {
         return endIndexUpdated;
     }
 
-    /**
-     * Build spannable string as an observable.
-     */
-    public Observable<SpannableString> buildObservable() {
-
-        return Observable.create(subscriber -> {
-
-            subscriber.onNext(build());
-            subscriber.onCompleted();
-        });
-    }
-
-    @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE) @Getter(value = AccessLevel.PRIVATE)
+    @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE)
     private static class MatchStrategy {
-
-        @NonNull
-        private final String matchStart;
-
-        @Nullable
-        private final String matchEnd;
 
         @NonNull
         private final OnMatch onMatch;
 
-        private final boolean matchEndRequired;
+        @NonNull
+        private final String start;
+
+        @Nullable
+        private final String end;
+
+        private final boolean endRequired;
+        private final boolean endWithWhitespaceOrEOL;
     }
 
     @AllArgsConstructor(staticName = "create", access = AccessLevel.PRIVATE) @Getter(value = AccessLevel.PRIVATE)
