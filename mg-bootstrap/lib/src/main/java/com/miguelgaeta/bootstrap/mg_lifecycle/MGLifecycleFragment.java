@@ -33,10 +33,8 @@ public class MGLifecycleFragment extends Fragment implements MGLifecycleFragment
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        // Fetch the content view of the fragment.
-        view = MGLifecycleContentView.getContentView(this, inflater, container, view);
+        final View view = getContentView(inflater, container);
 
         onCreateView(savedInstanceState, view);
 
@@ -47,6 +45,11 @@ public class MGLifecycleFragment extends Fragment implements MGLifecycleFragment
         getConfig().setOnCreateOrResumeInvoked(true);
 
         return view;
+    }
+
+    public View getContentView(LayoutInflater inflater, ViewGroup container) {
+
+        return MGLifecycleContentView.getContentView(this, inflater, container);
     }
 
     @Override

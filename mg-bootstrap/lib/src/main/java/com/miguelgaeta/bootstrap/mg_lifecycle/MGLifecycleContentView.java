@@ -47,7 +47,9 @@ public class MGLifecycleContentView {
      * Attempts to fetch the content view of the fragment,
      * returns the unmodified input view if not found.
      */
-    static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container, View view) {
+    static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container) {
+
+        View view = null;
 
         Integer contentView = MGLifecycleContentView.getContentView(fragment.getContext(), fragment.getClass());
 
