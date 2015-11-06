@@ -146,9 +146,9 @@ public class MGImageIntentHandler {
 
         File file = MGImageIntentUtils.createTempImageFile();
 
-        fileUri = Uri.fromFile(file);
-
         if ((file != null) && file.exists()) {
+
+            fileUri = Uri.fromFile(file);
 
             startActivityForResult(activity, fragment, onIntent.call(file), requestCode);
 
