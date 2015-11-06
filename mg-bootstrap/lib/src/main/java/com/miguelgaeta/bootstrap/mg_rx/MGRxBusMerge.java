@@ -102,6 +102,11 @@ public class MGRxBusMerge {
 
         return kvMap -> {
 
+            if (kvMap == null) {
+
+                return null;
+            }
+
             Map<K, V> kvMapCopy = copyMap(kvMap);
 
             if (kvMapCopy.containsKey(key)) {
