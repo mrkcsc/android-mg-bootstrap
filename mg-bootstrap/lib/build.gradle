@@ -73,8 +73,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.14'
-    compile 'io.reactivex:rxandroid:0.25.0'
+    compile 'io.reactivex:rxjava:1.0.15'
+    compile 'io.reactivex:rxandroid:1.0.1'
 
     // Google json library.
     compile 'com.google.code.gson:gson:2.4'
@@ -89,8 +89,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
 
     // Library for network image loading.
-    compile 'com.facebook.fresco:fresco:0.8.0'
-    compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.0'
+    compile 'com.facebook.fresco:fresco:0.8.1'
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.1'
 
     // Image cropper.
     compile 'me.villani.lorenzo.android:android-cropimage:1.1.0'
@@ -99,7 +99,7 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.0'
 
     // Logging library.
-    compile 'com.jakewharton.timber:timber:3.1.0'
+    compile 'com.jakewharton.timber:timber:4.1.0'
 
     // Pusher
     compile 'org.java-websocket:java-websocket:1.3.1'
