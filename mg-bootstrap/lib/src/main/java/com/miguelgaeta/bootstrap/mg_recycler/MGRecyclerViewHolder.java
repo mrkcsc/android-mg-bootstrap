@@ -33,13 +33,18 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
-        ButterKnife.apply(viewsList, (view, i) -> view.setOnClickListener(v -> {
+        ButterKnife.apply(viewsList, (view, i) -> {
 
-            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+            if (view != null) {
+                view.setOnClickListener(v -> {
 
-                action.onClick(v, getAdapterPosition());
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                        action.onClick(v, getAdapterPosition());
+                    }
+                });
             }
-        }));
+        });
     }
 
     protected interface OnPressAction {
@@ -51,17 +56,22 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
-        ButterKnife.apply(viewsList, (view, i) -> view.setOnTouchListener(new MGViewOnPressListener() {
+        ButterKnife.apply(viewsList, (view, i) -> {
 
-            @Override
-            public void onPress(boolean pressed) {
+            if (view != null) {
+                view.setOnTouchListener(new MGViewOnPressListener() {
 
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    @Override
+                    public void onPress(boolean pressed) {
 
-                    action.onPress(view, getAdapterPosition(), pressed);
-                }
+                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                            action.onPress(view, getAdapterPosition(), pressed);
+                        }
+                    }
+                });
             }
-        }));
+        });
     }
 
     protected interface OnLongPress {
@@ -73,9 +83,12 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
-        ButterKnife.apply(viewsList, (view, i) ->
-            view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION &&
-                action.onLongClick(v, getAdapterPosition())));
+        ButterKnife.apply(viewsList, (view, i) -> {
+
+            if (view != null) {
+                view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION && action.onLongClick(v, getAdapterPosition()));
+            }
+        });
     }
 
     /**
