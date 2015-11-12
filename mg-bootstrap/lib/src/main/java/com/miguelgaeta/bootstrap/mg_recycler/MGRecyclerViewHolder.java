@@ -5,7 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.miguelgaeta.bootstrap.mg_view.MGViewOnPressListener;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import lombok.Getter;
@@ -20,14 +24,58 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     @Getter
     private final T adapter;
 
-    protected interface OnClickAction {
+    protected interface OnClick {
 
         void onClick(View view, int position);
+    }
+
+    protected void onClick(@NonNull OnClick action, View... views) {
+
+        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
+
+        ButterKnife.apply(viewsList, (view, i) -> view.setOnClickListener(v -> {
+
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                action.onClick(v, getAdapterPosition());
+            }
+        }));
     }
 
     protected interface OnPressAction {
 
         void onPress(View view, int position, boolean pressed);
+    }
+
+    protected void onPress(@NonNull OnPressAction action, View... views) {
+
+        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
+
+        ButterKnife.apply(viewsList, (view, i) -> view.setOnTouchListener(new MGViewOnPressListener() {
+
+            @Override
+            public void onPress(boolean pressed) {
+
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                    action.onPress(view, getAdapterPosition(), pressed);
+                }
+            }
+        }));
+    }
+
+    protected interface OnLongPress {
+
+        boolean onLongClick(View view, int position);
+    }
+
+    protected void onLongPress(OnLongPress action, View... views) {
+
+        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
+
+        ButterKnife.apply(viewsList, (view, i) ->
+            view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION &&
+                action.onLongClick(v, getAdapterPosition())));
     }
 
     /**
@@ -59,47 +107,5 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
      */
     protected void onConfigure(int position) {
 
-    }
-
-    protected void onClick(@NonNull View view, @NonNull OnClickAction action) {
-
-        view.setOnClickListener(clickedView -> {
-
-            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-
-                action.onClick(clickedView, getAdapterPosition());
-            }
-        });
-    }
-
-    protected void onClick(@NonNull OnClickAction action) {
-
-        if (itemView != null) {
-
-            onClick(itemView, action);
-        }
-    }
-
-    protected void onPress(@NonNull View view, @NonNull OnPressAction action) {
-
-        view.setOnTouchListener(new MGViewOnPressListener() {
-
-            @Override
-            public void onPress(boolean pressed) {
-
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-
-                    action.onPress(view, getAdapterPosition(), pressed);
-                }
-            }
-        });
-    }
-
-    protected void onPress(@NonNull OnPressAction action) {
-
-        if (itemView != null) {
-
-            onPress(itemView, action);
-        }
     }
 }
