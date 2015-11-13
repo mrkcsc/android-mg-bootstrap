@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.android.camera.CropImageIntentBuilder;
+import com.miguelgaeta.bootstrap.mg_color.MGColor;
 
 import java.io.File;
 
@@ -62,7 +63,7 @@ public class MGImageIntentHandler {
 
             CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(128, 128, Uri.fromFile(file));
 
-            int color = fragment.getResources().getColor(colorResId);
+            final int color = MGColor.fromResource(fragment.getContext(), colorResId);
 
             intentBuilder.setSourceImage(uri);
             intentBuilder.setDoFaceDetection(true);
@@ -121,11 +122,6 @@ public class MGImageIntentHandler {
 
                 if (file != null && file.exists()) {
 
-                    int rotation = MGImageIntentUtils.getRotationDegree(file.getAbsolutePath());
-
-                    file = MGImageIntentUtils.getResizedImage(file, 1080);
-                    file = MGImageIntentUtils.getRotatedImage(file, rotation);
-                    
                     subscriber.onNext(FileResult.create(new TypedFile(MGImagePathUtil.getMimeType(file), file), FileResult.Status.OK));
 
                 } else {
