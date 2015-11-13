@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -24,14 +25,12 @@ import rx.subjects.SerializedSubject;
 @SuppressWarnings("UnusedDeclaration")
 public class MGPreferenceRx<T> {
 
-    private boolean initialized;
-
     /**
      * Use to buffer values that get set
      * before the preference is initialized.
      */
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final List<T> buffer = new ArrayList<>();
+    private final Buffer<T> buffer = new Buffer<>();
 
     /**
      * Can be used by to publish
@@ -69,9 +68,8 @@ public class MGPreferenceRx<T> {
      */
     public void set(T t) {
 
-        if (!initialized) {
-
-            getBuffer().add(t);
+        if (getBuffer().uninitialized) {
+            getBuffer().items.add(t);
 
         } else {
 
@@ -153,20 +151,30 @@ public class MGPreferenceRx<T> {
      */
     private void setInitialized(T value) {
 
-        initialized = true;
+        synchronized (getBuffer()) {
 
-        set(value);
+            getBuffer().uninitialized = false;
 
-        for (T bufferedItem : getBuffer()) {
+            set(value);
 
-            set(bufferedItem);
+            for (T bufferedItem : getBuffer().items) {
+
+                set(bufferedItem);
+            }
+
+            getBuffer().items.clear();
         }
-
-        getBuffer().clear();
     }
 
     private Observable<Boolean> whenInitialized() {
 
         return MGPreference.getInitialized().observeOn(MGPreference.getScheduler()).take(1);
+    }
+
+    private static class Buffer<T> {
+
+        private boolean uninitialized = true;
+
+        private final List<T> items = Collections.synchronizedList(new ArrayList<>());
     }
 }
