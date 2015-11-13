@@ -47,6 +47,11 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         });
     }
 
+    protected void onClick(@NonNull OnClick action) {
+
+        onClick(action, itemView);
+    }
+
     protected interface OnPressAction {
 
         void onPress(View view, int position, boolean pressed);
@@ -74,6 +79,11 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         });
     }
 
+    protected void onPress(@NonNull OnPressAction action) {
+
+        onPress(action, itemView);
+    }
+
     protected interface OnLongPress {
 
         boolean onLongClick(View view, int position);
@@ -89,6 +99,11 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
                 view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION && action.onLongClick(v, getAdapterPosition()));
             }
         });
+    }
+
+    protected void onLongPress(OnLongPress action) {
+
+        onLongPress(action, itemView);
     }
 
     /**
