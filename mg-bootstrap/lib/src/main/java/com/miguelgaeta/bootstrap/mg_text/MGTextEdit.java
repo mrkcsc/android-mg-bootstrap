@@ -63,17 +63,27 @@ public class MGTextEdit extends EditText {
 
     public static void copyText(@NonNull TextView textView) {
 
-        copyText(textView, R.string.shared_copied_to_clipboard);
+        copyText(textView.getContext(), textView.getText());
     }
 
     public static void copyText(@NonNull TextView textView, @StringRes int copiedMessage) {
 
-        ClipboardManager clipboard = (ClipboardManager) textView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("", textView.getText());
+        copyText(textView.getContext(), textView.getText(), copiedMessage);
+    }
+
+    public static void copyText(@NonNull Context context, CharSequence text) {
+
+        copyText(context, text, R.string.shared_copied_to_clipboard);
+    }
+
+    public static void copyText(@NonNull Context context, CharSequence text, @StringRes int copiedMessage) {
+
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("", text);
 
         clipboard.setPrimaryClip(clip);
 
-        Toast.makeText(textView.getContext(), copiedMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, copiedMessage, Toast.LENGTH_SHORT).show();
     }
 
     public MGTextEdit(Context context) {
