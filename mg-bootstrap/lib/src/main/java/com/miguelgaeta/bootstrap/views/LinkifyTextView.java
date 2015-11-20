@@ -37,34 +37,19 @@ public class LinkifyTextView extends TextView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        final TextView widget = this;
-        final Object text = widget.getText();
 
-        if (text instanceof Spanned) {
+        if (getText() instanceof Spanned) {
 
-            if (event.getAction() == MotionEvent.ACTION_UP) {
+            final ClickableSpan[] link = getTouchedLink(event);
 
-                int x = (int)event.getX();
-                int y = (int)event.getY();
+            if (link.length != 0) {
 
-                x -= widget.getTotalPaddingLeft();
-                y -= widget.getTotalPaddingTop();
+                if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                x += widget.getScrollX();
-                y += widget.getScrollY();
-
-                final Layout layout = widget.getLayout();
-                final int line = layout.getLineForVertical(y);
-                final int off = layout.getOffsetForHorizontal(line, x);
-
-                final ClickableSpan[] link = ((Spanned)text).getSpans(off, off, ClickableSpan.class);
-
-                if (link.length != 0) {
-
-                    link[0].onClick(widget);
-
-                    return true;
+                    link[0].onClick(this);
                 }
+
+                return true;
             }
         }
 
@@ -76,5 +61,26 @@ public class LinkifyTextView extends TextView {
         super.setText(text, type);
 
         this.setMovementMethod(null);
+    }
+
+    private ClickableSpan[] getTouchedLink(MotionEvent event) {
+
+        final TextView widget = this;
+        final Object text = widget.getText();
+
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+
+        x -= widget.getTotalPaddingLeft();
+        y -= widget.getTotalPaddingTop();
+
+        x += widget.getScrollX();
+        y += widget.getScrollY();
+
+        final Layout layout = widget.getLayout();
+        final int line = layout.getLineForVertical(y);
+        final int off = layout.getOffsetForHorizontal(line, x);
+
+        return ((Spanned)text).getSpans(off, off, ClickableSpan.class);
     }
 }
