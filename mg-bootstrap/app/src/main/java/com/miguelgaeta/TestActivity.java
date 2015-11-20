@@ -9,7 +9,6 @@ import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
-import com.miguelgaeta.bootstrap.mg_rx.MGRxRetry;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
@@ -22,9 +21,7 @@ import butterknife.OnClick;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 
 public class TestActivity extends MGLifecycleActivity {
@@ -50,22 +47,6 @@ public class TestActivity extends MGLifecycleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Observable.create(subscriber -> {
-
-            MGLog.e("Do it.");
-
-            int dumbShit = 10 / 0;
-
-        }).retryWhen(MGRxRetry.createExponential(1000, 3, 10))
-        .subscribe(o -> {
-
-            MGLog.e("Win train.");
-
-        }, throwable -> {
-
-            MGLog.e("Error");
-        });
 
         Map<Integer, List<TestData>> prefData = new HashMap<>();
 

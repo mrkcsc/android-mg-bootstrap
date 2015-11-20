@@ -1,30 +1,41 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible">
+    <RelativeLayout
+        android:layout_above="@+id/edit_me"
+        android:background="#f3f3f3"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-
 
         <View
             android:id="@+id/fade_test_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:background="#000" />
-    </LinearLayout>
-    <Button
-        android:id="@+id/test_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Button" />
-</LinearLayout>
+
+        <Button
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/test_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Button" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/edit_me"
+        android:layout_alignParentBottom="true"
+        android:background="#ccc"
+        android:hint="Input field."
+        android:layout_width="match_parent"
+        android:layout_height="40dp"/>
+</RelativeLayout>
