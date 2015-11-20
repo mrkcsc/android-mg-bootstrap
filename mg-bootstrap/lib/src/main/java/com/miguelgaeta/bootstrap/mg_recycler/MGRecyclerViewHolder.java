@@ -24,12 +24,12 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
     @Getter
     private final T adapter;
 
-    protected interface OnClick {
+    public interface OnClick {
 
         void onClick(View view, int position);
     }
 
-    protected void onClick(@NonNull OnClick action, View... views) {
+    public void onClick(@NonNull OnClick action, View... views) {
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
@@ -47,17 +47,17 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         });
     }
 
-    protected void onClick(@NonNull OnClick action) {
+    public void onClick(@NonNull OnClick action) {
 
         onClick(action, itemView);
     }
 
-    protected interface OnPressAction {
+    public interface OnPressAction {
 
         void onPress(View view, int position, boolean pressed);
     }
 
-    protected void onPress(@NonNull OnPressAction action, View... views) {
+    public void onPress(@NonNull OnPressAction action, View... views) {
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
@@ -79,17 +79,17 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         });
     }
 
-    protected void onPress(@NonNull OnPressAction action) {
+    public void onPress(@NonNull OnPressAction action) {
 
         onPress(action, itemView);
     }
 
-    protected interface OnLongPress {
+    public interface OnLongPress {
 
         boolean onLongClick(View view, int position);
     }
 
-    protected void onLongPress(OnLongPress action, View... views) {
+    public void onLongPress(OnLongPress action, View... views) {
 
         final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
 
@@ -101,7 +101,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         });
     }
 
-    protected void onLongPress(OnLongPress action) {
+    public void onLongPress(OnLongPress action) {
 
         onLongPress(action, itemView);
     }
