@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,42 +29,29 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class Keyboarder {
 
-    private static final int LAYOUT_LISTENER_TAG = 5678;
-
-    private final View rootView;
+    private final GlobalLayoutListener layoutListener;
 
     @Getter
     private final State state;
 
-    public static Keyboarder create(Activity activity) {
-
-        return new Keyboarder(activity);
-    }
-
     private Keyboarder(final @NonNull Activity activity) {
 
-        rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        final View rootView = activity
+            .getWindow()
+            .getDecorView()
+            .findViewById(android.R.id.content);
 
         final InputMethodManager inputMethodManager = (InputMethodManager)activity
             .getSystemService(Context.INPUT_METHOD_SERVICE);
 
         state = new State(rootView, inputMethodManager);
 
-        final GlobalLayoutListener rootViewLayoutListener = new GlobalLayoutListener(state::onHeightChanged);
-
-        if (rootView != null) {
-            rootView.getViewTreeObserver().addOnGlobalLayoutListener(rootViewLayoutListener);
-            rootView.setTag(LAYOUT_LISTENER_TAG, rootViewLayoutListener);
-        }
+        layoutListener = new GlobalLayoutListener(rootView, state::onHeightChanged);
     }
 
     public void destroy() {
 
-        if (rootView != null &&
-            rootView.getTag(LAYOUT_LISTENER_TAG) instanceof GlobalLayoutListener) {
-            rootView.getViewTreeObserver()
-                .removeOnGlobalLayoutListener((GlobalLayoutListener) rootView.getTag(LAYOUT_LISTENER_TAG));
-        }
+        layoutListener.destroy();
 
         state.destroy();
     }
@@ -100,7 +86,7 @@ public class Keyboarder {
             public void onActivityCreatedOrResumed(Activity activity, Bundle bundle) {
                 super.onActivityCreatedOrResumed(activity, bundle);
 
-                keyboarder = Keyboarder.create(activity);
+                keyboarder = new Keyboarder(activity);
             }
 
             @Override
@@ -206,20 +192,31 @@ public class Keyboarder {
         }
     }
 
-    private interface OnGlobalLayoutHeightChanged {
+    private static class GlobalLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
-        void onKeyboardHeight(int height);
-    }
+        private interface OnKeyboardHeightChanged {
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    private class GlobalLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
+            void onKeyboardHeight(int height);
+        }
 
+        private final View rootView;
         private final Rect rootViewRect = new Rect();
+
         private int rootViewMaxHeight;
         private int keyboardHeight = -1;
 
         @NonNull
-        private final OnGlobalLayoutHeightChanged onKeyboardHeight;
+        private final OnKeyboardHeightChanged onKeyboardHeight;
+
+        private GlobalLayoutListener(View rootView, OnKeyboardHeightChanged onKeyboardHeight) {
+
+            this.rootView = rootView;
+            this.onKeyboardHeight = onKeyboardHeight;
+
+            if (rootView != null) {
+                rootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+            }
+        }
 
         @Override
         public void onGlobalLayout() {
@@ -244,6 +241,13 @@ public class Keyboarder {
             rootView.getWindowVisibleDisplayFrame(rootViewRect);
 
             return rootViewRect.bottom - rootViewRect.top;
+        }
+
+        private void destroy() {
+
+            if (rootView != null) {
+                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
         }
     }
 }
