@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.keyboarder;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -166,17 +167,71 @@ public class Keyboarder {
             return opened != null ? opened : false;
         }
 
+        public static void open(InputMethodManager inputMethodManager, View view) {
+
+            if (inputMethodManager != null && view != null) {
+                inputMethodManager.toggleSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+            }
+        }
+
+        public static void open(Activity activity, View view) {
+
+            open((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE), view);
+        }
+
+        public static void open(Activity activity) {
+
+            open((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE),
+                activity
+                    .getWindow()
+                    .getDecorView()
+                    .findViewById(android.R.id.content));
+        }
+
+        public static void open(Fragment fragment) {
+
+            open(fragment.getActivity());
+        }
+
         public void open() {
 
-            if (inputMethodManager != null && rootView != null && !destroyed) {
-                inputMethodManager.toggleSoftInputFromWindow(rootView.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+            if (!destroyed) {
+
+                open(inputMethodManager, rootView);
             }
+        }
+
+        public static void close(Activity activity, View view) {
+
+            close((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE), view);
+        }
+
+        public static void close(InputMethodManager inputMethodManager, View view) {
+
+            if (inputMethodManager != null && view != null) {
+                inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+            }
+        }
+
+        public static void close(Activity activity) {
+
+            close((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE),
+                activity
+                    .getWindow()
+                    .getDecorView()
+                    .findViewById(android.R.id.content));
+        }
+
+        public static void close(Fragment fragment) {
+
+            close(fragment.getActivity());
         }
 
         public void close() {
 
-            if (inputMethodManager != null && rootView != null && !destroyed) {
-                inputMethodManager.hideSoftInputFromWindow(rootView.getApplicationWindowToken(), 0);
+            if (!destroyed) {
+
+                close(inputMethodManager, rootView);
             }
         }
 
@@ -188,7 +243,7 @@ public class Keyboarder {
 
             unsubscribe();
 
-            this.destroyed = true;
+            destroyed = true;
         }
 
         private void unsubscribe() {
