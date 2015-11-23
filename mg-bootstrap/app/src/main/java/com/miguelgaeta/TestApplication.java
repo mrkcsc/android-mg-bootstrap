@@ -1,8 +1,8 @@
 package com.miguelgaeta;
 
+import com.miguelgaeta.bootstrap.keyboarder.Keyboarder;
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
-import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
@@ -32,13 +32,12 @@ public class TestApplication extends MGLifecycleApplication {
         // Initialize preferences.
         MGPreference.init(this);
 
-        MGKeyboard.getConfig().init(this);
-        MGKeyboard.getConfig().setRootViewResize(true);
-
         MGImagesConfig.init(this);
 
         MGBackgrounded.getConfig().init(this);
 
         MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
+
+        Keyboarder.Global.initialize(this);
     }
 }
