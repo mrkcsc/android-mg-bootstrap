@@ -32,7 +32,7 @@ public class Keyboarder {
     private final GlobalLayoutListener layoutListener;
 
     @Getter
-    private final State state;
+    private final Keyboard keyboard;
 
     public Keyboarder(final @NonNull Activity activity) {
 
@@ -44,16 +44,16 @@ public class Keyboarder {
         final InputMethodManager inputMethodManager = (InputMethodManager)activity
             .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        state = new State(rootView, inputMethodManager);
+        keyboard = new Keyboard(rootView, inputMethodManager);
 
-        layoutListener = new GlobalLayoutListener(rootView, state::onHeightChanged);
+        layoutListener = new GlobalLayoutListener(rootView, keyboard::onHeightChanged);
     }
 
     public void destroy() {
 
         layoutListener.destroy();
 
-        state.destroy();
+        keyboard.destroy();
     }
 
     public static class Global {
@@ -98,7 +98,7 @@ public class Keyboarder {
     }
 
     @RequiredArgsConstructor
-    public static class State {
+    public static class Keyboard {
 
         public interface OnOpened {
 

@@ -3,6 +3,7 @@ package com.miguelgaeta;
 import android.os.Bundle;
 import android.view.View;
 
+import com.miguelgaeta.bootstrap.keyboarder.Keyboarder;
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
@@ -61,17 +62,6 @@ public class TestActivity extends MGLifecycleActivity {
 
         prefData.put(-10, td1);
         prefData.put(-11, td2);
-
-        // Test shit data.
-        prefData.put(-12, new ArrayList<>());
-
-        MGLog.e("Set");
-
-        getPref().set(prefData);
-
-        MGLog.e("Get: " + getPref().get());
-
-        MGPreference.reset();
 
         /*
         MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
@@ -140,7 +130,20 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreateOrResume() {
         super.onCreateOrResume();
 
-        //setupSocket();
+        final Keyboarder keyboarder = new Keyboarder(this);
+
+        keyboarder.getKeyboard().addOnOpenedListener(opened -> MGLog.e("Keyboard open!" + opened));
+
+
+        MGDelay.delay(5000).subscribe(r -> {
+
+            keyboarder.getKeyboard().close();
+        });
+
+        getPaused().subscribe(r -> {
+
+            keyboarder.destroy();
+        });
     }
 
     @OnClick(R.id.test_button)

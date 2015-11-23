@@ -1,6 +1,5 @@
 package com.miguelgaeta;
 
-import com.miguelgaeta.bootstrap.keyboarder.Keyboarder;
 import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
@@ -41,7 +40,5 @@ public class TestApplication extends MGLifecycleApplication {
         MGBackgrounded.getConfig().init(this);
 
         MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
-
-        Keyboarder.Global.initialize(this);
     }
 }
