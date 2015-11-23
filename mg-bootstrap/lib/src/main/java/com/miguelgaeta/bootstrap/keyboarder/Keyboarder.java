@@ -134,8 +134,6 @@ public class Keyboarder {
 
         public void addOnOpenedListener(@NonNull OnOpened onOpened) {
 
-            onOpened.onOpened(isOpened());
-
             onOpenedListeners.add(onOpened);
         }
 
