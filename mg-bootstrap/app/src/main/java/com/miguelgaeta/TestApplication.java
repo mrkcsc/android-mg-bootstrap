@@ -10,6 +10,8 @@ import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 /**
  * Created by mrkcsc on 3/28/15.
  */
@@ -22,6 +24,8 @@ public class TestApplication extends MGLifecycleApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        JodaTimeAndroid.init(this);
 
         // Initialize logging.
         MGLog.getConfig().init(this);
