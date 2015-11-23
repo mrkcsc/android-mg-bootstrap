@@ -34,7 +34,7 @@ public class Keyboarder {
     @Getter
     private final State state;
 
-    private Keyboarder(final @NonNull Activity activity) {
+    public Keyboarder(final @NonNull Activity activity) {
 
         final View rootView = activity
             .getWindow()
@@ -133,6 +133,8 @@ public class Keyboarder {
         }
 
         public void addOnOpenedListener(@NonNull OnOpened onOpened) {
+
+            onOpened.onOpened(isOpened());
 
             onOpenedListeners.add(onOpened);
         }
