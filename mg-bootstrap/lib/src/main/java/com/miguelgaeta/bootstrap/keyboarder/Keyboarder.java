@@ -36,6 +36,11 @@ public class Keyboarder {
 
     public Keyboarder(final @NonNull Activity activity) {
 
+        this(activity, true);
+    }
+
+    public Keyboarder(final @NonNull Activity activity, boolean trackState) {
+
         final View rootView = activity
             .getWindow()
             .getDecorView()
@@ -46,12 +51,14 @@ public class Keyboarder {
 
         keyboard = new Keyboard(rootView, inputMethodManager);
 
-        layoutListener = new GlobalLayoutListener(rootView, keyboard::onHeightChanged);
+        layoutListener = trackState ? new GlobalLayoutListener(rootView, keyboard::onHeightChanged) : null;
     }
 
     public void destroy() {
 
-        layoutListener.destroy();
+        if (layoutListener != null) {
+            layoutListener.destroy();
+        }
 
         keyboard.destroy();
     }
