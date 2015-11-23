@@ -3,16 +3,24 @@ package com.miguelgaeta.bootstrap.keyboarder;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Miguel Gaeta on 11/19/15.
@@ -24,7 +32,9 @@ public class Keyboarder {
     private final InputMethodManager inputMethodManager;
 
     private boolean destroyed = false;
-    private boolean opened = false;
+
+    @Getter
+    private final State state = new State();
 
     public static Keyboarder create(Activity activity) {
 
@@ -36,7 +46,12 @@ public class Keyboarder {
         inputMethodManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        rootViewOnGlobalLayoutListener = rootView == null ? null : new OnGlobalLayoutListener(rootView);
+
+        if (rootView != null) {
+            rootViewOnGlobalLayoutListener = new OnGlobalLayoutListener(rootView, state::onHeightChanged);
+        } else {
+            rootViewOnGlobalLayoutListener = null;
+        }
 
         if (rootViewOnGlobalLayoutListener != null) {
             rootView.getViewTreeObserver().addOnGlobalLayoutListener(rootViewOnGlobalLayoutListener);
@@ -45,6 +60,8 @@ public class Keyboarder {
 
     @Synchronized
     private void setDestroyed() {
+
+        state.destroy();
 
         destroyed = true;
     }
@@ -65,32 +82,6 @@ public class Keyboarder {
         setDestroyed();
     }
 
-    @Synchronized
-    public boolean isOpened() {
-
-        return opened;
-    }
-
-    @Synchronized
-    private void setOpened(boolean opened) {
-
-        this.opened = opened;
-    }
-
-    public void open() {
-
-        if (inputMethodManager != null && rootView != null && !isDestroyed()) {
-            inputMethodManager.toggleSoftInputFromWindow(rootView.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
-        }
-    }
-
-    public void close() {
-
-        if (inputMethodManager != null && rootView != null && !isDestroyed()) {
-            inputMethodManager.hideSoftInputFromWindow(rootView.getApplicationWindowToken(), 0);
-        }
-    }
-
     public static class Global {
 
         private static Global global;
@@ -105,7 +96,7 @@ public class Keyboarder {
         @Synchronized
         public static void initialize(Application application) {
 
-            if (global != null) {
+            if (global == null) {
                 global = new Global(application);
             }
         }
@@ -146,15 +137,126 @@ public class Keyboarder {
         }
     }
 
-    @RequiredArgsConstructor
+    public interface OnStateChanged {
+
+        void onStateChanged(boolean opened, int height);
+    }
+
+    public class State {
+
+        private final List<OnStateChanged> onStateChangedListeners = new ArrayList<>();
+
+        private boolean opened;
+
+        private Subscription subscription;
+
+        private void onHeightChanged(int height) {
+
+            if (height == 0) {
+
+                setOpened(false);
+
+            } else {
+
+                subscription = Observable
+                    .just(true)
+                    .delay(250, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::setOpened);
+            }
+        }
+
+        public void addOnStateChangedListener() {
+
+        }
+
+        public void removeOnStateChangedListener() {
+
+        }
+
+        @Synchronized
+        public void setOpened(boolean opened) {
+
+            this.opened = opened;
+        }
+
+        @Synchronized
+        public boolean isOpened() {
+
+            return opened;
+        }
+
+        public void open() {
+
+            if (inputMethodManager != null && rootView != null && !isDestroyed()) {
+                inputMethodManager.toggleSoftInputFromWindow(rootView.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+            }
+        }
+
+        public void close() {
+
+            if (inputMethodManager != null && rootView != null && !isDestroyed()) {
+                inputMethodManager.hideSoftInputFromWindow(rootView.getApplicationWindowToken(), 0);
+            }
+        }
+
+        private void destroy() {
+
+            setOpened(false);
+
+            unsubscribe();
+        }
+
+        private void unsubscribe() {
+
+            if (subscription != null) {
+                subscription.unsubscribe();
+                subscription = null;
+            }
+        }
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     private static class OnGlobalLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
+        private interface OnKeyboardHeight {
+
+            void onKeyboardHeight(int height);
+        }
+
         private final View rootView;
+        private final Rect rootViewRect = new Rect();
+
+        private int rootViewMaxHeight;
+
+        private int keyboardHeight = -1;
+
+        @NonNull
+        private final OnKeyboardHeight onKeyboardHeight;
 
         @Override
         public void onGlobalLayout() {
 
-            MGLog.e("Global layout.");
+            final int keyboardRootViewHeight = getRootViewHeight();
+
+            if (rootViewMaxHeight < keyboardRootViewHeight) {
+                rootViewMaxHeight = keyboardRootViewHeight;
+            }
+
+            final int keyboardHeight = rootViewMaxHeight - keyboardRootViewHeight;
+
+            if (this.keyboardHeight != keyboardHeight) {
+                this.keyboardHeight = keyboardHeight;
+
+                onKeyboardHeight.onKeyboardHeight(keyboardHeight);
+            }
+        }
+
+        private int getRootViewHeight() {
+
+            rootView.getWindowVisibleDisplayFrame(rootViewRect);
+
+            return rootViewRect.bottom - rootViewRect.top;
         }
     }
 }
