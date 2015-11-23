@@ -110,7 +110,7 @@ public class Keyboarder {
         private final View rootView;
         private final InputMethodManager inputMethodManager;
 
-        private boolean opened;
+        private Boolean opened;
 
         private Subscription subscription;
 
@@ -145,7 +145,7 @@ public class Keyboarder {
         @Synchronized
         public void setOpened(boolean opened) {
 
-            if (this.opened != opened) {
+            if (this.opened == null || this.opened != opened) {
                 this.opened = opened;
 
                 Stream.of(onOpenedListeners).forEach(listener -> listener.onOpened(opened));
@@ -155,7 +155,7 @@ public class Keyboarder {
         @Synchronized
         public boolean isOpened() {
 
-            return opened;
+            return opened != null ? opened : false;
         }
 
         public void open() {
