@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
+import com.annimon.stream.Stream;
+import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +30,9 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class Keyboarder {
 
+    private static final int LAYOUT_LISTENER_TAG = 5678;
+
     private final View rootView;
-    private final OnGlobalLayoutListener rootViewOnGlobalLayoutListener;
     private final InputMethodManager inputMethodManager;
 
     private boolean destroyed = false;
@@ -47,14 +51,11 @@ public class Keyboarder {
 
         rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
-        if (rootView != null) {
-            rootViewOnGlobalLayoutListener = new OnGlobalLayoutListener(rootView, state::onHeightChanged);
-        } else {
-            rootViewOnGlobalLayoutListener = null;
-        }
+        final GlobalLayoutListener rootViewLayoutListener = new GlobalLayoutListener(state::onHeightChanged);
 
-        if (rootViewOnGlobalLayoutListener != null) {
-            rootView.getViewTreeObserver().addOnGlobalLayoutListener(rootViewOnGlobalLayoutListener);
+        if (rootView != null) {
+            rootView.getViewTreeObserver().addOnGlobalLayoutListener(rootViewLayoutListener);
+            rootView.setTag(LAYOUT_LISTENER_TAG, rootViewLayoutListener);
         }
     }
 
@@ -75,8 +76,10 @@ public class Keyboarder {
     @Synchronized
     public void destroy() {
 
-        if (rootViewOnGlobalLayoutListener != null) {
-            rootView.getViewTreeObserver().removeOnGlobalLayoutListener(rootViewOnGlobalLayoutListener);
+        if (rootView != null &&
+            rootView.getTag(LAYOUT_LISTENER_TAG) instanceof GlobalLayoutListener) {
+            rootView.getViewTreeObserver()
+                .removeOnGlobalLayoutListener((GlobalLayoutListener) rootView.getTag(LAYOUT_LISTENER_TAG));
         }
 
         setDestroyed();
@@ -106,16 +109,11 @@ public class Keyboarder {
             application.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
         }
 
-        private class ActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+        private class ActivityLifecycleCallbacks extends MGLifecycleCallbacks {
 
             @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) { }
-
-            @Override
-            public void onActivityStarted(Activity activity) { }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
+            public void onActivityCreatedOrResumed(Activity activity, Bundle bundle) {
+                super.onActivityCreatedOrResumed(activity, bundle);
 
                 keyboarder = Keyboarder.create(activity);
             }
@@ -125,26 +123,17 @@ public class Keyboarder {
 
                 keyboarder.destroy();
             }
-
-            @Override
-            public void onActivityStopped(Activity activity) { }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) { }
         }
     }
 
-    public interface OnStateChanged {
+    public interface OnOpened {
 
-        void onStateChanged(boolean opened, int height);
+        void onOpened(boolean opened);
     }
 
     public class State {
 
-        private final List<OnStateChanged> onStateChangedListeners = new ArrayList<>();
+        private final List<OnOpened> onOpenedListeners = new ArrayList<>();
 
         private boolean opened;
 
@@ -166,18 +155,24 @@ public class Keyboarder {
             }
         }
 
-        public void addOnStateChangedListener() {
+        public void addOnOpenedListener(@NonNull OnOpened onOpened) {
 
+            onOpenedListeners.add(onOpened);
         }
 
-        public void removeOnStateChangedListener() {
+        public void removeOnOpenedListener(@NonNull OnOpened onOpened) {
 
+            onOpenedListeners.remove(onOpened);
         }
 
         @Synchronized
         public void setOpened(boolean opened) {
 
-            this.opened = opened;
+            if (this.opened != opened) {
+                this.opened = opened;
+
+                Stream.of(onOpenedListeners).forEach(listener -> listener.onOpened(opened));
+            }
         }
 
         @Synchronized
@@ -204,6 +199,8 @@ public class Keyboarder {
 
             setOpened(false);
 
+            onOpenedListeners.clear();
+
             unsubscribe();
         }
 
@@ -216,23 +213,20 @@ public class Keyboarder {
         }
     }
 
+    private interface OnGlobalLayoutHeightChanged {
+
+        void onKeyboardHeight(int height);
+    }
+
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class OnGlobalLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
+    private class GlobalLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
 
-        private interface OnKeyboardHeight {
-
-            void onKeyboardHeight(int height);
-        }
-
-        private final View rootView;
         private final Rect rootViewRect = new Rect();
-
         private int rootViewMaxHeight;
-
         private int keyboardHeight = -1;
 
         @NonNull
-        private final OnKeyboardHeight onKeyboardHeight;
+        private final OnGlobalLayoutHeightChanged onKeyboardHeight;
 
         @Override
         public void onGlobalLayout() {
