@@ -109,7 +109,7 @@ public class Keyboarder {
 
         public interface OnOpened {
 
-            void onOpened(boolean opened);
+            void onOpened(boolean opened, int height);
         }
 
         private final List<OnOpened> onOpenedListeners = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Keyboarder {
 
             if (height == 0) {
 
-                setOpened(false);
+                setOpened(false, height);
 
             } else {
 
@@ -135,7 +135,8 @@ public class Keyboarder {
                     .just(true)
                     .delay(250, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::setOpened);
+                    .subscribe(opened ->
+                        setOpened(opened, height));
             }
         }
 
@@ -150,12 +151,12 @@ public class Keyboarder {
         }
 
         @Synchronized
-        public void setOpened(boolean opened) {
+        public void setOpened(boolean opened, int height) {
 
             if (this.opened == null || this.opened != opened) {
                 this.opened = opened;
 
-                Stream.of(onOpenedListeners).forEach(listener -> listener.onOpened(opened));
+                Stream.of(onOpenedListeners).forEach(listener -> listener.onOpened(opened, height));
             }
         }
 
@@ -181,7 +182,7 @@ public class Keyboarder {
 
         private void destroy() {
 
-            setOpened(false);
+            setOpened(false, 0);
 
             onOpenedListeners.clear();
 

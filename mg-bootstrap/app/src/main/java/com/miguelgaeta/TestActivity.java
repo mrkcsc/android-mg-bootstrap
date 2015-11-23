@@ -132,7 +132,10 @@ public class TestActivity extends MGLifecycleActivity {
 
         final Keyboarder keyboarder = new Keyboarder(this);
 
-        keyboarder.getKeyboard().addOnOpenedListener(opened -> MGLog.e("Keyboard open!" + opened));
+        keyboarder.getKeyboard().addOnOpenedListener((opened, height) -> {
+
+            MGLog.e("Opened: " + opened + " height: " + height);
+        });
 
 
         MGDelay.delay(5000).subscribe(r -> {
