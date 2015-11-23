@@ -33,12 +33,9 @@ public class Keyboarder {
     private static final int LAYOUT_LISTENER_TAG = 5678;
 
     private final View rootView;
-    private final InputMethodManager inputMethodManager;
-
-    private boolean destroyed = false;
 
     @Getter
-    private final State state = new State();
+    private final State state;
 
     public static Keyboarder create(Activity activity) {
 
@@ -47,9 +44,12 @@ public class Keyboarder {
 
     private Keyboarder(final @NonNull Activity activity) {
 
-        inputMethodManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
         rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+
+        final InputMethodManager inputMethodManager = (InputMethodManager)activity
+            .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        state = new State(rootView, inputMethodManager);
 
         final GlobalLayoutListener rootViewLayoutListener = new GlobalLayoutListener(state::onHeightChanged);
 
@@ -59,21 +59,6 @@ public class Keyboarder {
         }
     }
 
-    @Synchronized
-    private void setDestroyed() {
-
-        state.destroy();
-
-        destroyed = true;
-    }
-
-    @Synchronized
-    public boolean isDestroyed() {
-
-        return destroyed;
-    }
-
-    @Synchronized
     public void destroy() {
 
         if (rootView != null &&
@@ -82,7 +67,7 @@ public class Keyboarder {
                 .removeOnGlobalLayoutListener((GlobalLayoutListener) rootView.getTag(LAYOUT_LISTENER_TAG));
         }
 
-        setDestroyed();
+        state.destroy();
     }
 
     public static class Global {
@@ -126,18 +111,24 @@ public class Keyboarder {
         }
     }
 
-    public interface OnOpened {
+    @RequiredArgsConstructor
+    public static class State {
 
-        void onOpened(boolean opened);
-    }
+        public interface OnOpened {
 
-    public class State {
+            void onOpened(boolean opened);
+        }
 
         private final List<OnOpened> onOpenedListeners = new ArrayList<>();
+
+        private final View rootView;
+        private final InputMethodManager inputMethodManager;
 
         private boolean opened;
 
         private Subscription subscription;
+
+        private boolean destroyed;
 
         private void onHeightChanged(int height) {
 
@@ -183,14 +174,14 @@ public class Keyboarder {
 
         public void open() {
 
-            if (inputMethodManager != null && rootView != null && !isDestroyed()) {
+            if (inputMethodManager != null && rootView != null && !destroyed) {
                 inputMethodManager.toggleSoftInputFromWindow(rootView.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
             }
         }
 
         public void close() {
 
-            if (inputMethodManager != null && rootView != null && !isDestroyed()) {
+            if (inputMethodManager != null && rootView != null && !destroyed) {
                 inputMethodManager.hideSoftInputFromWindow(rootView.getApplicationWindowToken(), 0);
             }
         }
@@ -202,6 +193,8 @@ public class Keyboarder {
             onOpenedListeners.clear();
 
             unsubscribe();
+
+            this.destroyed = true;
         }
 
         private void unsubscribe() {
