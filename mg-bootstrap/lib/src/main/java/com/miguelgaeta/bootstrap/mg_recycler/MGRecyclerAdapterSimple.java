@@ -59,4 +59,9 @@ public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
 
         this.data.set(data);
     }
+
+    public void unsubscribeFromUpdates() {
+
+        data.unsubscribeFromUpdates();
+    }
 }

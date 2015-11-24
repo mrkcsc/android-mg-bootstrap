@@ -79,7 +79,9 @@ public class MGTextEditMention<T, O> {
 
     private MGTextEdit editText;
 
+    @Getter
     private MGTextEditMentionAdapter adapter;
+
     private RecyclerView recyclerView;
 
     private List<Map.Entry<String, T>> tagsMatchedCache;

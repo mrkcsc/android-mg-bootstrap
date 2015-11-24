@@ -63,9 +63,7 @@ public class MGRecyclerDataList<T> {
                     subscriber.onCompleted();
                 });
 
-                if (dataList.updateSubscription != null) {
-                    dataList.updateSubscription.unsubscribe();
-                }
+                dataList.unsubscribeFromUpdates();
 
                 // Run callbacks and adapter update events on the main thread.
                 dataList.updateSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(adapterUpdateData -> {
@@ -84,6 +82,14 @@ public class MGRecyclerDataList<T> {
         });
 
         return dataList;
+    }
+
+    public void unsubscribeFromUpdates() {
+
+        if (updateSubscription != null) {
+            updateSubscription.unsubscribe();
+            updateSubscription = null;
+        }
     }
 
     /**
