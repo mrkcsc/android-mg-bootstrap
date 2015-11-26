@@ -1,7 +1,7 @@
 plugins {
 
     // Backport of Java 8 closures.
-    id "me.tatarka.retrolambda" version "3.2.3"
+    id "me.tatarka.retrolambda" version "3.2.4"
 }
 
 // This is a library module.
@@ -73,11 +73,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.15'
+    compile 'io.reactivex:rxjava:1.0.16'
     compile 'io.reactivex:rxandroid:1.0.1'
 
     // Google json library.
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.5'
 
     // Byte stream serializer.
     compile 'com.esotericsoftware:kryo:3.0.3'
@@ -86,7 +86,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0' // TODO: 2.0.0-beta2
 
     // Custom HTTP client that is better than the default.
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.6.0'
 
     // Library for network image loading.
     compile 'com.facebook.fresco:fresco:0.8.1'
@@ -105,7 +105,7 @@ dependencies {
     compile 'org.java-websocket:java-websocket:1.3.1'
 
     // Streaming API for android.
-    compile 'com.annimon:stream:1.0.4'
+    compile 'com.annimon:stream:1.0.5'
 }
 
 // Deployment script: https://github.com/blundell/release-android-library
