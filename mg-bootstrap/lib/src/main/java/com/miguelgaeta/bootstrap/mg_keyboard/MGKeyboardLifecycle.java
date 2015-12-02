@@ -2,8 +2,6 @@ package com.miguelgaeta.bootstrap.mg_keyboard;
 
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
@@ -36,8 +34,6 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
         // Set the listener.
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
-
-        initializeEditTexts((ViewGroup) rootView);
     }
 
     @Override
@@ -53,34 +49,6 @@ class MGKeyboardLifecycle extends MGLifecycleCallbacks {
 
         if (rootView != null) {
             rootView.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
-        }
-    }
-
-    private void initializeEditTexts(ViewGroup viewGroup) {
-
-        for (int i = 0; i <= viewGroup.getChildCount() - 1; i++) {
-
-            View view = viewGroup.getChildAt(i);
-
-            if (view instanceof ViewGroup) {
-
-                initializeEditTexts((ViewGroup) view);
-            }
-
-            if (view instanceof EditText) {
-
-                EditText editText = (EditText) view;
-
-                editText.setOnFocusChangeListener((r1, focused) -> {
-
-                    if (focused) {
-
-                        MGKeyboardState.set(MGKeyboardState.OPENING);
-                    }
-                });
-
-                editText.setOnClickListener(r1 -> MGKeyboardState.set(MGKeyboardState.OPENING));
-            }
         }
     }
 
