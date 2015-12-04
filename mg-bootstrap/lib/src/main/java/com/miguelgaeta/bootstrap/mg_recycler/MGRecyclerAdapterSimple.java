@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
 
     // Data list that powers the adapter.
-    private MGRecyclerDataList<MGRecyclerDataPayload.Item> data = MGRecyclerDataList.create(this, new ArrayList<>(), MGRecyclerDataPayload.Item::getKey);
+    private MGRecyclerDataList<MGRecyclerDataPayload.Contract> data = MGRecyclerDataList.create(this, new ArrayList<>(), MGRecyclerDataPayload.Contract::getKey);
 
     /**
      * This adapter streamlines common recycler view operations
@@ -38,7 +38,7 @@ public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
      * Add a callback action for when the
      * underlying data is updated.
      */
-    public void setUpdate(MGRecyclerData.DataUpdated<List<MGRecyclerDataPayload.Item>> updated) {
+    public void setUpdate(MGRecyclerData.DataUpdated<List<MGRecyclerDataPayload.Contract>> updated) {
 
         data.setUpdated(updated);
     }
@@ -55,7 +55,7 @@ public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
      * Provide a new data set to the adapter.  Will take
      * care of updating the data set automatically.
      */
-    public void setData(List<MGRecyclerDataPayload.Item> data) {
+    public void setData(List<MGRecyclerDataPayload.Contract> data) {
 
         this.data.set(data);
     }

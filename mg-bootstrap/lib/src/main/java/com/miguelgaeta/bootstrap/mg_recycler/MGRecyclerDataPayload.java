@@ -15,7 +15,7 @@ import lombok.ToString;
 public class MGRecyclerDataPayload {
 
     @Getter
-    private List<Item> list = new ArrayList<>();
+    private List<Contract> list = new ArrayList<>();
 
     public void add(int type, String key, Object item) {
 
@@ -38,7 +38,7 @@ public class MGRecyclerDataPayload {
         }
     }
 
-    public Item get(int position) {
+    public Contract get(int position) {
 
         return list.get(position);
     }
@@ -49,7 +49,7 @@ public class MGRecyclerDataPayload {
     }
 
     @SuppressWarnings("UnusedDeclaration") @Getter @ToString @EqualsAndHashCode @AllArgsConstructor(staticName = "create")
-    public static class Item {
+    public static class Item implements Contract {
 
         private int type;
 
@@ -61,5 +61,14 @@ public class MGRecyclerDataPayload {
 
             return type + "-" + key;
         }
+    }
+
+    public interface Contract {
+
+        int getType();
+
+        String getKey();
+
+        Object getItem();
     }
 }
