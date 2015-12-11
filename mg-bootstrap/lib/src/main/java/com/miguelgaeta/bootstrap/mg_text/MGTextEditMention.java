@@ -8,6 +8,7 @@ import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerAdapter;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerDataPayload;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
+import com.miguelgaeta.bootstrap.views.LambdaTextWatcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,14 +177,7 @@ public class MGTextEditMention<T, O> {
     private void configureTextWatcher(@NonNull MGTextEdit editText) {
 
         if (textWatcher == null) {
-            textWatcher = new MGTextEditWatcher() {
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    applySpan((Spannable) charSequence);
-                }
-            };
+            textWatcher = new LambdaTextWatcher((LambdaTextWatcher.OnChanged) (charSequence, i, i1, i2) -> applySpan((Spannable) charSequence));
 
             editText.addTextChangedListener(textWatcher);
         }

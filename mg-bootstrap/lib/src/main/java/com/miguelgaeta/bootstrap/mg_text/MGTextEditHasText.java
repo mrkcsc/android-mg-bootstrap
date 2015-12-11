@@ -1,7 +1,8 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
-import android.text.Editable;
 import android.text.TextWatcher;
+
+import com.miguelgaeta.bootstrap.views.LambdaTextWatcher;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ class MGTextEditHasText {
 
     private MGTextEdit.OnHasTextListener onHasTextListener;
 
-    private TextWatcher onHasTextWatcher;
+    private TextWatcher textWatcher;
 
     private boolean hasText;
 
@@ -35,23 +36,16 @@ class MGTextEditHasText {
      */
     private void configureOnHasTextListener() {
 
-        if (onHasTextWatcher != null) {
+        if (textWatcher != null) {
 
-            editText.removeTextChangedListener(onHasTextWatcher);
+            editText.removeTextChangedListener(textWatcher);
         }
 
         onHasText(editText.length(), true);
 
-        onHasTextWatcher = new MGTextEditWatcher() {
+        textWatcher = new LambdaTextWatcher(editable -> onHasText(editable.length(), false));
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                onHasText(editable.length(), false);
-            }
-        };
-
-        editText.addTextChangedListener(onHasTextWatcher);
+        editText.addTextChangedListener(textWatcher);
     }
 
     /**
