@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.support.annotation.Nullable;
 
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class MGPreferenceRx<T> {
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
     private final Buffer<T> buffer = new Buffer<>();
 
+    private final String key;
+
     /**
      * Can be used by to publish
      * a new value to the data class.
@@ -60,7 +63,9 @@ public class MGPreferenceRx<T> {
      */
     private MGPreferenceRx(String key, T defaultValue, int serializationDelay) {
 
-        init(key, defaultValue, key != null ? MGPreference.create(key, defaultValue, serializationDelay) : null);
+        this.key = key;
+
+        init(defaultValue, key != null ? MGPreference.create(key, defaultValue, serializationDelay) : null);
     }
 
     /**
@@ -73,7 +78,13 @@ public class MGPreferenceRx<T> {
 
         } else {
 
-            getDataPublisher().onNext(t);
+            try {
+                getDataPublisher().onNext(t);
+
+            } catch (Exception e) {
+
+                MGLog.e("Unable to publish preference, most likely due to back-pressure. Key: " + key);
+            }
         }
     }
 
@@ -133,7 +144,7 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(String key, T defaultValue, MGPreference<T> cache) {
+    private void init(T defaultValue, MGPreference<T> cache) {
 
         if (cache != null) {
 
