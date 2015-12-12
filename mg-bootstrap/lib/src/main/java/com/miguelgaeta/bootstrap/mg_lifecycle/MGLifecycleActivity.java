@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.annimon.stream.Stream;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboard;
 import com.miguelgaeta.bootstrap.mg_keyboard.MGKeyboardState;
 
@@ -138,17 +139,18 @@ public class MGLifecycleActivity extends AppCompatActivity {
 
     public void onBackPressed(boolean alertFragments) {
 
-        for (Func0<Boolean> fragmentOnBack : getFragmentOnBackPressed().values()) {
+        final long fragmentsOverridingBack =
+            Stream
+                .of(getFragmentOnBackPressed().values())
+                .filter(onBack -> alertFragments && onBack.call())
+                .count();
 
-            if (fragmentOnBack.call()) {
+        if (fragmentsOverridingBack == 0) {
 
-                return;
-            }
+            super.onBackPressed();
+
+            goingBack = true;
         }
-
-        super.onBackPressed();
-
-        goingBack = true;
     }
 
     /**
