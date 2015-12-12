@@ -133,6 +133,11 @@ public class MGLifecycleActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+        onBackPressed(true);
+    }
+
+    public void onBackPressed(boolean alertFragments) {
+
         for (Func0<Boolean> fragmentOnBack : getFragmentOnBackPressed().values()) {
 
             if (fragmentOnBack.call()) {
