@@ -9,7 +9,6 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
-import com.miguelgaeta.bootstrap.mg_rest.MGRestClientErrorModel;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class TestActivity extends MGLifecycleActivity {
     @Data
     private static class TestPref {
 
-        private List<MGRestClientErrorModel> payload = new ArrayList<>();
+        private List<Integer> payload = new ArrayList<>();
     }
 
     @Data @AllArgsConstructor

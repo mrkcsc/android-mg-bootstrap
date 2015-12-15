@@ -3,13 +3,18 @@ package com.miguelgaeta.bootstrap.mg_rest;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
+import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +34,7 @@ public class MGRestClientError implements Action1<Throwable> {
     // error handling (optional).
     private Action1<Throwable> callback;
 
-    /**
-     * Can't instantiate directly.
-     */
-    private MGRestClientError() {
-
-    }
+    private MGRestClientError() { }
 
     /**
      * Create a standard error object.
@@ -152,34 +152,31 @@ public class MGRestClientError implements Action1<Throwable> {
 
         if (errorMessages.size() == 0) {
 
-            MGRestClientErrorModel error = null;
+            ResponseBody error = null;
 
             try {
 
                 // Attempt to serialize error response from the server.
-                error = (MGRestClientErrorModel)retrofitError.getBodyAs(MGRestClientErrorModel.class);
+                error = (ResponseBody)retrofitError.getBodyAs(ResponseBody.class);
 
             } catch (Exception ignored) { }
 
-            if (error != null && error.getError() != null) {
+            if (error != null &&
+                error.getMessage() != null) {
 
-                // Use the server provided error message.
-                errorMessages.add(error.getError().getMessage());
+                errorMessages.add(error.getMessage());
 
             } else {
 
-                List<String> genericErrorMessages = tryHandleErrorResultGeneric(retrofitError);
+                errorMessages.addAll(tryHandleErrorResultGeneric(retrofitError));
 
-                if (genericErrorMessages != null) {
-
-                    errorMessages.addAll(genericErrorMessages);
-                } else {
-
-                    // If we cannot serialize the result, emit a generic error message.
+                if (errorMessages.isEmpty()) {
                     errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
                 }
             }
         }
+
+        MGLog.e("Error messages: " + errorMessages);
 
         return errorMessages;
     }
@@ -194,24 +191,36 @@ public class MGRestClientError implements Action1<Throwable> {
 
         try {
 
-            List<String> errorMessages = new ArrayList<>();
-
-            // Serialize into a generic json object.
-            JsonObject jsonObject = (JsonObject)error.getBodyAs(JsonObject.class);
-
-            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-
-                for (JsonElement element : entry.getValue().getAsJsonArray()) {
-
-                    errorMessages.add(element.getAsString());
-                }
-            }
-
-            return errorMessages;
+            return
+                Stream
+                    .of((JsonObject)error.getBodyAs(JsonObject.class))
+                    .map(JsonObject::entrySet)
+                    .flatMap(Stream::of)
+                    .map(Map.Entry::getValue)
+                    .map(JsonElement::getAsJsonArray)
+                    .map(JsonArray::getAsString)
+                    .collect(Collectors.toList());
 
         } catch (Exception ignored) {
 
-            return new ArrayList<>();
+            return Collections.emptyList();
+        }
+    }
+
+    private static class ResponseBody {
+
+        private Details error;
+
+        private String message;
+
+        private static class Details {
+
+            private String message;
+        }
+
+        public String getMessage() {
+
+            return error != null ? error.message : message;
         }
     }
 }
