@@ -9,7 +9,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
@@ -175,8 +174,6 @@ public class MGRestClientError implements Action1<Throwable> {
                 }
             }
         }
-
-        MGLog.e("Error messages: " + errorMessages);
 
         return errorMessages;
     }
