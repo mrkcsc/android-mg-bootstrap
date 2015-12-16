@@ -1,6 +1,5 @@
 package com.miguelgaeta;
 
-import com.miguelgaeta.bootstrap.mg_backgrounded.MGBackgrounded;
 import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
@@ -36,8 +35,6 @@ public class TestApplication extends MGLifecycleApplication {
         MGPreference.init(this);
 
         MGImagesConfig.init(this);
-
-        MGBackgrounded.getConfig().init(this);
 
         MGLifecycleActivityTransitions.setDefaultType(MGLifecycleActivityTransitionsType.SLIDE_HORIZONTAL);
     }
