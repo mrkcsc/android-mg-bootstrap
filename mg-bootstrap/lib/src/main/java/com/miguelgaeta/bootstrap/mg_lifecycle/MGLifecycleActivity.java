@@ -228,7 +228,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
     /**
      * Set option menu layout and a convenience callback for when a menu item is selected.
      */
-    protected void setOptionsMenu(@MenuRes int menuResourceId, Action1<MenuItem> menuItemSelectedAction) {
+    public void setOptionsMenu(@MenuRes int menuResourceId, Action1<MenuItem> menuItemSelectedAction) {
 
         this.menuResourceId = menuResourceId;
         this.menuResourceIdSelectedAction = menuItemSelectedAction;
