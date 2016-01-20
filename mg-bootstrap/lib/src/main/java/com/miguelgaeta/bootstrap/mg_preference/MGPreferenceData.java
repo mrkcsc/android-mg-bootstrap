@@ -27,6 +27,7 @@ class MGPreferenceData<T> {
      * values if it's a fast emitting data stream.
      */
     private final int serializationDelay;
+    private long serializationTimerStart;
 
     private Subscription delayedSerialization;
 
@@ -61,13 +62,31 @@ class MGPreferenceData<T> {
             delayedSerialization.unsubscribe();
         }
 
-        delayedSerialization = MGDelay.delay(serializationDelay).observeOn(MGPreference.getScheduler()).subscribe(r -> {
+        if (serializationTimerStart == 0) {
+            serializationTimerStart = System.currentTimeMillis();
+        }
 
-            MGPreference.getDataStore().set(key, value);
+        if ((System.currentTimeMillis() - serializationTimerStart) > serializationDelay) {
 
-            delayedSerialization = null;
+            set();
 
-        }, MGRxError.create(null, "Unable to serialize preference."));
+        } else {
+
+            delayedSerialization =
+                MGDelay
+                    .delay(serializationDelay)
+                    .observeOn(MGPreference.getScheduler())
+                    .subscribe(r -> set(),
+                        MGRxError.create(null, "Unable to serialize preference."));
+        }
+    }
+
+    private void set() {
+        serializationTimerStart = 0;
+
+        MGPreference.getDataStore().set(key, value);
+
+        delayedSerialization = null;
     }
 
     public void clear() {
