@@ -95,9 +95,6 @@ dependencies {
     // Image cropper.
     compile 'me.villani.lorenzo.android:android-cropimage:1.1.0'
 
-    // ISO time format handler
-    compile 'net.danlew:android.joda:2.9.0'
-
     // Logging library.
     compile 'com.jakewharton.timber:timber:4.1.0'
 
