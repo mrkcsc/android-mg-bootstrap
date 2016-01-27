@@ -60,6 +60,22 @@ public class MGLifecycleActivity extends AppCompatActivity {
     private final Map<String, Func0<Boolean>> fragmentOnBackPressed = new HashMap<>();
 
     /**
+     * Keeps track of most recently received intent as
+     * provided by {@link #onNewIntent(Intent)}
+     */
+    private Intent mostRecentIntent;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        mostRecentIntent = intent;
+    }
+
+    /**
      * Handles setting the content view
      * via naming conventions.
      */
@@ -232,5 +248,17 @@ public class MGLifecycleActivity extends AppCompatActivity {
 
         this.menuResourceId = menuResourceId;
         this.menuResourceIdSelectedAction = menuItemSelectedAction;
+    }
+
+    /**
+     * Get the most recently provided intent.
+     *
+     * @return Most recent {@link Intent}
+     */
+    public Intent getMostRecentIntent() {
+
+        return
+            mostRecentIntent != null ?
+            mostRecentIntent : getIntent();
     }
 }
