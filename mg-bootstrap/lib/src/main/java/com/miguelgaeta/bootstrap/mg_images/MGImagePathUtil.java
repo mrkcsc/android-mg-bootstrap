@@ -18,7 +18,7 @@ import java.io.File;
  *
  * File chooser library: https://github.com/iPaulPro/aFileChooser
  */
-class MGImagePathUtil {
+public class MGImagePathUtil {
 
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
