@@ -141,16 +141,6 @@ public class MGRestClientError implements Action1<Throwable> {
 
         try {
 
-            retrofitError.getBody();
-
-        } catch (Exception e) {
-
-            // Last resort - emit the raw error message.
-            errorMessages.add(retrofitError.getMessage());
-        }
-
-        if (errorMessages.size() == 0) {
-
             ResponseBody error = null;
 
             try {
@@ -173,6 +163,11 @@ public class MGRestClientError implements Action1<Throwable> {
                     errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
                 }
             }
+
+        } catch (Exception e) {
+
+            // Last resort - emit the raw error message.
+            errorMessages.add(retrofitError.getMessage());
         }
 
         return errorMessages;
