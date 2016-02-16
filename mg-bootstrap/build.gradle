@@ -17,11 +17,5 @@ allprojects {
             // Used for web socket.
             url 'http://clojars.org/repo'
         }
-
-        maven {
-
-            // Used for image cropping.
-            url 'http://lorenzo.villani.me/android-cropimage/'
-        }
     }
 }
