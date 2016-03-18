@@ -1,6 +1,5 @@
 package com.miguelgaeta.bootstrap.mg_lifecycle;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
@@ -22,7 +21,6 @@ import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * This is a generic helper activity class for
@@ -171,15 +169,6 @@ public class MGLifecycleActivity extends AppCompatActivity {
         }
 
         return blockBack;
-    }
-
-    /**
-     * Intercept base context and pass it through
-     * calligraphy library for custom fonts.
-     */
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override
