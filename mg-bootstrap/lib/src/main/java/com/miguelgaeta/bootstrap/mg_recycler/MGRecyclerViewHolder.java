@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.miguelgaeta.bootstrap.mg_view.MGViewOnPressListener;
 
-import java.util.List;
+import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import lombok.Getter;
@@ -31,9 +29,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
     public void onClick(@NonNull OnClick action, View... views) {
 
-        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
-
-        ButterKnife.apply(viewsList, (view, i) -> {
+        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
 
             if (view != null) {
                 view.setOnClickListener(v -> {
@@ -59,9 +55,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
     public void onPress(@NonNull OnPressAction action, View... views) {
 
-        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
-
-        ButterKnife.apply(viewsList, (view, i) -> {
+        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
 
             if (view != null) {
                 view.setOnTouchListener(new MGViewOnPressListener() {
@@ -91,9 +85,7 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
 
     public void onLongPress(OnLongPress action, View... views) {
 
-        final List<View> viewsList = Stream.of(views).collect(Collectors.toList());
-
-        ButterKnife.apply(viewsList, (view, i) -> {
+        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
 
             if (view != null) {
                 view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION && action.onLongClick(v, getAdapterPosition()));

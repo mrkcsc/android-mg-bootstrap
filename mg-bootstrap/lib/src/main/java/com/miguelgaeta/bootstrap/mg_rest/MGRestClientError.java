@@ -3,9 +3,6 @@ package com.miguelgaeta.bootstrap.mg_rest;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
@@ -13,7 +10,6 @@ import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -181,22 +177,21 @@ public class MGRestClientError implements Action1<Throwable> {
      */
     private List<String> tryHandleErrorResultGeneric(RetrofitError error) {
 
+        final List<String> errorMessages = new ArrayList<>();
+
         try {
 
-            return
-                Stream
-                    .of((JsonObject)error.getBodyAs(JsonObject.class))
-                    .map(JsonObject::entrySet)
-                    .flatMap(Stream::of)
-                    .map(Map.Entry::getValue)
-                    .map(JsonElement::getAsJsonArray)
-                    .map(JsonArray::getAsString)
-                    .collect(Collectors.toList());
+            final JsonObject jsonObject = (JsonObject) error.getBodyAs(JsonObject.class);
 
-        } catch (Exception ignored) {
+            for (final Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 
-            return Collections.emptyList();
-        }
+                final String errorMessage = entry.getValue().getAsJsonArray().getAsString();
+                errorMessages.add(errorMessage);
+            }
+
+        } catch (Exception ignored) { }
+
+        return errorMessages;
     }
 
     private static class ResponseBody {

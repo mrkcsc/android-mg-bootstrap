@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
-import com.annimon.stream.Stream;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleCallbacks;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by Miguel Gaeta on 11/19/15.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class Keyboarder {
 
     private final GlobalLayoutListener layoutListener;
@@ -157,7 +157,12 @@ public class Keyboarder {
             if (this.opened == null || this.opened != opened) {
                 this.opened = opened;
 
-                Stream.of(onOpenedListeners).forEach(listener -> listener.onOpened(opened, height));
+                for (OnOpened listener : onOpenedListeners) {
+
+                    if (listener != null) {
+                        listener.onOpened(opened, height);
+                    }
+                }
             }
         }
 
