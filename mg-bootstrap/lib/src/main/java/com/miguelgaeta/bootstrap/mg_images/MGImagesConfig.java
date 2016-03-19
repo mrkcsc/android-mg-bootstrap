@@ -13,7 +13,7 @@ import com.squareup.okhttp.OkHttpClient;
 /**
  * Created by Miguel Gaeta on 6/23/15.
  */
-@SuppressWarnings("UnusedDelcaration")
+@SuppressWarnings("UnusedDeclaration")
 public class MGImagesConfig {
 
     private static final String IMAGE_PIPELINE_CACHE_DIR = "app_images_cache";
@@ -36,6 +36,10 @@ public class MGImagesConfig {
 
             config = ImagePipelineConfig.newBuilder(context);
         }
+
+        // Enable down-sampling.
+        config.setDownsampleEnabled(true);
+        config.setWebpSupportEnabled(true);
 
         // Setup caches.
         configureCaches(config, context);
@@ -76,7 +80,7 @@ public class MGImagesConfig {
             // Set small images cache.
             .setSmallImageDiskCacheConfig(
 
-                DiskCacheConfig.newBuilder()
+                DiskCacheConfig.newBuilder(context)
                     .setBaseDirectoryPath(context.getApplicationContext().getCacheDir())
                     .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR_SMALL)
                     .setMaxCacheSize(MAX_DISK_CACHE_SIZE)
@@ -86,7 +90,7 @@ public class MGImagesConfig {
             // Set big images cache.
             .setMainDiskCacheConfig(
 
-                DiskCacheConfig.newBuilder()
+                DiskCacheConfig.newBuilder(context)
                     .setBaseDirectoryPath(context.getApplicationContext().getCacheDir())
                     .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR)
                     .setMaxCacheSize(MAX_DISK_CACHE_SIZE)

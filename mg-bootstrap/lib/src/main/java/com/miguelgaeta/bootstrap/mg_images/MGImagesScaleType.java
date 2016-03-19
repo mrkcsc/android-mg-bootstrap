@@ -5,6 +5,7 @@ import com.facebook.drawee.drawable.ScalingUtils;
 /**
  * Created by Miguel Gaeta on 6/23/15.
  */
+@SuppressWarnings("UnusedDeclaration")
 public enum MGImagesScaleType {
 
     FIT_XY,

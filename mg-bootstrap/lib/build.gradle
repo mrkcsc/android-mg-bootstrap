@@ -82,8 +82,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.6.0'
 
     // Library for network image loading.
-    compile 'com.facebook.fresco:fresco:0.8.1'
-    compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.1'
+    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.9.0'
 
     // Logging library.
     compile 'com.jakewharton.timber:timber:4.1.0'
