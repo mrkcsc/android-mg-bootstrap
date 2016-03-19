@@ -60,17 +60,17 @@ dependencies {
     compile "com.android.support:design:23.2.1"
 
     // Provides support for annotations.
-    compile 'org.projectlombok:lombok:1.16.6'
+    compile 'org.projectlombok:lombok:1.16.8'
 
     // XML view injections.
     compile 'com.jakewharton:butterknife:7.0.1'
 
     // Rx Java (reactive programming)
-    compile 'io.reactivex:rxjava:1.0.16'
-    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'io.reactivex:rxjava:1.1.2'
+    compile 'io.reactivex:rxandroid:1.1.0'
 
     // Google json library.
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.code.gson:gson:2.6.2'
 
     // Byte stream serializer.
     compile 'com.esotericsoftware:kryo:3.0.3'
