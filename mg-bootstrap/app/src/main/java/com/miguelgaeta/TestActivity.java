@@ -7,7 +7,6 @@ import com.miguelgaeta.bootstrap.keyboarder.Keyboarder;
 import com.miguelgaeta.bootstrap.mg_anim.MGAnimFade;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
 
@@ -62,57 +61,6 @@ public class TestActivity extends MGLifecycleActivity {
         prefData.put(-10, td1);
         prefData.put(-11, td2);
 
-        /*
-        MGImages.getBitmap("http://i1-news.softpedia-static.com/images/news2/Facebook-Messenger-for-Android-Updated-with-Ability-to-Save-Videos-to-Phone-s-Gallery-449351-3.jpg")
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(bitmap -> {
-
-                Toast.makeText(this, bitmap == null ? R.string.shared_lorum_ipsum_tiny : R.string.shared_number_9999, Toast.LENGTH_SHORT).show();
-
-                if (bitmap != null) {
-
-                    // Download image to gallery.
-                    MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "", "test");
-                }
-
-            }, MGRxError.create(null, "lol what"));
-            */
-
-        //getPref1().get().subscribe(testPref -> {
-
-        //    MGLog.e("Pref: " + testPref);
-        //});
-
-        /*
-        getPref().get()
-                .takeUntil(getPaused())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(testPref -> {
-
-                    MGLog.e("Value: " + testPref);
-                });
-
-        MGDelay.delay(1000)
-                .takeUntil(getPaused())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {
-                    if (getPref().getBlocking() == null) {
-                        getPref().set(new TestPref());
-
-                        MGLog.e("New pref");
-                    } else {
-
-                        TestPref testPref = getPref().getBlocking();
-
-                        testPref.getPayload().add("new value");
-
-                        MGLog.e("Pushing: " + testPref);
-
-                        getPref().set(testPref);
-                    }
-                });
-                */
-
         fadeTestView.setVisibility(View.GONE);
 
         MGDelay.delay(1000)
@@ -121,21 +69,12 @@ public class TestActivity extends MGLifecycleActivity {
 
                     MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
                 });
-
-
-
     }
 
     protected void onCreateOrResume() {
         super.onCreateOrResume();
 
         final Keyboarder keyboarder = new Keyboarder(this);
-
-        keyboarder.getKeyboard().addOnOpenedListener((opened, height) -> {
-
-            MGLog.e("Opened: " + opened + " height: " + height);
-        });
-
 
         MGDelay.delay(5000).subscribe(r -> {
 
@@ -162,22 +101,18 @@ public class TestActivity extends MGLifecycleActivity {
 
         websocket.onOpened().takeUntil(getPaused()).subscribe(open -> {
 
-            MGLog.e("Open: " + open);
         });
 
         websocket.onClosed().takeUntil(getPaused()).subscribe(closed -> {
 
-            MGLog.e("Closed: " + closed);
         });
 
         websocket.onError().takeUntil(getPaused()).subscribe(error -> {
 
-            MGLog.e("Error: " + error);
         });
 
         websocket.onMessage().takeUntil(getPaused()).subscribe(message -> {
 
-            MGLog.e("Message: " + message);
         });
 
         websocket.connect();

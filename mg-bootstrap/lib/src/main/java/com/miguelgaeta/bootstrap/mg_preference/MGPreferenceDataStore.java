@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
@@ -8,7 +9,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.miguelgaeta.bootstrap.logger.Logger;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -51,7 +51,7 @@ class MGPreferenceDataStore {
 
             } catch (KryoException | FileNotFoundException e) {
 
-                MGLog.i(e, "Unable to deserialize for key: " + key);
+                Log.i("MGPreference", "Unable to deserialize for key: " + key, e);
             }
         }
 
@@ -74,7 +74,7 @@ class MGPreferenceDataStore {
 
         } catch (KryoException | FileNotFoundException e) {
 
-            MGLog.i(e, "File not found for key: " + key);
+            Log.i("MGPreference", "File not found for key: " + key, e);
         }
 
         debugOperationTime("Serialized", key, elapsed);
@@ -120,7 +120,7 @@ class MGPreferenceDataStore {
 
         if (elapsed.getMilliseconds() > 500) {
 
-            MGLog.i(operation + " " + key + " in " + elapsed.getSeconds() + " seconds");
+            Log.i("MGPreference", operation + " " + key + " in " + elapsed.getSeconds() + " seconds");
         }
     }
 }

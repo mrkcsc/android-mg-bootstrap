@@ -7,7 +7,9 @@ import javax.net.ssl.SSLSocketFactory;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 3/10/15.
@@ -68,4 +70,15 @@ public class MGWebsocketConfig {
      */
     @Setter @Getter(value = AccessLevel.PACKAGE)
     private Gson gson = new GsonBuilder().create();
+
+    @Setter @Getter
+    private static Action1<Error> errorHandler = error -> {
+
+    };
+
+    @RequiredArgsConstructor
+    public static class Error {
+        public final String name;
+        public final Throwable exception;
+    }
 }

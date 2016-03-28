@@ -1,10 +1,10 @@
 package com.miguelgaeta.recycler;
 
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.miguelgaeta.R;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
 import butterknife.Bind;
@@ -19,7 +19,7 @@ public class TestActivityRecyclerViewHolder extends MGRecyclerViewHolder<TestAct
     public TestActivityRecyclerViewHolder(@LayoutRes int layout, TestActivityRecyclerAdapter adapter) {
         super(layout, adapter);
 
-        onClick((view, p) -> MGLog.e("Clicked at: " + p), itemText);
+        onClick((view, p) -> Log.e("Test", "Clicked at: " + p), itemText);
     }
 
     @Override

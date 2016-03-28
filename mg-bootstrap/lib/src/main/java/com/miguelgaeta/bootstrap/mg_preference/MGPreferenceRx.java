@@ -1,9 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
 import android.support.annotation.Nullable;
-
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
-import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +81,7 @@ public class MGPreferenceRx<T> {
 
             } catch (Exception e) {
 
-                MGLog.e("Unable to publish preference, most likely due to back-pressure. Key: " + key);
+                Log.e("MGPreference", "Unable to publish preference, most likely due to back-pressure. Key: " + key, e);
             }
         }
     }
@@ -112,7 +110,8 @@ public class MGPreferenceRx<T> {
                 }
             }
 
-        }, MGRxError.create(null, "Unable to merge in new preference data."));
+        }, throwable -> MGPreference.getErrorHandler().call(
+            new MGPreference.Error("Unable to merge in new preference data.", throwable)));
     }
 
     /**
@@ -148,12 +147,20 @@ public class MGPreferenceRx<T> {
 
         if (cache != null) {
 
-            get().observeOn(MGPreference.getScheduler()).subscribe(cache::set,
-                MGRxError.create(null, "Unable to cache " + key + " preference data."));
+            get().observeOn(MGPreference.getScheduler()).subscribe(cache::set, throwable -> {
+
+                MGPreference.getErrorHandler().call(
+                    new MGPreference.Error( "Unable to cache " + key + " preference data.", throwable));
+            });
         }
 
-        whenInitialized().subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue),
-            MGRxError.create(r -> setInitialized(defaultValue), "Unable to initialize " + key + " preference."));
+        whenInitialized().subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue), throwable -> {
+
+            MGPreference.getErrorHandler().call(
+                new MGPreference.Error("Unable to initialize " + key + " preference.", throwable));
+
+            setInitialized(defaultValue);
+        });
     }
 
     /**

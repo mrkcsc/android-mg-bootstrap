@@ -4,8 +4,7 @@ import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
-
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +63,7 @@ public class MGTextSpansBuilder {
 
             } catch (IndexOutOfBoundsException e) {
 
-                MGLog.i(e, "Span cannot be applied, out of bounds: " + sourceString);
+                Log.i("MGTextSpansBuilder", "Span cannot be applied, out of bounds: " + sourceString, e);
             }
         }
 

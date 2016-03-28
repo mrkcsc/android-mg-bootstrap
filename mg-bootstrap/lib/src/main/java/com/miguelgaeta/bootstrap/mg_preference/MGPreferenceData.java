@@ -1,7 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_preference;
 
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
-import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import lombok.RequiredArgsConstructor;
 import rx.Subscription;
@@ -76,8 +75,8 @@ class MGPreferenceData<T> {
                 MGDelay
                     .delay(serializationDelay)
                     .observeOn(MGPreference.getScheduler())
-                    .subscribe(r -> set(),
-                        MGRxError.create(null, "Unable to serialize preference."));
+                    .subscribe(r -> set(), throwable -> MGPreference.getErrorHandler()
+                        .call(new MGPreference.Error("Unable to serialize preference.", throwable)));
         }
     }
 

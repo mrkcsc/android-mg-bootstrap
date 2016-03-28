@@ -5,13 +5,13 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.miguelgaeta.bootstrap.R;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 
 import lombok.NonNull;
 import lombok.Setter;
@@ -107,7 +107,7 @@ public class MGTextEdit extends EditText {
         } catch (Exception e) {
 
             // Should not happen but log if it does.
-            MGLog.e(e, "Unable to get edit text string");
+            Log.e("MGTextEdit", "Unable to get edit text string", e);
 
             return "";
         }

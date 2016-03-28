@@ -10,7 +10,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import rx.Scheduler;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.SerializedSubject;
@@ -32,6 +34,11 @@ public class MGPreference<T> {
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final List<WeakReference<MGPreference>> preferences = new ArrayList<>();
+
+    @Getter @Setter
+    private static Action1<Error> errorHandler = error -> {
+
+    };
 
     @Getter(value = AccessLevel.PACKAGE)
     private final MGPreferenceData<T> metaData;
@@ -103,5 +110,11 @@ public class MGPreference<T> {
     public void clear() {
 
         metaData.clear();
+    }
+
+    @RequiredArgsConstructor
+    public static class Error {
+        public final String name;
+        public final Throwable exception;
     }
 }

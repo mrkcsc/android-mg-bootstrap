@@ -2,9 +2,7 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 
 import com.google.gson.Gson;
 import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreferenceRx;
-import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
@@ -153,7 +151,7 @@ class MGWebsocketClient {
             subscriber.onCompleted();
 
         }).subscribe(r -> {
-        }, MGRxError.create(null, "Unable to send message."));
+        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to send message.", throwable)));
     }
 
     /**
@@ -247,7 +245,7 @@ class MGWebsocketClient {
 
             } catch (IOException e) {
 
-                MGLog.e(e, "Unable to create socket with WSS.");
+                MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to create socket with WSS.", null));
             }
         }
 
@@ -279,7 +277,7 @@ class MGWebsocketClient {
                 messageBuffer.clear();
             }
 
-        }, MGRxError.create(null, "Unable to open."));
+        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to open.", throwable)));
 
         // If we disconnect, reconnect if needed.
         getEventCls().get(false).subscribe(data -> {
@@ -293,10 +291,10 @@ class MGWebsocketClient {
                         connect(url, reconnectDelay, socketFactory);
                     }
 
-                }, MGRxError.create(null, "Unable to re-connect."));
+                }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to re-connect.", throwable)));
             }
 
-        }, MGRxError.create(null, "Unable to close."));
+        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to close.", throwable)));
     }
 
     /**
@@ -320,7 +318,7 @@ class MGWebsocketClient {
                     message(keepAliveMessage, false);
                 }
 
-            }, MGRxError.create(null, "Unable to send heartbeat."));
+            }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to send heartbeat.", throwable)));
         }
     }
 

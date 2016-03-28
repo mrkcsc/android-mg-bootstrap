@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
-import com.miguelgaeta.bootstrap.mg_rx.MGRxError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +64,8 @@ public class MGRestClientError implements Action1<Throwable> {
             // Attempt to handle the (possible) retrofit error.
             tryHandleRetrofitError((RetrofitError) throwable);
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
-            // Call standard error class.
-            MGRxError.create().call(throwable);
         }
 
         if (callback != null) {

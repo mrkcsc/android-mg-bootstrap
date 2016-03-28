@@ -4,7 +4,6 @@ import com.miguelgaeta.bootstrap.mg_images.MGImagesConfig;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitions;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivityTransitionsType;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleApplication;
-import com.miguelgaeta.bootstrap.mg_log.MGLog;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
@@ -20,9 +19,6 @@ public class TestApplication extends MGLifecycleApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Initialize logging.
-        MGLog.getConfig().init(this);
 
         // Initialize reflection.
         MGReflection.getConfig().init(this);
