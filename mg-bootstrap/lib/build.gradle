@@ -78,9 +78,6 @@ dependencies {
     // Library for making REST calls.
     compile 'com.squareup.retrofit:retrofit:1.9.0' // TODO: 2.0.0-beta2
 
-    // Custom HTTP client that is better than the default.
-    compile 'com.squareup.okhttp:okhttp:2.6.0'
-
     // Library for network image loading.
     compile 'com.facebook.fresco:fresco:0.9.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.9.0'
