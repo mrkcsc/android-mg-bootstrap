@@ -27,20 +27,32 @@ public class MGTextSpansBuilder {
 
     private final List<MatchStrategy> matchStrategies = new ArrayList<>();
 
-    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start) {
-        addMatchStrategy(onMatch, start, null);
+    public MGTextSpansBuilder addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start) {
+        return addMatchStrategy(onMatch, start, null);
     }
 
-    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end) {
-        addMatchStrategy(onMatch, start, end, true);
+    public MGTextSpansBuilder addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end) {
+        return addMatchStrategy(onMatch, start, end, true);
     }
 
-    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired) {
-        addMatchStrategy(onMatch, start, end, endRequired, false);
+    public MGTextSpansBuilder addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired) {
+        return addMatchStrategy(onMatch, start, end, endRequired, false);
     }
 
-    public void addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired, boolean endWithWhitespaceOrEOL) {
+    public MGTextSpansBuilder addMatchStrategy(@NonNull OnMatch onMatch, @NonNull String start, @Nullable String end, boolean endRequired, boolean endWithWhitespaceOrEOL) {
         matchStrategies.add(MatchStrategy.create(onMatch, start, end, endRequired, endWithWhitespaceOrEOL));
+
+        return this;
+    }
+
+    public MGTextSpansBuilder addBoldMarkdownStrategy() {
+        //noinspection Convert2Lambda
+        return addMatchStrategy(new MGTextSpansBuilder.OnMatch() {
+            @Override
+            public MGTextSpansBuilder.Span call(MGTextSpansBuilder.Match match) {
+                return MGTextSpansBuilder.Span.create(match.getMatch(), MGTextSpans.getBold());
+            }
+        }, "**", "**");
     }
 
     public SpannableString build() {
