@@ -83,7 +83,7 @@ class MGWebsocketClient {
         this.reconnectDelay = reconnectDelay;
         this.socketFactory = socketFactory;
 
-        disconnect();
+        disconnect(1000);
 
         client = createClient();
         client.connect();
@@ -93,7 +93,7 @@ class MGWebsocketClient {
     /**
      * Close the socket.
      */
-    public void disconnect() {
+    public void disconnect(int code) {
 
         // Don't need to call close if already happened or happening.
         boolean closed =
@@ -102,7 +102,7 @@ class MGWebsocketClient {
             getState() == MGWebsocketState.NOT_YET_CONNECTED;
 
         if (client != null && !closed) {
-            client.close();
+            client.close(code, null);
             clientDesiredState = MGWebsocketState.CLOSED;
         }
 
@@ -264,7 +264,7 @@ class MGWebsocketClient {
             if (shouldDisconnect()) {
 
                 // Disconnect the web socket.
-                disconnect();
+                disconnect(1000);
 
             } else {
 

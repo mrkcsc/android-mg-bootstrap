@@ -39,7 +39,12 @@ public class MGWebsocket {
      */
     public void disconnect() {
 
-        client.disconnect();
+        client.disconnect(1000);
+    }
+
+    public void disconnect(int code) {
+
+        client.disconnect(code);
     }
 
     /**
