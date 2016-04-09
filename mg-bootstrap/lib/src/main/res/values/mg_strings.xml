@@ -7,6 +7,8 @@
     <string name="shared_percent_0">0%</string>
     <string name="shared_percent_100">100%</string>
 
+    <string name="shared_rest_network_timeout">A network timeout error has occurred.</string>
+    <string name="shared_rest_network_connection">A network connection error has occurred.</string>
     <string name="shared_rest_network_error">A network error has occurred.</string>
     <string name="shared_rest_unknown_error">An unknown network error has occurred.</string>
     <string name="shared_rest_exception_error">An unknown error has occurred.</string>

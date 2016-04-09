@@ -6,66 +6,35 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.miguelgaeta.bootstrap.R;
-import com.miguelgaeta.bootstrap.mg_reflection.MGReflection;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import retrofit.RetrofitError;
 import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 2/10/15.
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings("UnusedDeclaration") @RequiredArgsConstructor
 public class MGRestClientError implements Action1<Throwable> {
 
-    private Context context;
+    private final Context context;
+    private final Action1<Throwable> callback;
 
-    // Allows the user to funnel an additional
-    // callback to be performed after the generic
-    // error handling (optional).
-    private Action1<Throwable> callback;
-
-    private MGRestClientError() { }
-
-    /**
-     * Create a standard error object.
-     */
-    public static MGRestClientError create(Context context) {
-
-        return create(context, null);
+    public MGRestClientError(final Context context) {
+        this(context, null);
     }
 
-    /**
-     * Create a standard error object with a callback.
-     */
-    public static MGRestClientError create(Context context, Action1<Throwable> callback) {
-
-        MGRestClientError error = new MGRestClientError();
-
-        error.context = context;
-        error.callback = callback;
-
-        return error;
-    }
-
-    /**
-     * Generic handler for any and all retrofit
-     * related errors.  Used in the RxJava API pattern
-     * for retrofit.
-     */
     @Override
     public void call(Throwable throwable) {
 
-        try {
-
-            // Attempt to handle the (possible) retrofit error.
-            tryHandleRetrofitError((RetrofitError) throwable);
-
-        } catch (Exception ignored) {
-
+        if (throwable instanceof RetrofitError && context != null) {
+            throwableIsRetrofitError((RetrofitError) throwable, context);
         }
 
         if (callback != null) {
@@ -79,7 +48,7 @@ public class MGRestClientError implements Action1<Throwable> {
      * to always explicitly check for errors
      * and keeps things consistent.
      */
-    private void tryHandleRetrofitError(RetrofitError retrofitError) {
+    private static void throwableIsRetrofitError(RetrofitError retrofitError, final Context context) {
 
         List<String> errorMessages = new ArrayList<>();
 
@@ -89,21 +58,31 @@ public class MGRestClientError implements Action1<Throwable> {
 
             case NETWORK:
 
-                // Generic network error message.
-                errorMessages.add(MGReflection.getString(R.string.shared_rest_network_error));
+                final Throwable cause = retrofitError.getCause();
+
+                if (cause == null) {
+                    errorMessages.add(context.getString(R.string.shared_rest_network_error));
+                } else if (retrofitError.getCause() instanceof ConnectException) {
+                    errorMessages.add(context.getString(R.string.shared_rest_network_connection));
+                } else if (retrofitError.getCause() instanceof SocketTimeoutException) {
+                    errorMessages.add(context.getString(R.string.shared_rest_network_timeout));
+                } else {
+                    errorMessages.add(context.getString(R.string.shared_rest_network_error));
+                }
+
                 break;
 
             case HTTP:
 
                 // Try to extract error message from HTTP result.
-                errorMessages.addAll(tryHandleErrorResult(retrofitError));
+                errorMessages.addAll(tryHandleErrorResult(retrofitError, context));
                 break;
 
             case CONVERSION:
             case UNEXPECTED:
 
                 // Show friendly message to the user.
-                errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
+                errorMessages.add(context.getString(R.string.shared_rest_exception_error));
 
                 // Serious error.
                 seriousError = true;
@@ -128,7 +107,7 @@ public class MGRestClientError implements Action1<Throwable> {
     /**
      * Try to handle HTTP error result from server.
      */
-    private List<String> tryHandleErrorResult(RetrofitError retrofitError) {
+    private static List<String> tryHandleErrorResult(RetrofitError retrofitError, final Context context) {
 
         List<String> errorMessages = new ArrayList<>();
 
@@ -153,7 +132,7 @@ public class MGRestClientError implements Action1<Throwable> {
                 errorMessages.addAll(tryHandleErrorResultGeneric(retrofitError));
 
                 if (errorMessages.isEmpty()) {
-                    errorMessages.add(MGReflection.getString(R.string.shared_rest_unknown_error));
+                    errorMessages.add(context.getString(R.string.shared_rest_unknown_error));
                 }
             }
 
@@ -172,7 +151,7 @@ public class MGRestClientError implements Action1<Throwable> {
      * object with error keys mapped to arrays
      * of string messages.
      */
-    private List<String> tryHandleErrorResultGeneric(RetrofitError error) {
+    private static List<String> tryHandleErrorResultGeneric(RetrofitError error) {
 
         final List<String> errorMessages = new ArrayList<>();
 
