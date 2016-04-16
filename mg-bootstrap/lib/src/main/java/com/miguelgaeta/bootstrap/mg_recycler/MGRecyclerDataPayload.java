@@ -61,6 +61,10 @@ public class MGRecyclerDataPayload {
 
             return type + "-" + key;
         }
+
+        public Item() {
+
+        }
     }
 
     public interface Contract {

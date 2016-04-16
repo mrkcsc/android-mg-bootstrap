@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * Created by Miguel on 1/23/2015. Copyright 2014 Blitz Studios
  */
-public class MGLifecycleFragmentConfig {
+public class MGLifecycleFragmentDialogConfig {
 
     /**
      * Track if this fragment is being created
@@ -36,7 +36,7 @@ public class MGLifecycleFragmentConfig {
     @Setter(AccessLevel.PACKAGE)
     private boolean onCreateOrResumeInvoked;
 
-    void onResume(@NonNull MGLifecycleFragmentInterface fragment) {
+    void onResume(@NonNull MGLifecycleFragmentDialog fragment) {
 
         if (isOnCreateOrResumeInvoked()) {
             setOnCreateOrResumeInvoked(false);

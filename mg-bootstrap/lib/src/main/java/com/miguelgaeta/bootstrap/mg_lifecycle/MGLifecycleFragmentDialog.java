@@ -15,10 +15,10 @@ import rx.subjects.SerializedSubject;
  * Created by Miguel Gaeta on 7/21/15.
  */
 @SuppressWarnings("UnusedDeclaration")
-public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifecycleFragmentInterface {
+public class MGLifecycleFragmentDialog extends DialogFragment {
 
     @Getter(lazy = true)
-    private final MGLifecycleFragmentConfig config = new MGLifecycleFragmentConfig();
+    private final MGLifecycleFragmentDialogConfig config = new MGLifecycleFragmentDialogConfig();
 
     @Getter
     private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.create());
@@ -54,13 +54,11 @@ public class MGLifecycleFragmentDialog extends DialogFragment implements MGLifec
         return builder.create();
     }
 
-    @Override
     public void onCreateView(Bundle savedInstanceState, View view) {
 
         getConfig().onCreateView(this, savedInstanceState, view);
     }
 
-    @Override
     public void onCreateOrResume() {
 
     }

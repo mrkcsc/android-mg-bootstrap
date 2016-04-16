@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
-import lombok.AccessLevel;
 import lombok.Getter;
 import rx.functions.Action1;
 import rx.functions.Func0;
@@ -52,7 +51,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
     // Tracks if we are currently going back.
     private static boolean goingBack;
 
-    @Getter(value = AccessLevel.PACKAGE)
+    @Getter
     // Allow fragments hook into the back event.
     private final Map<String, Func0<Boolean>> fragmentOnBackPressed = new HashMap<>();
 

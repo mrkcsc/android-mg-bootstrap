@@ -24,7 +24,7 @@ public class MGLifecycleContentView {
      * Sets the content view of an activity automatically if it is
      * found. Otherwise, does nothing.
      */
-    static void setContentView(@NonNull Activity activity) {
+    public static void setContentView(@NonNull Activity activity) {
 
         Integer contentView;
 
@@ -47,7 +47,7 @@ public class MGLifecycleContentView {
      * Attempts to fetch the content view of the fragment,
      * returns the unmodified input view if not found.
      */
-    static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container) {
+    public static View getContentView(@NonNull Fragment fragment, @NonNull LayoutInflater inflater, ViewGroup container) {
 
         View view = null;
 
@@ -71,7 +71,7 @@ public class MGLifecycleContentView {
      * convention based naming approach - the activity name
      * lower cased and underscored.
      */
-    static Integer getContentView(@NonNull Context context, @NonNull Class classObject) {
+    public static Integer getContentView(@NonNull Context context, @NonNull Class classObject) {
 
         final String className = classObject.getSimpleName();
         final String classNameFormatted = MGStrings.camelCaseToLowerCaseUnderscores(className);
