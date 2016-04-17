@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_keyboard;
 import android.app.Activity;
 import android.content.Context;
 import android.os.IBinder;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -27,10 +28,16 @@ public class MGKeyboard {
     public static void setKeyboardOpen(Activity activity, boolean keyboardOpen) {
 
         // Fetch the input method manager.
-        InputMethodManager inputMethodManager = (InputMethodManager)activity
+        final InputMethodManager inputMethodManager = (InputMethodManager)activity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        IBinder windowToken = MGKeyboardLifecycle.getRootView(activity).getApplicationWindowToken();
+        final View rootView = MGKeyboardLifecycle.getRootView(activity);
+
+        if (rootView == null) {
+            return;
+        }
+
+        final IBinder windowToken = rootView.getApplicationWindowToken();
 
         if (keyboardOpen) {
 
