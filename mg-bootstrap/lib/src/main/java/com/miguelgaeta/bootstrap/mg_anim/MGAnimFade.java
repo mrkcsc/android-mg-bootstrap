@@ -8,7 +8,9 @@ import android.view.animation.AnimationUtils;
 import com.miguelgaeta.bootstrap.R;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 8/21/14.
@@ -21,7 +23,7 @@ public class MGAnimFade {
     /**
      * Set the visibility of a view with a fade animation.
      */
-    public static Observable<Void> setVisibility(@NonNull View view, int visibility) {
+    public static Observable<Void> setVisibility(@NonNull final View view, final int visibility) {
 
         Observable<Void> observeViewSize;
 
@@ -45,7 +47,12 @@ public class MGAnimFade {
         }
 
         // Set the final specified visibility.
-        observeViewSize.subscribe(result -> view.setVisibility(visibility));
+        observeViewSize.subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.setVisibility(visibility);
+            }
+        });
 
         return observeViewSize;
     }
@@ -55,25 +62,27 @@ public class MGAnimFade {
      * to the on animation end event
      * of some animation resource.
      */
-    private static Observable<Void> getAnimationObservable(@NonNull View view, int animationResourceId) {
+    private static Observable<Void> getAnimationObservable(@NonNull final View view, final int animationResourceId) {
 
-        Observable<Void> animationObservable = Observable.create(subscriber -> {
+        Observable<Void> animationObservable = Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                // Load the associated animation.
+                final Animation anim = AnimationUtils.loadAnimation(view.getContext(), animationResourceId);
 
-            // Load the associated animation.
-            Animation anim = AnimationUtils.loadAnimation(view.getContext(), animationResourceId);
+                // Finish observable when complete.
+                anim.setAnimationListener(new MGAnimListener() {
 
-            // Finish observable when complete.
-            anim.setAnimationListener(new MGAnimListener() {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
+                        subscriber.onNext(null);
+                        subscriber.onCompleted();
+                    }
+                });
 
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                }
-            });
-
-            view.startAnimation(anim);
+                view.startAnimation(anim);
+            }
         });
 
         return animationObservable.observeOn(AndroidSchedulers.mainThread());

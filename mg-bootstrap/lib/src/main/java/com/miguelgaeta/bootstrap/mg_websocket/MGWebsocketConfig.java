@@ -72,8 +72,11 @@ public class MGWebsocketConfig {
     private Gson gson = new GsonBuilder().create();
 
     @Setter @Getter
-    private static Action1<Error> errorHandler = error -> {
+    private static Action1<Error> errorHandler = new Action1<Error>() {
+        @Override
+        public void call(Error error) {
 
+        }
     };
 
     @RequiredArgsConstructor

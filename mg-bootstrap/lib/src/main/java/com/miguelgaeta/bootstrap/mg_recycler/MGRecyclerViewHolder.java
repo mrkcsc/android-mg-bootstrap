@@ -27,18 +27,22 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         void onClick(View view, int position);
     }
 
-    public void onClick(@NonNull OnClick action, View... views) {
+    public void onClick(@NonNull final OnClick action, View... views) {
 
-        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
+        ButterKnife.apply(Arrays.asList(views), new ButterKnife.Action<View>() {
+            @Override
+            public void apply(View view, int index) {
+                if (view != null) {
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
 
-            if (view != null) {
-                view.setOnClickListener(v -> {
-
-                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-
-                        action.onClick(v, getAdapterPosition());
-                    }
-                });
+                                action.onClick(v, getAdapterPosition());
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -53,22 +57,24 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         void onPress(View view, int position, boolean pressed);
     }
 
-    public void onPress(@NonNull OnPressAction action, View... views) {
+    public void onPress(@NonNull final OnPressAction action, final View... views) {
 
-        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
+        ButterKnife.apply(Arrays.asList(views), new ButterKnife.Action<View>() {
+            @Override
+            public void apply(final View view, int index) {
+                if (view != null) {
+                    view.setOnTouchListener(new MGViewOnPressListener() {
 
-            if (view != null) {
-                view.setOnTouchListener(new MGViewOnPressListener() {
+                        @Override
+                        public void onPress(boolean pressed) {
 
-                    @Override
-                    public void onPress(boolean pressed) {
+                            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
 
-                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-
-                            action.onPress(view, getAdapterPosition(), pressed);
+                                action.onPress(view, getAdapterPosition(), pressed);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -83,12 +89,19 @@ public abstract class MGRecyclerViewHolder<T extends MGRecyclerAdapter> extends 
         boolean onLongClick(View view, int position);
     }
 
-    public void onLongPress(OnLongPress action, View... views) {
+    public void onLongPress(final OnLongPress action, final View... views) {
 
-        ButterKnife.apply(Arrays.asList(views), (view, i) -> {
-
-            if (view != null) {
-                view.setOnLongClickListener(v -> getAdapterPosition() != RecyclerView.NO_POSITION && action.onLongClick(v, getAdapterPosition()));
+        ButterKnife.apply(Arrays.asList(views), new ButterKnife.Action<View>() {
+            @Override
+            public void apply(View view, int index) {
+                if (view != null) {
+                    view.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            return getAdapterPosition() != RecyclerView.NO_POSITION && action.onLongClick(v, getAdapterPosition());
+                        }
+                    });
+                }
             }
         });
     }

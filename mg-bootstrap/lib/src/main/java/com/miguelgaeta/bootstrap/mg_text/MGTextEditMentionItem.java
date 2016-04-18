@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.annotation.LayoutRes;
+import android.view.View;
 
 import com.miguelgaeta.bootstrap.mg_recycler.MGRecyclerViewHolder;
 
@@ -13,7 +14,12 @@ public class MGTextEditMentionItem extends MGRecyclerViewHolder<MGTextEditMentio
         super(layout, adapter);
 
         // Handle clicks.
-        itemView.setOnClickListener(view -> getAdapter().mentionClicked(getAdapterPosition()));
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAdapter().mentionClicked(getAdapterPosition());
+            }
+        });
     }
 
     @Override

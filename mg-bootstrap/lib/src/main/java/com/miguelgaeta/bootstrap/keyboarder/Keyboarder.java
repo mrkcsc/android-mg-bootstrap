@@ -23,6 +23,7 @@ import lombok.Synchronized;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by Miguel Gaeta on 11/19/15.
@@ -52,7 +53,12 @@ public class Keyboarder {
 
         keyboard = new Keyboard(rootView, inputMethodManager);
 
-        layoutListener = trackState ? new GlobalLayoutListener(rootView, keyboard::onHeightChanged) : null;
+        layoutListener = trackState ? new GlobalLayoutListener(rootView, new GlobalLayoutListener.OnKeyboardHeightChanged() {
+            @Override
+            public void onKeyboardHeight(int height) {
+                keyboard.onHeightChanged(height);
+            }
+        }) : null;
     }
 
     public void destroy() {
@@ -124,7 +130,7 @@ public class Keyboarder {
 
         private boolean destroyed;
 
-        private void onHeightChanged(int height) {
+        private void onHeightChanged(final int height) {
 
             if (height == 0) {
 
@@ -136,8 +142,12 @@ public class Keyboarder {
                     .just(true)
                     .delay(250, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(opened ->
-                        setOpened(opened, height));
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            setOpened(opened, height);
+                        }
+                    });
             }
         }
 

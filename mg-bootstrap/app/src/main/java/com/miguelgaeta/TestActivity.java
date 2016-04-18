@@ -1,5 +1,6 @@
 package com.miguelgaeta;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -9,6 +10,10 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 import com.miguelgaeta.bootstrap.mg_lifecycle.MGLifecycleActivity;
 import com.miguelgaeta.bootstrap.mg_preference.MGPreference;
 import com.miguelgaeta.bootstrap.mg_websocket.MGWebsocket;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
+import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventOpened;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 
 public class TestActivity extends MGLifecycleActivity {
@@ -38,8 +44,9 @@ public class TestActivity extends MGLifecycleActivity {
         private String data2;
     }
 
+    @SuppressLint("UseSparseArrays")
     @Getter(lazy = true)
-    private static final MGPreference<Map<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new HashMap<>());
+    private static final MGPreference<HashMap<Integer, List<TestData>>> pref = MGPreference.create("TEST_PREF_10", new HashMap<Integer, List<TestData>>());
 
     @Bind(R.id.fade_test_view) View fadeTestView;
 
@@ -47,7 +54,8 @@ public class TestActivity extends MGLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Map<Integer, List<TestData>> prefData = new HashMap<>();
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        final Map<Integer, List<TestData>> prefData = new HashMap<>();
 
         List<TestData> td1 = new ArrayList<>();
         List<TestData> td2 = new ArrayList<>();
@@ -65,9 +73,11 @@ public class TestActivity extends MGLifecycleActivity {
 
         MGDelay.delay(1000)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> {
-
-                    MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        MGAnimFade.setVisibility(fadeTestView, View.VISIBLE);
+                    }
                 });
     }
 
@@ -76,14 +86,18 @@ public class TestActivity extends MGLifecycleActivity {
 
         final Keyboarder keyboarder = new Keyboarder(this);
 
-        MGDelay.delay(5000).subscribe(r -> {
-
-            keyboarder.getKeyboard().close();
+        MGDelay.delay(5000).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                keyboarder.getKeyboard().close();
+            }
         });
 
-        getPaused().subscribe(r -> {
-
-            keyboarder.destroy();
+        getPaused().subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                keyboarder.destroy();
+            }
         });
     }
 
@@ -94,34 +108,48 @@ public class TestActivity extends MGLifecycleActivity {
 
     private void setupSocket() {
 
-        MGWebsocket websocket = new MGWebsocket();
+        final MGWebsocket websocket = new MGWebsocket();
 
         websocket.getConfig().setUrl("ws://echo.websocket.org");//("wss://blitzdev.net/comet/u/913c1994-a5f9-42c7-be6b-a68a5a44ec44");
         websocket.getConfig().setBuffered(true);
 
-        websocket.onOpened().takeUntil(getPaused()).subscribe(open -> {
+        websocket.onOpened().takeUntil(getPaused()).subscribe(new Action1<MGWebsocketEventOpened>() {
+            @Override
+            public void call(MGWebsocketEventOpened mgWebsocketEventOpened) {
 
+            }
         });
 
-        websocket.onClosed().takeUntil(getPaused()).subscribe(closed -> {
+        websocket.onClosed().takeUntil(getPaused()).subscribe(new Action1<MGWebsocketEventClosed>() {
+            @Override
+            public void call(MGWebsocketEventClosed closed) {
 
+            }
         });
 
-        websocket.onError().takeUntil(getPaused()).subscribe(error -> {
+        websocket.onError().takeUntil(getPaused()).subscribe(new Action1<MGWebsocketEventError>() {
+            @Override
+            public void call(MGWebsocketEventError error) {
 
+            }
         });
 
-        websocket.onMessage().takeUntil(getPaused()).subscribe(message -> {
+        websocket.onMessage().takeUntil(getPaused()).subscribe(new Action1<MGWebsocketEventMessage>() {
+            @Override
+            public void call(MGWebsocketEventMessage message) {
 
+            }
         });
 
         websocket.connect();
         websocket.message("{\"cursor\":-1,\"channel\":\"add-topic-to-channel_fantasy-football\",\"action\":\"subscribe\"}");
         websocket.heartBeat(10000, "ping");
 
-        getPaused().subscribe(o -> {
-
-            websocket.disconnect();
+        getPaused().subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                websocket.disconnect();
+            }
         });
     }
 }

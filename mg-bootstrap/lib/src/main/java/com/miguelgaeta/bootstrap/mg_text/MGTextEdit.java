@@ -44,20 +44,27 @@ public class MGTextEdit extends EditText {
         copyTextOnPress(view, textView, copiedMessage, false);
     }
 
-    public static void copyTextOnPress(@NonNull View view, @NonNull TextView textView, @StringRes int copiedMessage, boolean longPress) {
+    public static void copyTextOnPress(@NonNull View view, @NonNull final TextView textView, @StringRes final int copiedMessage, boolean longPress) {
 
         if (longPress) {
 
-            view.setOnLongClickListener(v -> {
+            view.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    copyText(textView, copiedMessage);
 
-                copyText(textView, copiedMessage);
-
-                return false;
+                    return false;
+                }
             });
 
         } else {
 
-            view.setOnClickListener(v -> copyText(textView, copiedMessage));
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    copyText(textView, copiedMessage);
+                }
+            });
         }
     }
 

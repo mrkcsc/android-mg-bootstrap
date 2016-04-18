@@ -23,7 +23,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 4/15/15.
@@ -140,18 +142,30 @@ class MGWebsocketClient {
     /**
      * Send an arbitrary object as a json string.
      */
-    public void messageJson(@NonNull Object message, @NonNull Gson gson, boolean buffered) {
+    public void messageJson(@NonNull final Object message, @NonNull final Gson gson, final boolean buffered) {
 
-        Observable.create(subscriber -> {
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                // Send serialized message.
+                message(gson.toJson(message), buffered);
 
-            // Send serialized message.
-            message(gson.toJson(message), buffered);
+                // Done with observable.
+                subscriber.onCompleted();
+            }
+        }).subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
 
-            // Done with observable.
-            subscriber.onCompleted();
-
-        }).subscribe(r -> {
-        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to send message.", throwable)));
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                MGWebsocketConfig
+                    .getErrorHandler()
+                    .call(new MGWebsocketConfig.Error("Unable to send message.", throwable));
+            }
+        });
     }
 
     /**
@@ -258,43 +272,65 @@ class MGWebsocketClient {
      */
     private void configureReconnect() {
 
-        getEventOpn().get(false).subscribe(data -> {
+        getEventOpn().get(false).subscribe(new Action1<MGWebsocketEventOpened>() {
+            @Override
+            public void call(MGWebsocketEventOpened mgWebsocketEventOpened) {
+                // If we connect, but client wants to be disconnected.
+                if (shouldDisconnect()) {
 
-            // If we connect, but client wants to be disconnected.
-            if (shouldDisconnect()) {
+                    // Disconnect the web socket.
+                    disconnect(1000);
 
-                // Disconnect the web socket.
-                disconnect(1000);
+                } else {
 
-            } else {
+                    for (String message : messageBuffer) {
 
-                for (String message : messageBuffer) {
-
-                    client.send(message);
-                }
-
-                // Flush the message buffer.
-                messageBuffer.clear();
-            }
-
-        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to open.", throwable)));
-
-        // If we disconnect, reconnect if needed.
-        getEventCls().get(false).subscribe(data -> {
-
-            if (shouldReconnect()) {
-
-                clientSubscriptionReconnect = MGDelay.delay(reconnectDelay).subscribe(r -> {
-
-                    if (shouldReconnect()) {
-
-                        connect(url, reconnectDelay, socketFactory);
+                        client.send(message);
                     }
 
-                }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to re-connect.", throwable)));
+                    // Flush the message buffer.
+                    messageBuffer.clear();
+                }
             }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                MGWebsocketConfig
+                    .getErrorHandler()
+                    .call(new MGWebsocketConfig.Error("Unable to open.", throwable));
+            }
+        });
 
-        }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to close.", throwable)));
+        // If we disconnect, reconnect if needed.
+        getEventCls().get(false).subscribe(new Action1<MGWebsocketEventClosed>() {
+            @Override
+            public void call(MGWebsocketEventClosed closed) {
+                if (shouldReconnect()) {
+                    clientSubscriptionReconnect = MGDelay.delay(reconnectDelay).subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (shouldReconnect()) {
+                                connect(url, reconnectDelay, socketFactory);
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            MGWebsocketConfig
+                                .getErrorHandler()
+                                .call(new MGWebsocketConfig.Error("Unable to re-connect.", throwable));
+                        }
+                    });
+                }
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                MGWebsocketConfig
+                    .getErrorHandler()
+                    .call(new MGWebsocketConfig.Error("Unable to close.", throwable));
+            }
+        });
     }
 
     /**
@@ -302,23 +338,30 @@ class MGWebsocketClient {
      * interval if provided, starts sending new
      * heartbeat messages while connection open.
      */
-    private void configureHeartbeat(Integer keepAliveInterval, String keepAliveMessage) {
+    private void configureHeartbeat(Integer keepAliveInterval, final String keepAliveMessage) {
 
         if (heartBeatSubscription != null) {
             heartBeatSubscription.unsubscribe();
         }
 
         if (keepAliveInterval != null) {
+            heartBeatSubscription = MGDelay.delay(keepAliveInterval, true).subscribe(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                    if (getState() == MGWebsocketState.OPENED) {
 
-            heartBeatSubscription = MGDelay.delay(keepAliveInterval, true).subscribe(aVoid -> {
-
-                if (getState() == MGWebsocketState.OPENED) {
-
-                    // Send keep alive message.
-                    message(keepAliveMessage, false);
+                        // Send keep alive message.
+                        message(keepAliveMessage, false);
+                    }
                 }
-
-            }, throwable -> MGWebsocketConfig.getErrorHandler().call(new MGWebsocketConfig.Error("Unable to send heartbeat.", throwable)));
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    MGWebsocketConfig
+                        .getErrorHandler()
+                        .call(new MGWebsocketConfig.Error("Unable to send heartbeat.", throwable));
+                }
+            });
         }
     }
 

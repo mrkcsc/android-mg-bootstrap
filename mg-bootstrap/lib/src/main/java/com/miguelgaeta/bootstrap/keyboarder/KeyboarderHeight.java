@@ -29,7 +29,7 @@ public class KeyboarderHeight {
         final Map<String, List<Integer>> keyboardHeights = getKeyboardHeights().get();
 
         if (!keyboardHeights.containsKey(identifier)) {
-             keyboardHeights.put(identifier, new ArrayList<>());
+             keyboardHeights.put(identifier, new ArrayList<Integer>());
         }
 
         if (!keyboardHeights.get(identifier).contains(height)) {

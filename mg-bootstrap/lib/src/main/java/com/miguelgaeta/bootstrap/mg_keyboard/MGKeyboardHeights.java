@@ -18,9 +18,9 @@ class MGKeyboardHeights {
      * recognized associated keyboard heights.
      */
     List<Integer> get(String softKeyboardIdentifier) {
-
-        return keyboardHeights.get(softKeyboardIdentifier) != null ?
-                keyboardHeights.get(softKeyboardIdentifier) : new ArrayList<>();
+        return
+            keyboardHeights.get(softKeyboardIdentifier) != null ?
+            keyboardHeights.get(softKeyboardIdentifier) : new ArrayList<Integer>();
     }
 
     /**
@@ -28,9 +28,9 @@ class MGKeyboardHeights {
      * height present in the associated keyboard heights.
      */
     boolean contains(String softKeyboardIdentifier, int keyboardHeight) {
-
-        return keyboardHeights.get(softKeyboardIdentifier) != null &&
-                keyboardHeights.get(softKeyboardIdentifier).contains(keyboardHeight);
+        return
+            keyboardHeights.get(softKeyboardIdentifier) != null &&
+            keyboardHeights.get(softKeyboardIdentifier).contains(keyboardHeight);
     }
 
     /**

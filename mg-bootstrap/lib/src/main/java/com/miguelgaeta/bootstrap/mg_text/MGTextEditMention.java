@@ -1,6 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 
@@ -20,8 +21,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -177,7 +180,12 @@ public class MGTextEditMention<T, O> {
     private void configureTextWatcher(@NonNull MGTextEdit editText) {
 
         if (textWatcher == null) {
-            textWatcher = new LambdaTextWatcher((LambdaTextWatcher.OnChanged) (charSequence, i, i1, i2) -> applySpan((Spannable) charSequence));
+            textWatcher = new LambdaTextWatcher(new LambdaTextWatcher.OnAfterChanged() {
+                @Override
+                public void afterTextChanged(Editable charSequence) {
+                    applySpan(charSequence);
+                }
+            });
 
             editText.addTextChangedListener(textWatcher);
         }
@@ -187,56 +195,60 @@ public class MGTextEditMention<T, O> {
      * Process out mentions given an arbitrary
      * editable object.
      */
-    void processMentions(@NonNull MGTextEdit editText, boolean force) {
+    void processMentions(@NonNull MGTextEdit editText, final boolean force) {
 
         final String partialToken = MGTextEditMentionUtils.getPartialMentionToken(editText);
 
         getOnPartialToken().set(partialToken);
 
-        Observable<List<Map.Entry<String, T>>> worker = Observable.create(subscriber -> {
+        Observable<List<Map.Entry<String, T>>> worker = Observable.create(new Observable.OnSubscribe<List<Map.Entry<String, T>>>() {
+            @Override
+            public void call(Subscriber<? super List<Map.Entry<String, T>>> subscriber) {
+                List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
 
-            List<Map.Entry<String, T>> tagsMatched = new ArrayList<>();
+                if (partialToken != null && partialToken.length() > 0) {
 
-            if (partialToken != null && partialToken.length() > 0) {
+                    final char tokenIdentifier = partialToken.charAt(0);
+                    final String token = getFormattedMention(partialToken);
 
-                final char tokenIdentifier = partialToken.charAt(0);
-                final String token = getFormattedMention(partialToken);
+                    for (Map.Entry<String, T> entry : tags.entrySet()) {
 
-                for (Map.Entry<String, T> entry : tags.entrySet()) {
+                        final char tagIdentifier = entry.getKey().charAt(0);
+                        final String tag = getFormattedMention(entry.getKey());
 
-                    final char tagIdentifier = entry.getKey().charAt(0);
-                    final String tag = getFormattedMention(entry.getKey());
+                        if (tagIdentifier == tokenIdentifier && tag.contains(token)) {
 
-                    if (tagIdentifier == tokenIdentifier && tag.contains(token)) {
-
-                        tagsMatched.add(entry);
+                            tagsMatched.add(entry);
+                        }
                     }
                 }
-            }
 
-            subscriber.onNext(tagsMatched);
-            subscriber.onCompleted();
+                subscriber.onNext(tagsMatched);
+                subscriber.onCompleted();
+            }
         });
 
         if (dataSubscription != null) {
             dataSubscription.unsubscribe();
         }
 
-        dataSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(tagsMatched -> {
+        dataSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Map.Entry<String, T>>>() {
+            @Override
+            public void call(List<Map.Entry<String, T>> tagsMatched) {
+                if (!tagsMatched.equals(tagsMatchedCache) || force) {
 
-            if (!tagsMatched.equals(tagsMatchedCache) || force) {
+                    if (getOnTagsMatched() != null) {
+                        getOnTagsMatched().onTagsMatched(tagsMatched);
+                    }
 
-                if (getOnTagsMatched() != null) {
-                    getOnTagsMatched().onTagsMatched(tagsMatched);
+                    if (adapter != null) {
+
+                        setAdapterData(adapter, tagsMatchedCache, tagsMatched);
+                    }
+
+                    // Update cached value.
+                    tagsMatchedCache = tagsMatched;
                 }
-
-                if (adapter != null) {
-
-                    setAdapterData(adapter, tagsMatchedCache, tagsMatched);
-                }
-
-                // Update cached value.
-                tagsMatchedCache = tagsMatched;
             }
         });
     }

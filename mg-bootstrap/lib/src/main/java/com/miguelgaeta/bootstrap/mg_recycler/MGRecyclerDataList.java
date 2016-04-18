@@ -10,8 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -40,44 +42,50 @@ public class MGRecyclerDataList<T> {
      * key can be generated for each object in the list.  There
      * should not be any duplicate keys in a given data list.
      */
-    public static <T> MGRecyclerDataList<T> create(@NonNull MGRecyclerAdapter adapter, List<T> initialData, Func1<T, String> keyGenerator) {
+    public static <T> MGRecyclerDataList<T> create(@NonNull final MGRecyclerAdapter adapter, final List<T> initialData, final Func1<T, String> keyGenerator) {
 
-        MGRecyclerDataList<T> dataList = new MGRecyclerDataList<>();
+        final MGRecyclerDataList<T> dataList = new MGRecyclerDataList<>();
 
-        dataList.data = MGRecyclerData.create(initialData, (oldData, newData) -> {
+        dataList.data = MGRecyclerData.create(initialData, new MGRecyclerData.DataUpdated<List<T>>() {
+            @Override
+            public void updated(final List<T> oldData, final List<T> newData) {
+                if (newData == null ? oldData != null : !newData.equals(oldData)) {
 
-            if (newData == null ? oldData != null : !newData.equals(oldData)) {
+                    // On changes, perform diffing on a computation thread.
+                    Observable<AdapterUpdateData> worker = Observable.create(new Observable.OnSubscribe<AdapterUpdateData>() {
+                        @Override
+                        public void call(final Subscriber<? super AdapterUpdateData> subscriber) {
+                            final LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
+                            final LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
 
-                // On changes, perform diffing on a computation thread.
-                Observable<AdapterUpdateData> worker = Observable.create(subscriber -> {
+                            final List<Integer> indicesChanged = dataList.changeItems(oldDataIndexes, newDataIndexes, oldData, newData);
 
-                    final LinkedHashMap<String, Integer> oldDataIndexes = dataList.generateIndexMap(oldData, keyGenerator);
-                    final LinkedHashMap<String, Integer> newDataIndexes = dataList.generateIndexMap(newData, keyGenerator);
+                            final List<AdapterUpdateData.DataRange> indicesRangeRemoved = dataList.removeItems(oldData, newDataIndexes, keyGenerator);
+                            final List<AdapterUpdateData.DataRange> indicesRangeInserted = dataList.insertItems(newData, oldDataIndexes, keyGenerator);
 
-                    final List<Integer> indicesChanged = dataList.changeItems(oldDataIndexes, newDataIndexes, oldData, newData);
+                            subscriber.onNext(AdapterUpdateData.create(indicesChanged, indicesRangeRemoved, indicesRangeInserted));
+                            subscriber.onCompleted();
+                        }
+                    });
 
-                    final List<AdapterUpdateData.DataRange> indicesRangeRemoved = dataList.removeItems(oldData, newDataIndexes, keyGenerator);
-                    final List<AdapterUpdateData.DataRange> indicesRangeInserted = dataList.insertItems(newData, oldDataIndexes, keyGenerator);
+                    dataList.unsubscribeFromUpdates();
 
-                    subscriber.onNext(AdapterUpdateData.create(indicesChanged, indicesRangeRemoved, indicesRangeInserted));
-                    subscriber.onCompleted();
-                });
+                    // Run callbacks and adapter update events on the main thread.
+                    dataList.updateSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<AdapterUpdateData>() {
+                        @Override
+                        public void call(AdapterUpdateData adapterUpdateData) {
+                            // Set new data.
+                            dataList.data.set(newData);
 
-                dataList.unsubscribeFromUpdates();
+                            // Trigger adapter updates.
+                            adapterUpdateData.update(adapter);
 
-                // Run callbacks and adapter update events on the main thread.
-                dataList.updateSubscription = worker.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(adapterUpdateData -> {
-
-                    // Set new data.
-                    dataList.data.set(newData);
-
-                    // Trigger adapter updates.
-                    adapterUpdateData.update(adapter);
-
-                    if (dataList.updated != null) {
-                        dataList.updated.updated(oldData, newData);
-                    }
-                });
+                            if (dataList.updated != null) {
+                                dataList.updated.updated(oldData, newData);
+                            }
+                        }
+                    });
+                }
             }
         });
 

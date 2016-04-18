@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.functions.Func1;
+
 /**
  * Created by Miguel Gaeta on 5/6/15.
  */
@@ -12,8 +14,13 @@ import java.util.List;
 public abstract class MGRecyclerAdapterSimple extends MGRecyclerAdapter {
 
     // Data list that powers the adapter.
-    private MGRecyclerDataList<MGRecyclerDataPayload.Contract> data = MGRecyclerDataList.create(this, new ArrayList<>(), MGRecyclerDataPayload.Contract::getKey);
-
+    private MGRecyclerDataList<MGRecyclerDataPayload.Contract> data = MGRecyclerDataList.create(this, new ArrayList<MGRecyclerDataPayload.Contract>(), new Func1<MGRecyclerDataPayload.Contract, String>() {
+        @Override
+        public String call(MGRecyclerDataPayload.Contract o) {
+            return o.getKey();
+        }
+    });
+    
     /**
      * This adapter streamlines common recycler view operations
      * and boiler plate code.

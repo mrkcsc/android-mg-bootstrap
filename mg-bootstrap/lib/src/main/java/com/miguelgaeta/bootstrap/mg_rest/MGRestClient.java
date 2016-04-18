@@ -1,5 +1,7 @@
 package com.miguelgaeta.bootstrap.mg_rest;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -8,8 +10,10 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import lombok.Getter;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -37,10 +41,12 @@ public class MGRestClient {
         RestAdapter.Builder builder = new RestAdapter.Builder()
             .setClient(new OkClient(getOkHttpClient())).setEndpoint(endpoint);
 
-        builder = builder.setRequestInterceptor(request -> {
-
-            if (getConfig().getInterceptor() != null) {
-                getConfig().getInterceptor().intercept(request);
+        builder = builder.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                if (getConfig().getInterceptor() != null) {
+                    getConfig().getInterceptor().intercept(request);
+                }
             }
         });
 
@@ -98,7 +104,12 @@ public class MGRestClient {
     private void setupHostnameVerifier(OkHttpClient okHttpClient) {
 
         // Create a verifier that does not verify host-names.
-        HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+            @Override @SuppressLint("BadHostnameVerifier")
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
 
         // Assign it to the client.
         okHttpClient.setHostnameVerifier(hostnameVerifier);

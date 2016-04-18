@@ -40,7 +40,7 @@ public class MGLifecycleActivity extends AppCompatActivity {
 
     @Getter
     // Custom observable that emits activity paused events.
-    private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.create());
+    private final SerializedSubject<Void, Void> paused = new SerializedSubject<>(PublishSubject.<Void>create());
 
     // Menu layout.
     private @Nullable Integer menuResourceId;

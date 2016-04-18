@@ -27,21 +27,22 @@ public class MGRxRetry implements Func1<Observable<? extends Throwable>, Observa
     @Override
     public Observable<?> call(Observable<? extends Throwable> attempts) {
 
-        return attempts.flatMap(throwable -> {
+        return attempts.flatMap(new Func1<Throwable, Observable<?>>() {
+            @Override
+            public Observable<?> call(Throwable throwable) {
+                if (maxRetries == null || ++currentRetry < maxRetries) {
 
-            if (maxRetries == null || ++currentRetry < maxRetries) {
+                    if (maxHalfLives != null && (maxHalfLives == -1 || ++currentHalfLife < maxHalfLives)) {
+                        delayMillis *= 2;
+                    }
 
-                if (maxHalfLives != null && (maxHalfLives == -1 || ++currentHalfLife < maxHalfLives)) {
-
-                    delayMillis *= 2;
+                    // On onNext, original observable will be re-subscribed.
+                    return Observable.timer(delayMillis, TimeUnit.MILLISECONDS);
                 }
 
-                // On onNext, original observable will be re-subscribed.
-                return Observable.timer(delayMillis, TimeUnit.MILLISECONDS);
+                // Max retries hit. Just pass the error along.
+                return Observable.error(throwable);
             }
-
-            // Max retries hit. Just pass the error along.
-            return Observable.error(throwable);
         });
     }
 

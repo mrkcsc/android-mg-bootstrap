@@ -4,6 +4,7 @@ import com.miguelgaeta.bootstrap.mg_delay.MGDelay;
 
 import lombok.RequiredArgsConstructor;
 import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 3/9/15.
@@ -75,8 +76,19 @@ class MGPreferenceData<T> {
                 MGDelay
                     .delay(serializationDelay)
                     .observeOn(MGPreference.getScheduler())
-                    .subscribe(r -> set(), throwable -> MGPreference.getErrorHandler()
-                        .call(new MGPreference.Error("Unable to serialize preference.", throwable)));
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            set();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            MGPreference
+                                .getErrorHandler()
+                                .call(new MGPreference.Error("Unable to serialize preference.", throwable));
+                        }
+                    });
         }
     }
 

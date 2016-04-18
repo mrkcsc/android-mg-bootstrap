@@ -10,7 +10,6 @@ import java.net.HttpCookie;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 
@@ -21,7 +20,7 @@ import lombok.Getter;
 class MGRestClientCookieStore implements CookieStore {
 
     @Getter(lazy = true)
-    private static final MGPreference<Map<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new HashMap<>());
+    private static final MGPreference<HashMap<String, HttpCookie>> persistentCookies = MGPreference.create("COOKIE_STORE", new HashMap<String, HttpCookie>());
 
     @Getter(lazy = true)
     private final CookieStore cookieStore = new CookieManager().getCookieStore();
@@ -87,7 +86,7 @@ class MGRestClientCookieStore implements CookieStore {
      */
     private void addPersistentCookie(@NonNull HttpCookie cookie) {
 
-        Map<String, HttpCookie> cookies = getPersistentCookies().get();
+        final HashMap<String, HttpCookie> cookies = getPersistentCookies().get();
 
         cookies.put(cookie.getDomain() + "|" + cookie.getName(), cookie);
 
@@ -99,7 +98,7 @@ class MGRestClientCookieStore implements CookieStore {
      */
     private void removePersistentCookie(@NonNull HttpCookie cookie) {
 
-        Map<String, HttpCookie> cookies = getPersistentCookies().get();
+        final HashMap<String, HttpCookie> cookies = getPersistentCookies().get();
 
         cookies.remove(cookie.getDomain() + "|" + cookie.getName());
 

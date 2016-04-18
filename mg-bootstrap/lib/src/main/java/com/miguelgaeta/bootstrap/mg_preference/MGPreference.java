@@ -30,14 +30,17 @@ public class MGPreference<T> {
     private static final Scheduler scheduler = Schedulers.computation();
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final SerializedSubject<Boolean, Boolean> initialized = new SerializedSubject<>(BehaviorSubject.create());
+    private static final SerializedSubject<Boolean, Boolean> initialized = new SerializedSubject<>(BehaviorSubject.<Boolean>create());
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final List<WeakReference<MGPreference>> preferences = new ArrayList<>();
 
     @Getter @Setter
-    private static Action1<Error> errorHandler = error -> {
+    private static Action1<Error> errorHandler = new Action1<Error>() {
+        @Override
+        public void call(Error error) {
 
+        }
     };
 
     @Getter(value = AccessLevel.PACKAGE)
@@ -52,7 +55,7 @@ public class MGPreference<T> {
 
         final MGPreference<T> preference = new MGPreference<>(MGPreferenceData.create(key, defaultValue, serializationDelay));
 
-        getPreferences().add(new WeakReference<>(preference));
+        getPreferences().add((WeakReference<MGPreference>) new WeakReference<>((T) preference));
 
         return preference;
     }

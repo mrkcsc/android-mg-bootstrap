@@ -30,7 +30,7 @@ public class MGTextSpans {
         return new RelativeSizeSpan(proportion);
     }
 
-    public static CharacterStyle getClickable(@ColorInt int color, boolean underline, @Nullable View.OnClickListener onClick) {
+    public static CharacterStyle getClickable(@ColorInt final int color, final boolean underline, @Nullable final View.OnClickListener onClick) {
         return new ClickableSpan() {
 
             @Override
@@ -42,7 +42,7 @@ public class MGTextSpans {
             }
 
             @Override
-            public void updateDrawState(@NonNull TextPaint drawState) {
+            public void updateDrawState(@NonNull final TextPaint drawState) {
 
                 drawState.setUnderlineText(underline);
                 drawState.setColor(color);

@@ -18,16 +18,17 @@ public class MGRxBusMerge {
      * Merge a new item.  Optionally, only merge
      * if a value does not already exist.
      */
-    public static <T> Func1<T, T> set(T value, boolean overrideExistingValue) {
+    public static <T> Func1<T, T> set(final T value, final boolean overrideExistingValue) {
+        return new Func1<T, T>() {
+            @Override
+            public T call(T t) {
+                if (overrideExistingValue || t == null) {
 
-        return t -> {
+                    return value;
+                }
 
-            if (overrideExistingValue || t == null) {
-
-                return value;
+                return t;
             }
-
-            return t;
         };
     }
 
@@ -42,29 +43,27 @@ public class MGRxBusMerge {
     /**
      * Merge new item into map.
      */
-    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapMerge(K key, Func1<V, V> mergeFunction) {
+    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapMerge(final K key, final Func1<V, V> mergeFunction) {
 
-        return kvMap -> {
+        return new Func1<Map<K, V>, Map<K, V>>() {
+            @Override
+            public Map<K, V> call(Map<K, V> kvMap) {
+                V mergedValue = mergeFunction.call(kvMap.get(key));
 
-            V mergedValue = mergeFunction.call(kvMap.get(key));
+                if (!kvMap.containsKey(key) || kvMap.get(key) == null || !kvMap.get(key).equals(mergedValue)) {
+                    Map<K, V> kvMapCopy = copyMap(kvMap);
 
-            if (!kvMap.containsKey(key) || kvMap.get(key) == null || !kvMap.get(key).equals(mergedValue)) {
+                    if (mergedValue == null) {
+                        kvMapCopy.remove(key);
+                    } else {
+                        kvMapCopy.put(key, mergedValue);
+                    }
 
-                Map<K, V> kvMapCopy = copyMap(kvMap);
-
-                if (mergedValue == null) {
-
-                    kvMapCopy.remove(key);
-
-                } else {
-
-                    kvMapCopy.put(key, mergedValue);
+                    return kvMapCopy;
                 }
 
-                return kvMapCopy;
+                return kvMap;
             }
-
-            return kvMap;
         };
     }
 
@@ -72,18 +71,18 @@ public class MGRxBusMerge {
      * Merge a new item into map.  Optionally, only merge
      * if a value for this key not already present.
      */
-    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapPut(K key, V value, boolean overrideExistingValue) {
+    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapPut(final K key, final V value, final boolean overrideExistingValue) {
+        return new Func1<Map<K, V>, Map<K, V>>() {
+            @Override
+            public Map<K, V> call(Map<K, V> kvMap) {
+                Map<K, V> kvMapCopy = copyMap(kvMap);
 
-        return kvMap -> {
+                if (overrideExistingValue || !kvMapCopy.containsKey(key)) {
+                    kvMapCopy.put(key, value);
+                }
 
-            Map<K, V> kvMapCopy = copyMap(kvMap);
-
-            if (overrideExistingValue || !kvMapCopy.containsKey(key)) {
-
-                kvMapCopy.put(key, value);
+                return kvMapCopy;
             }
-
-            return kvMapCopy;
         };
     }
 
@@ -98,22 +97,22 @@ public class MGRxBusMerge {
     /**
      * Merge function for removing a map item.
      */
-    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapRemove(K key) {
+    public static <K, V> Func1<Map<K, V>, Map<K, V>> mapRemove(final K key) {
+        return new Func1<Map<K, V>, Map<K, V>>() {
+            @Override
+            public Map<K, V> call(Map<K, V> kvMap) {
+                if (kvMap == null) {
+                    return null;
+                }
 
-        return kvMap -> {
+                Map<K, V> kvMapCopy = copyMap(kvMap);
 
-            if (kvMap == null) {
+                if (kvMapCopy.containsKey(key)) {
+                    kvMapCopy.remove(key);
+                }
 
-                return null;
+                return kvMapCopy;
             }
-
-            Map<K, V> kvMapCopy = copyMap(kvMap);
-
-            if (kvMapCopy.containsKey(key)) {
-                kvMapCopy.remove(key);
-            }
-
-            return kvMapCopy;
         };
     }
 

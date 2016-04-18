@@ -10,9 +10,11 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.SerializedSubject;
+import rx.subjects.Subject;
 
 /**
  * Represents a data object that is automatically exposed as
@@ -37,8 +39,8 @@ public class MGPreferenceRx<T> {
      * Can be used by to publish
      * a new value to the data class.
      */
-    @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>(BehaviorSubject.create());
+    @Getter(lazy = true, value = AccessLevel.PRIVATE) @SuppressWarnings("unchecked")
+    private final SerializedSubject<T, T> dataPublisher = new SerializedSubject<>((Subject<T, T>) BehaviorSubject.create());
 
     public static <T> MGPreferenceRx<T> create(@Nullable String key, T defaultValue, int serializationDelay) {
 
@@ -96,22 +98,29 @@ public class MGPreferenceRx<T> {
         merge(mergeFunction, emitNull, true);
     }
 
-    public void merge(Func1<T, T> mergeFunction, boolean emitNull, boolean mergeOnChange) {
+    public void merge(final Func1<T, T> mergeFunction, boolean emitNull, final boolean mergeOnChange) {
 
-        get(emitNull).take(1).subscribe(source -> {
+        get(emitNull).take(1).subscribe(new Action1<T>() {
+            @Override
+            public void call(T source) {
+                final T mergedSource = mergeFunction.call(source);
 
-            T mergedSource = mergeFunction.call(source);
+                if (mergeOnChange) {
 
-            if (mergeOnChange) {
+                    if (source == null ? mergedSource != null : !source.equals(mergedSource)) {
 
-                if (source == null ? mergedSource != null : !source.equals(mergedSource)) {
-
-                    set(mergedSource);
+                        set(mergedSource);
+                    }
                 }
             }
-
-        }, throwable -> MGPreference.getErrorHandler().call(
-            new MGPreference.Error("Unable to merge in new preference data.", throwable)));
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                MGPreference
+                    .getErrorHandler()
+                    .call(new MGPreference.Error("Unable to merge in new preference data.", throwable));
+            }
+        });
     }
 
     /**
@@ -124,7 +133,12 @@ public class MGPreferenceRx<T> {
 
         if (!emitNull) {
 
-            return stream.filter(data -> data != null);
+            return stream.filter(new Func1<T, Boolean>() {
+                @Override
+                public Boolean call(final T data) {
+                    return data != null;
+                }
+            });
         }
 
         return stream;
@@ -143,23 +157,38 @@ public class MGPreferenceRx<T> {
      * and if caching is enabled, set up
      * future value emissions.
      */
-    private void init(T defaultValue, MGPreference<T> cache) {
+    private void init(final T defaultValue, final MGPreference<T> cache) {
 
         if (cache != null) {
 
-            get().observeOn(MGPreference.getScheduler()).subscribe(cache::set, throwable -> {
-
-                MGPreference.getErrorHandler().call(
-                    new MGPreference.Error( "Unable to cache " + key + " preference data.", throwable));
+            get().observeOn(MGPreference.getScheduler()).subscribe(new Action1<T>() {
+                @Override
+                public void call(T t) {
+                    cache.set(t);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    MGPreference
+                        .getErrorHandler()
+                        .call(new MGPreference.Error("Unable to cache " + key + " preference data.", throwable));
+                }
             });
         }
 
-        whenInitialized().subscribe(r -> setInitialized(cache != null ? cache.get() : defaultValue), throwable -> {
+        whenInitialized().subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                setInitialized(cache != null ? cache.get() : defaultValue);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                MGPreference.getErrorHandler().call(
+                    new MGPreference.Error("Unable to initialize " + key + " preference.", throwable));
 
-            MGPreference.getErrorHandler().call(
-                new MGPreference.Error("Unable to initialize " + key + " preference.", throwable));
-
-            setInitialized(defaultValue);
+                setInitialized(defaultValue);
+            }
         });
     }
 
@@ -193,6 +222,7 @@ public class MGPreferenceRx<T> {
 
         private boolean uninitialized = true;
 
-        private final List<T> items = Collections.synchronizedList(new ArrayList<>());
+        @SuppressWarnings("unchecked")
+        private final List<T> items = (List<T>) Collections.synchronizedList(new ArrayList<>());
     }
 }

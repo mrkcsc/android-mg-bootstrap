@@ -1,5 +1,6 @@
 package com.miguelgaeta.bootstrap.mg_text;
 
+import android.text.Editable;
 import android.text.TextWatcher;
 
 import com.miguelgaeta.bootstrap.views.LambdaTextWatcher;
@@ -43,7 +44,12 @@ class MGTextEditHasText {
 
         onHasText(editText.length(), true);
 
-        textWatcher = new LambdaTextWatcher(editable -> onHasText(editable.length(), false));
+        textWatcher = new LambdaTextWatcher(new LambdaTextWatcher.OnAfterChanged() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                onHasText(editable.length(), false);
+            }
+        });
 
         editText.addTextChangedListener(textWatcher);
     }

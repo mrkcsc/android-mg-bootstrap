@@ -3,6 +3,7 @@ package com.miguelgaeta.bootstrap.mg_images;
 import android.content.Context;
 
 import com.facebook.cache.disk.DiskCacheConfig;
+import com.facebook.common.internal.Supplier;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
@@ -75,7 +76,12 @@ public class MGImagesConfig {
             // Max cache entry size
             Integer.MAX_VALUE);
 
-        configBuilder.setBitmapMemoryCacheParamsSupplier(() -> bitmapCacheParams)
+            configBuilder.setBitmapMemoryCacheParamsSupplier(new Supplier<MemoryCacheParams>() {
+                @Override
+                public MemoryCacheParams get() {
+                    return bitmapCacheParams;
+                }
+            })
 
             // Set small images cache.
             .setSmallImageDiskCacheConfig(

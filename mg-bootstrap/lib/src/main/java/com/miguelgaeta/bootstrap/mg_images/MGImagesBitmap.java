@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.facebook.common.references.CloseableReference;
@@ -20,8 +21,8 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.concurrent.Executor;
 
-import lombok.NonNull;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 
 /**
@@ -43,16 +44,31 @@ public class MGImagesBitmap {
     /**
      * Convenience method.
      */
-    public static MGImagesBitmap create(@NonNull String url, int width, int height, boolean circle, boolean currentThread) {
-
-        return MGImagesBitmap.builder().url(url).width(width).height(height).circle(circle)
-            .executor(currentThread ? Runnable::run : new DefaultExecutorSupplier(1).forDecode()).build();
+    public static MGImagesBitmap create(@NonNull String url, int width, int height, boolean circle, final boolean currentThread) {
+        return
+            MGImagesBitmap
+                .builder()
+                .url(url)
+                .width(width)
+                .height(height)
+                .circle(circle)
+                .executor(new Executor() {
+                    @Override
+                    public void execute(@NonNull final Runnable command) {
+                        if (currentThread) {
+                            command.run();
+                        } else {
+                            new DefaultExecutorSupplier(1).forDecode();
+                        }
+                    }
+                })
+                .build();
     }
 
     /**
      * Fetch bitmap.
      */
-    public void getBitmap(@NonNull Action1<Bitmap> callback) {
+    public void getBitmap(@NonNull final Action1<Bitmap> callback) {
 
         // Get image request.
         ImageRequestBuilder request = MGImages.getImageRequest(url, width, height);
@@ -88,11 +104,18 @@ public class MGImagesBitmap {
      */
     public Observable<Bitmap> getBitmapObservable() {
 
-        return Observable.create(subscriber -> getBitmap(bitmap -> {
-
-            subscriber.onNext(bitmap);
-            subscriber.onCompleted();
-        }));
+        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(final Subscriber<? super Bitmap> subscriber) {
+                getBitmap(new Action1<Bitmap>() {
+                    @Override
+                    public void call(Bitmap bitmap) {
+                        subscriber.onNext(bitmap);
+                        subscriber.onCompleted();
+                    }
+                });
+            }
+        });
     }
 
     /**

@@ -15,6 +15,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by mrkcsc on 3/27/15.
@@ -39,7 +40,7 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
     public void onGlobalLayout() {
 
         // Fetch metrics instance.
-        MGKeyboardMetrics metrics = MGKeyboard.getMetrics();
+        final MGKeyboardMetrics metrics = MGKeyboard.getMetrics();
 
         // Current is now previous keyboard height.
         int keyboardHeightPrevious = keyboardHeightCurrent;
@@ -79,16 +80,18 @@ class MGKeyboardLayoutListener implements ViewTreeObserver.OnGlobalLayoutListene
             // If some height detected.
             } else if (keyboardHeightCurrent > 0) {
 
-                subscription = MGDelay.delay(MGKeyboardMetrics.getOpenDelay()).observeOn(AndroidSchedulers.mainThread()).subscribe(result -> {
+                subscription = MGDelay.delay(MGKeyboardMetrics.getOpenDelay()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void result) {
+                        if (!MGKeyboardState.isOpened()) {
 
-                    if (!MGKeyboardState.isOpened()) {
+                            // Otherwise assume keyboard is open if no additional layouts
+                            // happen within a 300 millisecond window. If triggered, add
+                            // this height to list of recognized keyboard heights.
+                            metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
 
-                        // Otherwise assume keyboard is open if no additional layouts
-                        // happen within a 300 millisecond window. If triggered, add
-                        // this height to list of recognized keyboard heights.
-                        metrics.setKeyboardHeight(keyboardRootView.getContext(), keyboardHeightCurrent);
-
-                        resizeRootView(MGKeyboardState.OPENED);
+                            resizeRootView(MGKeyboardState.OPENED);
+                        }
                     }
                 });
             }
