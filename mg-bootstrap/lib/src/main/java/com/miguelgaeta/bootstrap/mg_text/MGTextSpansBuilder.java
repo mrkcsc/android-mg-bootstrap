@@ -173,7 +173,7 @@ public class MGTextSpansBuilder {
                 if (spanMatch.getStart() > startIndex) {
                     spanMatch.setStart(spanMatch.getStart() - startIndexOffset);
 
-                    if (spanMatch.getStart() > endIndex) {
+                    if (spanMatch.getStart() > endIndexUpdated) {
                         spanMatch.setStart(spanMatch.getStart() - (offset - startIndexOffset));
                     }
                 }
@@ -181,7 +181,7 @@ public class MGTextSpansBuilder {
                 if (spanMatch.getEnd() > startIndex) {
                     spanMatch.setEnd(spanMatch.getEnd() - startIndexOffset);
 
-                    if (spanMatch.getEnd() > endIndex) {
+                    if (spanMatch.getEnd() > endIndexUpdated) {
                         spanMatch.setEnd(spanMatch.getEnd() - (offset - startIndexOffset));
                     }
                 }
