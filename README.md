@@ -1,16 +1,6 @@
 ## Android MG Bootstrap
 
-An opinionated bootstrap library for android projects that includes commonly used dependencies and some custom wrapper libraries.  Included utilities and dependencies are documented below.
-
-### Installation
-
-*Latest version can be found via [Bintray](https://bintray.com/bintray/jcenter)*
-
-```groovy
-
-compile 'com.miguelgaeta.bootstrap:mg-bootstrap:3.1.4'
-    
-```
+This library is deprecated, do not use.
 
 ### Usage
 
