@@ -78,7 +78,8 @@ public class MGPreference<T> {
         // Reset any preferences in memory.
         for (WeakReference<MGPreference> weakPreferenceReference : getPreferences()) {
 
-            if (weakPreferenceReference.get() != null) {
+            if (weakPreferenceReference != null &&
+                weakPreferenceReference.get() != null) {
                 weakPreferenceReference.get().clear();
             }
         }
