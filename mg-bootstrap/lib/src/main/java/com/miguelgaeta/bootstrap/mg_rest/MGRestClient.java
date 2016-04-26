@@ -2,6 +2,7 @@ package com.miguelgaeta.bootstrap.mg_rest;
 
 import android.annotation.SuppressLint;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by mrkcsc on 2/10/15.
@@ -29,6 +31,12 @@ public class MGRestClient {
     @Getter(lazy = true)
     private final OkHttpClient okHttpClient = getHttpClient();
 
+    @Getter
+    private final Gson gson =
+        new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
+
     /**
      * Return standard rest adapter configured for
      * the platform project.
@@ -41,7 +49,7 @@ public class MGRestClient {
         RestAdapter.Builder builder = new RestAdapter.Builder()
             .setClient(new OkClient(getOkHttpClient())).setEndpoint(endpoint);
 
-        builder = builder.setRequestInterceptor(new RequestInterceptor() {
+        builder = builder.setConverter(new GsonConverter(gson)).setRequestInterceptor(new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {
                 if (getConfig().getInterceptor() != null) {
@@ -57,16 +65,6 @@ public class MGRestClient {
         }
 
         return builder.build();
-    }
-
-    /**
-     * Create a gson object configured to handle
-     * JodaTime dates and any additional custom
-     * configuration options that may be needed.
-     */
-    public static Gson getGson() {
-
-        return new GsonBuilder().create();
     }
 
     /**

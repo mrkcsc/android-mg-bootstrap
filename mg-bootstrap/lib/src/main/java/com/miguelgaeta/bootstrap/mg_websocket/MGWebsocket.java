@@ -3,7 +3,6 @@ package com.miguelgaeta.bootstrap.mg_websocket;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.miguelgaeta.bootstrap.mg_rest.MGRestClient;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventClosed;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventError;
 import com.miguelgaeta.bootstrap.mg_websocket.events.MGWebsocketEventMessage;
@@ -89,7 +88,7 @@ public class MGWebsocket {
      */
     public void heartBeat(Integer interval, Object message) {
 
-        client.heartBeat(interval, MGRestClient.getGson().toJson(message));
+        client.heartBeat(interval, getConfig().getGson().toJson(message));
     }
 
     /**
