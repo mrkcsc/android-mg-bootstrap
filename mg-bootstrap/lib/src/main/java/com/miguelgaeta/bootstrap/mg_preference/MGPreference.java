@@ -3,8 +3,8 @@ package com.miguelgaeta.bootstrap.mg_preference;
 import android.content.Context;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class MGPreference<T> {
     private static final SerializedSubject<Boolean, Boolean> initialized = new SerializedSubject<>(BehaviorSubject.<Boolean>create());
 
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
-    private static final List<WeakReference<MGPreference>> preferences = new ArrayList<>();
+    private static final List<WeakReference<MGPreference>> preferences = new CopyOnWriteArrayList<>();
 
     @Getter @Setter
     private static Action1<Error> errorHandler = new Action1<Error>() {
